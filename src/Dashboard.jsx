@@ -142,7 +142,7 @@ export default function Dashboard() {
   const [currentTime, setCurrentTime] = useState(new Date())
   const [winner, setWinner] = useState(null)
   const [showWinner, setShowWinner] = useState(false)
-  const [isDark, setIsDark] = useState(true)
+  const [isDark, setIsDark] = useState(false)
 
   const PARTY_CONFIG = getPartyConfig(isDark)
 
