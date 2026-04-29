@@ -13,10 +13,10 @@ export default function Admin() {
 
   // Manual update state
   const [manualData, setManualData] = useState({
-    'DMK+': { won: 0, leading: 0 },
-    'AIADMK+': { won: 0, leading: 0 },
-    'TVK': { won: 0, leading: 0 },
-    'Others': { won: 0, leading: 0 },
+    'DMK+': { won: 0, leadingg: 0 },
+    'AIADMK+': { won: 0, leadingg: 0 },
+    'TVK': { won: 0, leadingg: 0 },
+    'Others': { won: 0, leadingg: 0 },
   })
 
   const login = () => {
@@ -49,16 +49,16 @@ Input: "${inputText}"
 Return format:
 {
   "overall": {
-    "DMK+": { "won": 0, "leading": 0 },
-    "AIADMK+": { "won": 0, "leading": 0 },
-    "TVK": { "won": 0, "leading": 0 },
-    "Others": { "won": 0, "leading": 0 }
+    "DMK+": { "won": 0, "leadingg": 0 },
+    "AIADMK+": { "won": 0, "leadingg": 0 },
+    "TVK": { "won": 0, "leadingg": 0 },
+    "Others": { "won": 0, "leadingg": 0 }
   },
   "constituencies": [
     {
       "name": "constituency name in english",
       "name_tamil": "தொகுதி பெயர் தமிழில்",
-      "leading_party": "DMK+ or AIADMK+ or TVK or Others",
+      "leadingg_party": "DMK+ or AIADMK+ or TVK or Others",
       "lead_margin": 0,
       "status": "counting or declared",
       "rounds_completed": 0
@@ -81,7 +81,7 @@ Parse any format: "DMK winning 45 seats", "திமுக 45 இடங்கள
         for (const [party, values] of Object.entries(parsed.overall)) {
           await supabase
             .from('overall_tally')
-            .update({ won: values.won, leading: values.leading, updated_at: new Date() })
+            .update({ won: values.won, leadingg: values.leadingg, updated_at: new Date() })
             .eq('party', party)
         }
       }
@@ -99,7 +99,7 @@ Parse any format: "DMK winning 45 seats", "திமுக 45 இடங்கள
             await supabase
               .from('constituencies')
               .update({
-                leading_party: c.leading_party,
+                leadingg_party: c.leadingg_party,
                 lead_margin: c.lead_margin,
                 status: c.status,
                 rounds_completed: c.rounds_completed,
@@ -125,7 +125,7 @@ Parse any format: "DMK winning 45 seats", "திமுக 45 இடங்கள
       for (const [party, values] of Object.entries(manualData)) {
         await supabase
           .from('overall_tally')
-          .update({ won: values.won, leading: values.leading, updated_at: new Date() })
+          .update({ won: values.won, leadingg: values.leadingg, updated_at: new Date() })
           .eq('party', party)
       }
       setMessage('✅ Saved successfully!')
@@ -230,7 +230,7 @@ Parse any format: "DMK winning 45 seats", "திமுக 45 இடங்கள
           </div>
           <div style={{ fontSize: '12px', color: '#64748B', marginBottom: '12px' }}>
             எந்த format-லயும் paste பண்ணுங்க:
-            "DMK 45 won 12 leading" or
+            "DMK 45 won 12 leadingg" or
             "திமுக 45 வென்றது 12 முன்னிலை"
           </div>
           <textarea
@@ -306,10 +306,10 @@ Parse any format: "DMK winning 45 seats", "திமுக 45 இடங்கள
                 </div>
                 <input
                   type="number" min="0"
-                  value={values.leading}
+                  value={values.leadingg}
                   onChange={e => setManualData({
                     ...manualData,
-                    [party]: { ...values, leading: parseInt(e.target.value) || 0 }
+                    [party]: { ...values, leadingg: parseInt(e.target.value) || 0 }
                   })}
                   style={{
                     background: '#1E293B', border: '1px solid #334155',
