@@ -64,7 +64,7 @@ export default function Dashboard() {
 
   const getTotal = (party) => {
     const p = tally.find(t => t.party === party)
-    return p ? (p.won + p.leading) : 0
+    return p ? (p.won + p.leadingg) : 0
   }
 
   const leading = Object.keys(PARTY_CONFIG).reduce((prev, curr) =>
