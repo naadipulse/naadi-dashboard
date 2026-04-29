@@ -67,11 +67,11 @@ export default function Dashboard() {
     return p ? (p.won + p.leadingg) : 0
   }
 
-  const leading = Object.keys(PARTY_CONFIG).reduce((prev, curr) =>
+  const leadingg = Object.keys(PARTY_CONFIG).reduce((prev, curr) =>
     getTotal(curr) > getTotal(prev) ? curr : prev
   , 'DMK+')
 
-  const totalDeclared = tally.reduce((sum, t) => sum + t.won + t.leading, 0)
+  const totalDeclared = tally.reduce((sum, t) => sum + t.won + t.leadingg, 0)
 
   return (
     <div style={{
@@ -142,8 +142,8 @@ export default function Dashboard() {
         padding: '16px 20px',
       }}>
         {Object.entries(PARTY_CONFIG).map(([party, config]) => {
-          const data = tally.find(t => t.party === party) || { won: 0, leading: 0 }
-          const total = data.won + data.leading
+          const data = tally.find(t => t.party === party) || { won: 0, leadingg: 0 }
+          const total = data.won + data.leadingg
           const hasMajority = total >= MAJORITY
 
           return (
@@ -201,7 +201,7 @@ export default function Dashboard() {
                 }}>
                   <div style={{ fontSize: '10px', color: '#64748B' }}>முன்னிலை</div>
                   <div style={{ fontSize: '22px', fontWeight: '800', color: '#F59E0B' }}>
-                    {data.leading}
+                    {data.leadingg}
                   </div>
                 </div>
               </div>
@@ -221,10 +221,10 @@ export default function Dashboard() {
             marginBottom: '8px',
           }}>
             <span style={{ fontSize: '13px', color: '#94A3B8' }}>
-              {PARTY_CONFIG[leading]?.label} முன்னிலை — பெரும்பான்மை நோக்கி
+              {PARTY_CONFIG[leadingg]?.label} முன்னிலை — பெரும்பான்மை நோக்கி
             </span>
             <span style={{ fontSize: '13px', color: '#F59E0B', fontWeight: '700' }}>
-              {getTotal(leading)} / 118
+              {getTotal(leadingg)} / 118
             </span>
           </div>
           <div style={{
@@ -232,8 +232,8 @@ export default function Dashboard() {
             height: '18px', overflow: 'hidden',
           }}>
             <div style={{
-              background: `linear-gradient(90deg, ${PARTY_CONFIG[leading]?.color}, ${PARTY_CONFIG[leading]?.color}99)`,
-              width: `${Math.min((getTotal(leading) / MAJORITY) * 100, 100)}%`,
+              background: `linear-gradient(90deg, ${PARTY_CONFIG[leadingg]?.color}, ${PARTY_CONFIG[leadingg]?.color}99)`,
+              width: `${Math.min((getTotal(leadingg) / MAJORITY) * 100, 100)}%`,
               height: '100%', borderRadius: '999px',
               transition: 'width 1s ease',
             }} />
@@ -261,11 +261,11 @@ export default function Dashboard() {
           gap: '10px',
         }}>
           {constituencies.map((c) => {
-            const leadingParty = PARTY_CONFIG[c.leading_party] || PARTY_CONFIG['Others']
+            const leadinggParty = PARTY_CONFIG[c.leadingg_party] || PARTY_CONFIG['Others']
             return (
               <div key={c.id} style={{
                 background: '#111827',
-                border: `1px solid ${c.status === 'declared' ? leadingParty.color : '#1E293B'}`,
+                border: `1px solid ${c.status === 'declared' ? leadinggParty.color : '#1E293B'}`,
                 borderRadius: '10px',
                 padding: '12px',
               }}>
@@ -278,19 +278,19 @@ export default function Dashboard() {
                   marginBottom: '8px',
                 }}>{c.name}</div>
 
-                {c.leading_party !== 'pending' ? (
+                {c.leadingg_party !== 'pending' ? (
                   <>
                     <div style={{
                       display: 'inline-block',
-                      background: leadingParty.color + '22',
-                      border: `1px solid ${leadingParty.color}`,
-                      color: leadingParty.color,
+                      background: leadinggParty.color + '22',
+                      border: `1px solid ${leadinggParty.color}`,
+                      color: leadinggParty.color,
                       fontSize: '12px', fontWeight: '700',
                       padding: '2px 8px', borderRadius: '20px',
                       marginBottom: '6px',
                     }}>
                       {c.status === 'declared' ? '✅ ' : '📈 '}
-                      {leadingParty.label} {c.status === 'declared' ? 'வென்றது' : 'முன்னிலை'}
+                      {leadinggParty.label} {c.status === 'declared' ? 'வென்றது' : 'முன்னிலை'}
                     </div>
                     <div style={{ fontSize: '12px', color: '#94A3B8' }}>
                       Lead: <span style={{ color: '#F59E0B', fontWeight: '700' }}>
