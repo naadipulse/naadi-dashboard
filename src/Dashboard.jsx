@@ -4,81 +4,44 @@ import { supabase } from './supabaseClient'
 const MAJORITY = 118
 const TOTAL = 234
 
-const PARTY_CONFIG = {
-  'DMK+':    { color: '#EF4444', label: 'திமுக+',  short: 'DMK',   leader: 'ஸ்டாலின்',  photo: 'https://i.ibb.co/fGKGZ6PK/stalin.jpg' },
-  'AIADMK+': { color: '#22C55E', label: 'அதிமுக+', short: 'ADMK',  leader: 'எடப்பாடி', photo: 'https://i.ibb.co/Xrt4nYLB/edappadi.jpg' },
-  'TVK':     { color: '#F59E0B', label: 'தவெக',    short: 'TVK',   leader: 'விஜய்',     photo: 'https://i.ibb.co/CpGmHqFQ/vijay.jpg' },
-  'Others':  { color: '#94A3B8', label: 'மற்றவை',  short: 'OTH',   leader: 'சீமான்',   photo: 'https://i.ibb.co/NnpMmcHn/seeman.jpg' },
-  'pending': { color: '#1E293B', label: 'நிலுவை',  short: '—',     leader: '',          photo: '' },
+const PC = {
+  'DMK+':    { color: '#DC2626', bg: '#FEE2E2', label: 'திமுக+',  short: 'DMK',  leader: 'மு.க.ஸ்டாலின்', photo: 'https://i.ibb.co/fGKGZ6PK/stalin.jpg' },
+  'AIADMK+': { color: '#16A34A', bg: '#DCFCE7', label: 'அதிமுக+', short: 'ADMK', leader: 'எடப்பாடி',       photo: 'https://i.ibb.co/Xrt4nYLB/edappadi.jpg' },
+  'TVK':     { color: '#D97706', bg: '#FEF3C7', label: 'தவெக',    short: 'TVK',  leader: 'விஜய்',           photo: 'https://i.ibb.co/CpGmHqFQ/vijay.jpg' },
+  'Others':  { color: '#6B7280', bg: '#F3F4F6', label: 'மற்றவை',  short: 'OTH',  leader: 'சீமான்',          photo: 'https://i.ibb.co/NnpMmcHn/seeman.jpg' },
 }
 
-// Generate 234 constituency cells
-const ALL_SEATS = Array.from({ length: 234 }, (_, i) => ({
-  id: i + 1,
-  name: `AC-${i + 1}`,
-  party: 'pending',
-}))
-
-// Animated number
-function AnimNum({ value, color, size = 42 }) {
+function AnimNum({ val, color, size = 48 }) {
   const [n, setN] = useState(0)
   const prev = useRef(0)
   useEffect(() => {
-    const s = prev.current, e = value
+    const s = prev.current, e = val
     if (s === e) return
     const t0 = Date.now()
     const run = () => {
-      const p = Math.min((Date.now() - t0) / 600, 1)
-      const ease = 1 - Math.pow(1 - p, 3)
-      setN(Math.round(s + (e - s) * ease))
+      const p = Math.min((Date.now() - t0) / 700, 1)
+      setN(Math.round(s + (e - s) * (1 - Math.pow(1 - p, 3))))
       if (p < 1) requestAnimationFrame(run)
       else prev.current = e
     }
     requestAnimationFrame(run)
-  }, [value])
+  }, [val])
   return <span style={{ color, fontSize: size, fontWeight: 900, lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>{n}</span>
 }
 
-// Photo with fallback
-function Photo({ party, size = 44 }) {
+function Photo({ party, size = 56 }) {
   const [err, setErr] = useState(false)
-  const cfg = PARTY_CONFIG[party] || {}
-  if (!cfg.photo || err) {
-    return (
-      <div style={{ width: size, height: size, borderRadius: '50%', background: `${cfg.color}22`, border: `2px solid ${cfg.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size * 0.3, fontWeight: 900, color: cfg.color, flexShrink: 0 }}>
-        {cfg.short?.slice(0, 2)}
-      </div>
-    )
-  }
-  return (
-    <img src={cfg.photo} alt={cfg.leader} onError={() => setErr(true)}
-      style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', objectPosition: 'top', border: `2px solid ${cfg.color}`, flexShrink: 0 }} />
-  )
-}
-
-// Ticker
-function Ticker({ tally }) {
-  const g = p => { const t = tally.find(x => x.party === p); return t ? t.won + (t.leadingg || 0) : 0 }
-  const msgs = [`🔴 திமுக+: ${g('DMK+')}`, `🟢 அதிமுக+: ${g('AIADMK+')}`, `🟡 தவெக: ${g('TVK')}`, `⚫ மற்றவை: ${g('Others')}`, `🏆 பெரும்பான்மை: 118`, `📊 234 தொகுதிகள் | நாடி @naadipulse`]
-  return (
-    <div style={{ height: 28, background: '#0A0A0A', borderBottom: '1px solid #1E293B', display: 'flex', overflow: 'hidden' }}>
-      <div style={{ background: '#EF4444', color: '#fff', fontWeight: 800, fontSize: 10, padding: '0 10px', display: 'flex', alignItems: 'center', whiteSpace: 'nowrap', flexShrink: 0 }}>🔴 LIVE</div>
-      <div style={{ overflow: 'hidden', flex: 1 }}>
-        <div style={{ display: 'flex', alignItems: 'center', height: '100%', animation: 'ticker 25s linear infinite', whiteSpace: 'nowrap', gap: 40, color: '#FCD34D', fontSize: 11, fontWeight: 600 }}>
-          {[...msgs, ...msgs].map((m, i) => <span key={i}>{m}</span>)}
-        </div>
-      </div>
+  const cfg = PC[party] || PC['Others']
+  if (err || !cfg.photo) return (
+    <div style={{ width: size, height: size, borderRadius: '50%', background: cfg.color + '22', border: `3px solid ${cfg.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size * 0.28, fontWeight: 900, color: cfg.color, flexShrink: 0 }}>
+      {cfg.short?.slice(0, 2)}
     </div>
   )
+  return <img src={cfg.photo} alt="" onError={() => setErr(true)} style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', objectPosition: 'top', border: `3px solid ${cfg.color}`, flexShrink: 0 }} />
 }
 
-// TN Grid Map — 234 cells in approximate TN shape
-function TNMap({ seats }) {
-  // 13 cols × 18 rows roughly = 234 cells in TN shape
-  const COLS = 15
-  const ROWS = 16
-
-  // TN shape mask — which cells are active (approximate shape)
+function TNGrid({ seats }) {
+  const COLS = 15, ROWS = 16
   const MASK = [
     [0,0,0,0,0,1,1,1,1,0,0,0,0,0,0],
     [0,0,0,0,1,1,1,1,1,1,0,0,0,0,0],
@@ -97,193 +60,76 @@ function TNMap({ seats }) {
     [0,0,0,0,0,0,1,1,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
   ]
-
-  // Map seat index to grid position
-  let seatIdx = 0
+  let idx = 0
   const cells = []
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = 0; c < COLS; c++) {
-      if (MASK[r][c]) {
-        const seat = seats[seatIdx] || { id: seatIdx + 1, party: 'pending' }
-        cells.push({ row: r, col: c, seat, idx: seatIdx })
-        seatIdx++
-      }
-    }
-  }
+  for (let r = 0; r < ROWS; r++)
+    for (let c = 0; c < COLS; c++)
+      if (MASK[r][c]) cells.push({ r, c, seat: seats[idx++] || { party: 'pending' } })
 
-  const CELL = 22
-
+  const SZ = 24
   return (
-    <div style={{ position: 'relative' }}>
-      <div style={{ fontSize: 10, color: '#64748B', textAlign: 'center', marginBottom: 6, letterSpacing: 1 }}>தமிழ்நாடு | 234 தொகுதிகள்</div>
-      <svg
-        width={COLS * CELL}
-        height={ROWS * CELL}
-        style={{ display: 'block', margin: '0 auto' }}
-      >
-        {cells.map(({ row, col, seat, idx }) => {
-          const cfg = PARTY_CONFIG[seat.party] || PARTY_CONFIG['pending']
-          const x = col * CELL
-          const y = row * CELL
-          const isDeclared = seat.party !== 'pending'
-
+    <div style={{ textAlign: 'center' }}>
+      <div style={{ fontSize: 14, color: '#374151', fontWeight: 700, marginBottom: 8, letterSpacing: 1 }}>
+        தமிழ்நாடு — 234 தொகுதிகள்
+      </div>
+      <svg width={COLS * SZ} height={ROWS * SZ} style={{ display: 'block', margin: '0 auto', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.15))' }}>
+        {cells.map(({ r, c, seat }, i) => {
+          const party = seat.party || 'pending'
+          const cfg = PC[party]
+          const declared = party !== 'pending'
           return (
-            <g key={idx}>
-              <rect
-                x={x + 1} y={y + 1}
-                width={CELL - 2} height={CELL - 2}
-                rx={2}
-                fill={cfg.color}
-                opacity={isDeclared ? 1 : 0.15}
-                style={{ transition: 'fill 0.8s ease, opacity 0.8s ease' }}
-              />
-              {isDeclared && CELL > 16 && (
-                <text
-                  x={x + CELL / 2} y={y + CELL / 2 + 3}
-                  textAnchor="middle"
-                  fontSize={7}
-                  fill="white"
-                  fontWeight="bold"
-                  opacity={0.8}
-                >
-                  {cfg.short}
-                </text>
-              )}
-            </g>
+            <rect key={i} x={c * SZ + 1} y={r * SZ + 1} width={SZ - 2} height={SZ - 2} rx={3}
+              fill={declared ? (cfg?.color || '#6B7280') : '#E5E7EB'}
+              stroke={declared ? (cfg?.color || '#6B7280') : '#D1D5DB'}
+              strokeWidth={0.5}
+              style={{ transition: 'fill 1s ease' }}
+            />
           )
         })}
-        {/* 118 majority line indicator */}
-        <text x={COLS * CELL / 2} y={ROWS * CELL - 2} textAnchor="middle" fontSize={8} fill="#F59E0B" fontWeight="bold">
-          🎯 பெரும்பான்மை: 118
-        </text>
       </svg>
-
-      {/* Legend */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: 10, marginTop: 8 }}>
-        {Object.entries(PARTY_CONFIG).filter(([k]) => k !== 'pending').map(([party, cfg]) => (
-          <div key={party} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-            <div style={{ width: 10, height: 10, background: cfg.color, borderRadius: 2 }} />
-            <span style={{ fontSize: 9, color: '#94A3B8' }}>{cfg.short}</span>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: 14, marginTop: 10 }}>
+        {Object.entries(PC).map(([k, v]) => (
+          <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+            <div style={{ width: 14, height: 14, background: v.color, borderRadius: 3 }} />
+            <span style={{ fontSize: 12, color: '#374151', fontWeight: 600 }}>{v.short}</span>
           </div>
         ))}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <div style={{ width: 10, height: 10, background: '#1E293B', borderRadius: 2, border: '1px solid #333' }} />
-          <span style={{ fontSize: 9, color: '#94A3B8' }}>நிலுவை</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <div style={{ width: 14, height: 14, background: '#E5E7EB', border: '1px solid #D1D5DB', borderRadius: 3 }} />
+          <span style={{ fontSize: 12, color: '#374151', fontWeight: 600 }}>நிலுவை</span>
         </div>
       </div>
     </div>
   )
 }
 
-// Animated constituency rows — shows latest results one by one
-function ConstRows({ constituencies }) {
-  const [visible, setVisible] = useState([])
-
-  useEffect(() => {
-    const declared = constituencies.filter(c => c.leading_party !== 'pending' && c.leading_party)
-    // Show latest 8, animate in
-    setVisible(declared.slice(0, 8))
-  }, [constituencies])
-
+function ConstList({ items }) {
+  const dec = items.filter(c => c.leading_party && c.leading_party !== 'pending').slice(0, 9)
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 4, overflow: 'hidden' }}>
-      <div style={{ fontSize: 10, color: '#64748B', fontWeight: 700, marginBottom: 4, letterSpacing: 1 }}>📍 சமீபத்திய முடிவுகள்</div>
-      {visible.length === 0 && (
-        <div style={{ color: '#334155', fontSize: 11, textAlign: 'center', padding: 20 }}>⏳ முடிவுகள் வரவில்லை...</div>
-      )}
-      {visible.map((c, i) => {
-        const lp = PARTY_CONFIG[c.leading_party] || PARTY_CONFIG['Others']
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <div style={{ fontSize: 13, color: '#374151', fontWeight: 800, marginBottom: 6, padding: '4px 8px', background: '#F3F4F6', borderRadius: 6 }}>
+        📍 சமீபத்திய முடிவுகள்
+      </div>
+      {dec.length === 0 && <div style={{ color: '#9CA3AF', fontSize: 13, textAlign: 'center', padding: 20 }}>⏳ முடிவுகள் வரவில்லை...</div>}
+      {dec.map((c, i) => {
+        const lp = PC[c.leading_party] || PC['Others']
         return (
           <div key={c.id} style={{
-            background: '#0F172A',
+            background: '#fff',
+            borderLeft: `4px solid ${lp.color}`,
+            borderRadius: '0 8px 8px 0',
+            padding: '7px 10px',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            animation: `slideIn 0.3s ease ${i * 0.04}s both`,
             border: `1px solid ${lp.color}33`,
-            borderLeft: `3px solid ${lp.color}`,
-            borderRadius: 8,
-            padding: '6px 10px',
-            animation: `slideIn 0.4s ease ${i * 0.05}s both`,
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
           }}>
             <div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: '#fff' }}>{c.name_tamil}</div>
-              <div style={{ fontSize: 9, color: '#475569' }}>{c.name}</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#111827' }}>{c.name_tamil || c.name}</div>
+              {c.lead_margin > 0 && <div style={{ fontSize: 11, color: '#F59E0B', fontWeight: 600 }}>+{c.lead_margin}</div>}
             </div>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ background: lp.color + '22', border: `1px solid ${lp.color}`, color: lp.color, fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 10 }}>
-                {c.status === 'declared' ? '✅' : '📈'} {lp.label}
-              </div>
-              {c.lead_margin > 0 && (
-                <div style={{ fontSize: 9, color: '#F59E0B', marginTop: 2 }}>+{c.lead_margin}</div>
-              )}
-            </div>
-          </div>
-        )
-      })}
-    </div>
-  )
-}
-
-// Party total panel — right side
-function PartyPanel({ tally }) {
-  const sorted = ['DMK+', 'AIADMK+', 'TVK', 'Others'].sort((a, b) => {
-    const gT = p => { const x = tally.find(t => t.party === p); return x ? x.won + (x.leadingg || 0) : 0 }
-    return gT(b) - gT(a)
-  })
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <div style={{ fontSize: 10, color: '#64748B', fontWeight: 700, letterSpacing: 1 }}>கட்சிவாரி நிலவரம்</div>
-      {sorted.map((party, rank) => {
-        const cfg = PARTY_CONFIG[party]
-        const data = tally.find(t => t.party === party) || { won: 0, leadingg: 0 }
-        const total = data.won + (data.leadingg || 0)
-        const hasMajority = total >= MAJORITY
-
-        return (
-          <div key={party} style={{
-            background: hasMajority ? `${cfg.color}11` : '#0F172A',
-            border: `1px solid ${hasMajority ? cfg.color : '#1E293B'}`,
-            borderRadius: 10,
-            padding: '8px 10px',
-            boxShadow: hasMajority ? `0 0 12px ${cfg.color}33` : 'none',
-            transition: 'all 0.5s',
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-              <Photo party={party} size={36} />
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ color: cfg.color, fontWeight: 800, fontSize: 13 }}>{cfg.label}</span>
-                  {hasMajority && <span style={{ background: cfg.color, color: '#fff', fontSize: 9, fontWeight: 800, padding: '1px 6px', borderRadius: 10, animation: 'pulse 1.5s infinite' }}>🏆</span>}
-                  {rank === 0 && !hasMajority && total > 0 && <span style={{ color: '#F59E0B', fontSize: 9 }}>முன்னிலை</span>}
-                </div>
-                <div style={{ fontSize: 9, color: '#475569' }}>{cfg.leader}</div>
-              </div>
-            </div>
-
-            {/* Big number row */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 9, color: '#475569' }}>மொத்தம்</div>
-                <AnimNum value={total} color={cfg.color} size={36} />
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 9, color: '#475569' }}>வென்றது</div>
-                <AnimNum value={data.won} color="#22C55E" size={22} />
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 9, color: '#475569' }}>முன்னிலை</div>
-                <AnimNum value={data.leadingg || 0} color="#F59E0B" size={22} />
-              </div>
-            </div>
-
-            {/* Progress bar toward majority */}
-            <div style={{ marginTop: 6, background: '#1E293B', borderRadius: 999, height: 4, overflow: 'hidden', position: 'relative' }}>
-              <div style={{ background: cfg.color, width: `${Math.min((total / MAJORITY) * 100, 100)}%`, height: '100%', borderRadius: 999, transition: 'width 1s ease' }} />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
-              <span style={{ fontSize: 8, color: '#334155' }}>0</span>
-              <span style={{ fontSize: 8, color: '#F59E0B' }}>118</span>
+            <div style={{ background: lp.color, color: '#fff', fontSize: 11, fontWeight: 800, padding: '3px 8px', borderRadius: 12, whiteSpace: 'nowrap' }}>
+              {c.status === 'declared' ? '✅' : '📈'} {lp.short}
             </div>
           </div>
         )
@@ -295,19 +141,18 @@ function PartyPanel({ tally }) {
 export default function Dashboard() {
   const [tally, setTally] = useState([])
   const [constituencies, setConstituencies] = useState([])
-  const [seats, setSeats] = useState(ALL_SEATS.map(s => ({ ...s })))
+  const [seats, setSeats] = useState(Array.from({ length: 234 }, (_, i) => ({ id: i + 1, party: 'pending' })))
   const [time, setTime] = useState(new Date())
   const [winner, setWinner] = useState(null)
   const [showWinner, setShowWinner] = useState(false)
-  const [isDark] = useState(true)
 
   useEffect(() => {
     fetchTally(); fetchConstituencies()
-    const t1 = supabase.channel('t1').on('postgres_changes', { event: '*', schema: 'public', table: 'overall_tally' }, fetchTally).subscribe()
-    const t2 = supabase.channel('t2').on('postgres_changes', { event: '*', schema: 'public', table: 'constituencies' }, () => fetchConstituencies()).subscribe()
+    const t1 = supabase.channel('tally').on('postgres_changes', { event: '*', schema: 'public', table: 'overall_tally' }, fetchTally).subscribe()
+    const t2 = supabase.channel('const').on('postgres_changes', { event: '*', schema: 'public', table: 'constituencies' }, fetchConstituencies).subscribe()
     const poll = setInterval(() => { fetchTally(); fetchConstituencies() }, 5000)
-    const clock = setInterval(() => setTime(new Date()), 1000)
-    return () => { t1.unsubscribe(); t2.unsubscribe(); clearInterval(poll); clearInterval(clock) }
+    const clk = setInterval(() => setTime(new Date()), 1000)
+    return () => { t1.unsubscribe(); t2.unsubscribe(); clearInterval(poll); clearInterval(clk) }
   }, [])
 
   const fetchTally = async () => {
@@ -321,127 +166,192 @@ export default function Dashboard() {
 
   const fetchConstituencies = async () => {
     const { data } = await supabase.from('constituencies').select('*').order('updated_at', { ascending: false })
-    if (data) {
-      setConstituencies(data)
-      // Update seat colors for map
-      setSeats(prev => {
-        const updated = [...prev]
-        data.forEach(c => {
-          // Match by name or id
-          const idx = updated.findIndex(s => s.name === c.name || s.id === c.id)
-          if (idx >= 0 && c.leading_party && c.leading_party !== 'pending') {
-            updated[idx] = { ...updated[idx], party: c.leading_party }
-          }
-        })
-        return updated
+    if (!data) return
+    setConstituencies(data)
+    setSeats(prev => {
+      const u = [...prev]
+      data.forEach(c => {
+        if (c.id && c.leading_party && c.leading_party !== 'pending') {
+          const i = c.id - 1
+          if (i >= 0 && i < 234) u[i] = { ...u[i], party: c.leading_party }
+        }
       })
-    }
+      return u
+    })
   }
 
+  const gT = p => { const d = tally.find(t => t.party === p); return d ? d.won + (d.leadingg || 0) : 0 }
+  const gW = p => tally.find(t => t.party === p)?.won || 0
+  const gL = p => tally.find(t => t.party === p)?.leadingg || 0
   const totalDeclared = tally.reduce((s, t) => s + t.won + (t.leadingg || 0), 0)
-  const winnerCfg = PARTY_CONFIG[winner]
+  const winnerCfg = PC[winner]
+
+  const tickerMsgs = Object.keys(PC).map(p => `${PC[p].short}: ${gT(p)} இடங்கள்`).concat(['🏆 பெரும்பான்மை: 118', '234 தொகுதிகள் | நாடி @naadipulse'])
 
   return (
-    <div style={{ background: '#060B14', minHeight: '100vh', color: '#fff', fontFamily: "'Segoe UI', Tahoma, sans-serif", display: 'flex', flexDirection: 'column' }}>
+    <div style={{ background: '#F1F5F9', minHeight: '100vh', color: '#111827', fontFamily: "'Segoe UI', Tahoma, sans-serif", display: 'flex', flexDirection: 'column' }}>
 
-      {/* WINNER POPUP */}
+      {/* WINNER */}
       {showWinner && winnerCfg && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.92)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'fadeIn 0.5s' }}>
-          <div style={{ textAlign: 'center', border: `3px solid ${winnerCfg.color}`, borderRadius: 20, padding: '40px 60px', background: `${winnerCfg.color}11`, boxShadow: `0 0 80px ${winnerCfg.color}44` }}>
-            <div style={{ fontSize: 64 }}>🏆</div>
-            <div style={{ fontSize: 32, fontWeight: 900, color: winnerCfg.color, margin: '12px 0 6px' }}>{winnerCfg.label}</div>
-            <div style={{ color: '#fff', fontSize: 20 }}>பெரும்பான்மை பெற்றது!</div>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ textAlign: 'center', border: `4px solid ${winnerCfg.color}`, borderRadius: 24, padding: '50px 70px', background: '#fff', boxShadow: `0 0 80px ${winnerCfg.color}66` }}>
+            <div style={{ fontSize: 80 }}>🏆</div>
+            <div style={{ fontSize: 42, fontWeight: 900, color: winnerCfg.color }}>{winnerCfg.label}</div>
+            <div style={{ color: '#374151', fontSize: 22, marginTop: 8 }}>பெரும்பான்மை பெற்றது!</div>
           </div>
         </div>
       )}
 
       {/* TOP BAR */}
-      <div style={{ background: 'linear-gradient(90deg, #DC2626, #7f1d1d)', padding: '6px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ background: '#fff', color: '#DC2626', fontWeight: 900, fontSize: 10, padding: '1px 7px', borderRadius: 3, animation: 'blink 1.5s infinite' }}>● LIVE</span>
-          <span style={{ fontWeight: 700, fontSize: 12 }}>தமிழ்நாடு சட்டமன்றத் தேர்தல் 2026 — வாக்கு எண்ணிக்கை</span>
+      <div style={{ background: 'linear-gradient(90deg, #DC2626, #991B1B)', padding: '8px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ background: '#fff', color: '#DC2626', fontWeight: 900, fontSize: 12, padding: '2px 10px', borderRadius: 4, animation: 'blink 1.5s infinite' }}>● LIVE</span>
+          <span style={{ fontWeight: 700, fontSize: 15, color: '#fff' }}>தமிழ்நாடு சட்டமன்றத் தேர்தல் 2026 — வாக்கு எண்ணிக்கை</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          {/* Overall tally pills */}
-          {['DMK+', 'AIADMK+', 'TVK'].map(p => {
-            const cfg = PARTY_CONFIG[p]
-            const d = tally.find(t => t.party === p) || { won: 0, leadingg: 0 }
-            const tot = d.won + (d.leadingg || 0)
-            return (
-              <div key={p} style={{ background: `${cfg.color}22`, border: `1px solid ${cfg.color}`, borderRadius: 6, padding: '2px 8px', display: 'flex', alignItems: 'center', gap: 4 }}>
-                <span style={{ fontSize: 9, color: cfg.color, fontWeight: 700 }}>{cfg.short}</span>
-                <span style={{ fontSize: 14, fontWeight: 900, color: cfg.color }}>{tot}</span>
-              </div>
-            )
-          })}
-          <span style={{ fontSize: 11, color: '#fff' }}>{time.toLocaleTimeString('en-IN')}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {Object.keys(PC).map(p => (
+            <div key={p} style={{ background: 'rgba(255,255,255,0.15)', border: `2px solid ${PC[p].color}`, borderRadius: 8, padding: '3px 12px', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ fontSize: 11, color: '#fff', fontWeight: 700 }}>{PC[p].short}</span>
+              <span style={{ fontSize: 20, fontWeight: 900, color: '#fff' }}>{gT(p)}</span>
+            </div>
+          ))}
+          <span style={{ color: '#fff', fontSize: 13, fontWeight: 600, marginLeft: 8 }}>{time.toLocaleTimeString('en-IN')} | May 4</span>
         </div>
       </div>
 
-      <Ticker tally={tally} />
+      {/* TICKER */}
+      <div style={{ height: 32, background: '#1E293B', display: 'flex', overflow: 'hidden' }}>
+        <div style={{ background: '#DC2626', color: '#fff', fontWeight: 800, fontSize: 12, padding: '0 14px', display: 'flex', alignItems: 'center', whiteSpace: 'nowrap', flexShrink: 0 }}>BREAKING</div>
+        <div style={{ overflow: 'hidden', flex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', height: '100%', animation: 'ticker 28s linear infinite', whiteSpace: 'nowrap', gap: 50, color: '#FCD34D', fontSize: 13, fontWeight: 600 }}>
+            {[...tickerMsgs, ...tickerMsgs].map((m, i) => <span key={i}>{m}</span>)}
+          </div>
+        </div>
+      </div>
 
       {/* NAADI HEADER */}
-      <div style={{ padding: '6px 16px', borderBottom: '1px solid #0F172A', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#080E1A' }}>
-        <div style={{ fontSize: 18, fontWeight: 900, background: 'linear-gradient(90deg, #F59E0B, #DC2626)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>நாடி | NAADI</div>
-        <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+      <div style={{ background: '#fff', padding: '8px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 2px 6px rgba(0,0,0,0.08)', borderBottom: '3px solid #E5E7EB' }}>
+        <div>
+          <div style={{ fontSize: 24, fontWeight: 900, background: 'linear-gradient(90deg,#F59E0B,#DC2626)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>நாடி | NAADI</div>
+          <div style={{ fontSize: 12, color: '#6B7280' }}>@naadipulse • தரவு மட்டுமே பேசுகிறது</div>
+        </div>
+        <div style={{ display: 'flex', gap: 30, alignItems: 'center' }}>
+          {Object.keys(PC).map(p => (
+            <div key={p} style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: 12, color: PC[p].color, fontWeight: 700 }}>{PC[p].short}</div>
+              <AnimNum val={gT(p)} color={PC[p].color} size={32} />
+            </div>
+          ))}
+          <div style={{ width: 2, height: 40, background: '#E5E7EB' }} />
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 9, color: '#475569' }}>முடிவு வந்தவை</div>
-            <div style={{ fontSize: 20, fontWeight: 900, color: '#F59E0B' }}>{totalDeclared}<span style={{ fontSize: 10, color: '#475569' }}>/234</span></div>
+            <div style={{ fontSize: 12, color: '#6B7280', fontWeight: 600 }}>முடிவு வந்தவை</div>
+            <div style={{ fontSize: 28, fontWeight: 900, color: '#F59E0B' }}>{totalDeclared}<span style={{ fontSize: 14, color: '#9CA3AF' }}>/234</span></div>
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 9, color: '#475569' }}>பெரும்பான்மை</div>
-            <div style={{ fontSize: 20, fontWeight: 900, color: '#F59E0B' }}>118</div>
+            <div style={{ fontSize: 12, color: '#6B7280', fontWeight: 600 }}>பெரும்பான்மை</div>
+            <div style={{ fontSize: 28, fontWeight: 900, color: '#DC2626' }}>118</div>
           </div>
         </div>
       </div>
 
-      {/* MAIN 3-COLUMN LAYOUT */}
-      <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr 220px', gap: 10, padding: '10px 12px', flex: 1, overflow: 'hidden' }}>
+      {/* MAIN 3-COL */}
+      <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '260px 1fr 280px', gap: 10, padding: '10px 12px' }}>
 
-        {/* LEFT — Animated constituency rows */}
-        <div style={{ overflow: 'hidden' }}>
-          <ConstRows constituencies={constituencies} />
+        {/* LEFT */}
+        <div style={{ background: '#fff', borderRadius: 12, padding: 10, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', overflow: 'hidden' }}>
+          <ConstList items={constituencies} />
         </div>
 
-        {/* CENTER — TN Map */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <TNMap seats={seats} />
+        {/* CENTER */}
+        <div style={{ background: '#fff', borderRadius: 12, padding: 14, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}>
+          <TNGrid seats={seats} />
 
-          {/* Majority progress bars below map */}
-          <div style={{ width: '100%', maxWidth: 340, marginTop: 12 }}>
-            {['DMK+', 'AIADMK+', 'TVK'].map(p => {
-              const cfg = PARTY_CONFIG[p]
-              const d = tally.find(t => t.party === p) || { won: 0, leadingg: 0 }
-              const tot = d.won + (d.leadingg || 0)
+          {/* Progress bars */}
+          <div style={{ width: '100%', maxWidth: 400, marginTop: 14 }}>
+            {Object.keys(PC).map(p => {
+              const cfg = PC[p]
+              const tot = gT(p)
               return (
-                <div key={p} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
-                  <span style={{ color: cfg.color, fontWeight: 700, fontSize: 10, width: 44, flexShrink: 0 }}>{cfg.short}</span>
-                  <div style={{ flex: 1, background: '#0F172A', borderRadius: 999, height: 14, overflow: 'hidden', position: 'relative' }}>
-                    <div style={{ background: cfg.color, width: `${Math.min((tot / TOTAL) * 100, 100)}%`, height: '100%', borderRadius: 999, transition: 'width 1s ease', display: 'flex', alignItems: 'center', paddingLeft: 4 }}>
-                      {tot > 5 && <span style={{ fontSize: 9, color: '#fff', fontWeight: 700 }}>{tot}</span>}
+                <div key={p} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                  <span style={{ color: cfg.color, fontWeight: 800, fontSize: 13, width: 46, flexShrink: 0 }}>{cfg.short}</span>
+                  <div style={{ flex: 1, background: '#F3F4F6', borderRadius: 999, height: 20, overflow: 'hidden', position: 'relative' }}>
+                    <div style={{ background: cfg.color, width: `${Math.min((tot / TOTAL) * 100, 100)}%`, height: '100%', borderRadius: 999, transition: 'width 1s ease', display: 'flex', alignItems: 'center', paddingLeft: 8 }}>
+                      {tot > 5 && <span style={{ fontSize: 11, color: '#fff', fontWeight: 700 }}>{tot}</span>}
                     </div>
-                    {/* 118 marker */}
-                    <div style={{ position: 'absolute', top: 0, left: `${(118 / TOTAL) * 100}%`, width: 1.5, height: '100%', background: '#F59E0B' }} />
+                    <div style={{ position: 'absolute', top: 0, left: `${(118 / TOTAL) * 100}%`, width: 3, height: '100%', background: '#374151', zIndex: 2 }} />
                   </div>
-                  <span style={{ color: cfg.color, fontWeight: 700, fontSize: 11, width: 20 }}>{tot}</span>
+                  <span style={{ color: cfg.color, fontWeight: 900, fontSize: 16, width: 30, textAlign: 'right' }}>{tot}</span>
                 </div>
               )
             })}
+            <div style={{ textAlign: 'center', fontSize: 12, color: '#374151', fontWeight: 600, marginTop: 4 }}>
+              🎯 118 — பெரும்பான்மை எல்லை
+            </div>
           </div>
         </div>
 
-        {/* RIGHT — Party totals */}
-        <div style={{ overflow: 'hidden' }}>
-          <PartyPanel tally={tally} />
+        {/* RIGHT */}
+        <div style={{ background: '#fff', borderRadius: 12, padding: 10, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', display: 'flex', flexDirection: 'column', gap: 8, overflow: 'hidden' }}>
+          <div style={{ fontSize: 14, color: '#374151', fontWeight: 800, padding: '4px 8px', background: '#F3F4F6', borderRadius: 6 }}>கட்சிவாரி நிலவரம்</div>
+          {Object.keys(PC).map(p => {
+            const cfg = PC[p]
+            const tot = gT(p), won = gW(p), lead = gL(p)
+            const hasMaj = tot >= MAJORITY
+            return (
+              <div key={p} style={{
+                background: hasMaj ? cfg.bg : '#F9FAFB',
+                border: `2px solid ${hasMaj ? cfg.color : '#E5E7EB'}`,
+                borderRadius: 12, padding: '10px 12px',
+                boxShadow: hasMaj ? `0 0 16px ${cfg.color}33` : '0 1px 4px rgba(0,0,0,0.06)',
+                transition: 'all 0.5s',
+              }}>
+                {hasMaj && (
+                  <div style={{ textAlign: 'center', background: cfg.color, color: '#fff', fontSize: 11, fontWeight: 800, borderRadius: 6, padding: '2px 0', marginBottom: 8, animation: 'pulse 1.5s infinite' }}>
+                    🏆 பெரும்பான்மை பெற்றது!
+                  </div>
+                )}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+                  <Photo party={p} size={44} />
+                  <div>
+                    <div style={{ color: cfg.color, fontWeight: 900, fontSize: 16 }}>{cfg.label}</div>
+                    <div style={{ color: '#6B7280', fontSize: 12 }}>{cfg.leader}</div>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: 8 }}>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: 11, color: '#6B7280' }}>மொத்தம்</div>
+                    <AnimNum val={tot} color={cfg.color} size={38} />
+                  </div>
+                  <div style={{ width: 1, background: '#E5E7EB' }} />
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: 11, color: '#6B7280' }}>வென்றது</div>
+                    <AnimNum val={won} color="#16A34A" size={26} />
+                  </div>
+                  <div style={{ width: 1, background: '#E5E7EB' }} />
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: 11, color: '#6B7280' }}>முன்னிலை</div>
+                    <AnimNum val={lead} color="#D97706" size={26} />
+                  </div>
+                </div>
+                <div style={{ background: '#E5E7EB', borderRadius: 999, height: 8, overflow: 'hidden', position: 'relative' }}>
+                  <div style={{ background: cfg.color, width: `${Math.min((tot / MAJORITY) * 100, 100)}%`, height: '100%', borderRadius: 999, transition: 'width 1s ease' }} />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
+                  <span style={{ fontSize: 10, color: '#9CA3AF' }}>0</span>
+                  <span style={{ fontSize: 10, color: '#374151', fontWeight: 600 }}>🎯 118 பெரும்பான்மை</span>
+                  <span style={{ fontSize: 10, color: '#9CA3AF' }}>234</span>
+                </div>
+              </div>
+            )
+          })}
         </div>
       </div>
 
       <style>{`
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-        @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
-        @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-        @keyframes slideIn { from{opacity:0;transform:translateX(-10px)} to{opacity:1;transform:translateX(0)} }
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+        @keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+        @keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
       `}</style>
     </div>
   )
