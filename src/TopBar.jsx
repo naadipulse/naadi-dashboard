@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSettings, useTally, PARTY_DEFAULTS, AnimNum } from './shared'
+import { useSettings, useTally, PARTY_DEFAULTS, AnimNum } from './shared.jsx'
 
 export default function TopBar() {
   const settings = useSettings()
