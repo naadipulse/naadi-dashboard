@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSettings, useTally, useConstituencies, PARTY_DEFAULTS, AnimNum, MAJORITY, TOTAL } from './shared'
+import { useSettings, useTally, useConstituencies, PARTY_DEFAULTS, AnimNum, MAJORITY, TOTAL } from './shared.jsx'
 
 const DISTRICTS = [
   'சென்னை','திருவள்ளூர்','காஞ்சிபுரம்','செங்கல்பட்டு','ரானிப்பேட்டை',
