@@ -17,7 +17,7 @@ export default function BottomBar() {
       <div style={{
         background: '#1E293B', minWidth: 120,
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        borderRight: '2px solid #334155', padding: '0 18px',
+        borderRight: '2px solid #334155', padding: '0 14px',
       }}>
         <div style={{ fontSize: fsm, color: '#94A3B8', fontWeight: 700, letterSpacing: 1 }}>முன்னிலை</div>
         <AnimNum val={totalDeclared} color="#F59E0B" size={fs * 0.9} font={ff} />
@@ -59,13 +59,13 @@ export default function BottomBar() {
             </div>
 
             {/* Won / Leading */}
+            {/*
             <div style={{ textAlign: 'right', zIndex: 1 }}>
-              {/*
               <div style={{ fontSize: fsm, color: 'rgba(255,255,255,0.7)' }}>வென்றது</div>
-              <div style={{ fontSize: fm + 4, fontWeight: 900, color: '#fff' }}>{won}</div>
-              */}
+              <div style={{ fontSize: fm + 4, fontWeight: 900, color: '#fff' }}>{won}</div>              
               <div style={{ fontSize: fsm, color: 'rgba(255,255,255,0.7)', marginTop: 3 }}>முன்னிலை</div>
               <div style={{ fontSize: fm + 4, fontWeight: 900, color: '#FDE68A' }}>{lead}</div>
+              */}
             </div>
           </div>
         )
