@@ -30,23 +30,101 @@ function FullDashboard() {
       width: '100vw',
       height: '100vh',
       overflow: 'hidden',
-      background: '#000',
-      display: 'flex',
-      alignItems: 'flex-start',
-      justifyContent: 'flex-start',
+      position: 'relative',
     }}>
+      {/* Background — full 1920x1080 */}
       <div style={{
-        width: 1920,
-        height: 1080,
-        transform: `scale(${scale})`,
-        transformOrigin: 'top left',
-        display: 'flex',
-        flexDirection: 'column',
-        background: `linear-gradient(rgba(241,245,249,0.88), rgba(241,245,249,0.88)), url('https://i.ibb.co/5XYJtY4K/0598f1fe-1086-4646-859a-b8814d7ece59.png') center/cover no-repeat`,
-        fontFamily: ff,
-        overflow: 'hidden',
-        flexShrink: 0,
+        position: 'absolute', inset: 0, zIndex: 0,
+        backgroundImage: `url('https://i.ibb.co/LDQsbQRN/thalamai.jpg')`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }} />
+      {/* Overlay */}
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 1,
+        background: 'rgba(241,245,249,0.87)',
+      }} />
+
+      {/* Components — safe zone */}
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 2,
       }}>
+        <div style={{
+          width: 1920, height: 1080,
+          transform: `scale(${scale})`,
+          transformOrigin: 'top left',
+          display: 'flex', flexDirection: 'column',
+          fontFamily: ff, overflow: 'hidden', flexShrink: 0,
+          /* YouTube safe zone: 60px sides, 8px top, 10px bottom */
+          boxSizing: 'border-box',
+        }}>
+
+          {/* Top Bar — full width (safe zone top handled inside) */}
+          <div style={{ flexShrink: 0 }}>
+            <TopBar />
+          </div>
+
+          {/* Naadi Header — side safe zone */}
+          <div style={{
+            background: 'rgba(255,255,255,0.95)',
+            padding: '6px 60px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
+            borderBottom: '2px solid #E5E7EB',
+            flexShrink: 0,
+          }}>
+            <div>
+              <div style={{ fontSize: 22, fontWeight: 900, background: 'linear-gradient(90deg,#F59E0B,#DC2626)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                நாடி | NAADI
+              </div>
+              <div style={{ fontSize: 11, color: '#9CA3AF' }}>@naadipulse • தரவு மட்டுமே பேசுகிறது</div>
+            </div>
+            <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+              {Object.entries(PARTY_DEFAULTS).map(([p, cfg]) => (
+                <div key={p} style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: 11, color: cfg.color, fontWeight: 700 }}>{cfg.short}</div>
+                  <AnimNum val={gT(p)} color={cfg.color} size={26} font={ff} />
+                </div>
+              ))}
+              <div style={{ width: 1, height: 30, background: '#E5E7EB' }} />
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 11, color: '#6B7280' }}>முடிவு</div>
+                <div style={{ fontSize: 22, fontWeight: 900, color: '#F59E0B' }}>
+                  {totalDeclared}<span style={{ fontSize: 12, color: '#9CA3AF' }}>/234</span>
+                </div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 11, color: '#6B7280' }}>பெரும்பான்மை</div>
+                <div style={{ fontSize: 22, fontWeight: 900, color: '#DC2626' }}>118</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Main content — side safe zone 60px */}
+          <div style={{
+            flex: 1,
+            display: 'grid',
+            gridTemplateColumns: '260px 1fr',
+            gap: 10,
+            padding: '8px 60px',
+            minHeight: 0,
+            overflow: 'hidden',
+          }}>
+            <LeftPanel />
+            <CenterViews />
+          </div>
+
+          {/* Bottom Bar — side safe zone 60px */}
+          <div style={{ height: 90, flexShrink: 0, padding: '0 60px 8px' }}>
+            <BottomBar />
+          </div>
+
+        </div>
+      </div>
+    </div>
+  )
 
         {/* Top Bar */}
         <div style={{ flexShrink: 0 }}>
@@ -111,9 +189,6 @@ function FullDashboard() {
           <CenterViews />
         </div>
 
-        {/* Bottom Bar */}
-        <div style={{ height: 90, flexShrink: 0 }}>
-          <BottomBar />
         </div>
 
       </div>
