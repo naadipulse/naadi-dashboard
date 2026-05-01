@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSettings, useTally, PARTY_DEFAULTS, AnimNum, Photo, MAJORITY, TOTAL } from './shared'
+import { useSettings, useTally, PARTY_DEFAULTS, AnimNum, Photo, MAJORITY, TOTAL } from './shared.jsx'
 
 export default function BottomBar() {
   const settings = useSettings()
