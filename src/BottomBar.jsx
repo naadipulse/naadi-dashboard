@@ -4,7 +4,7 @@ import { useSettings, useTally, PARTY_DEFAULTS, AnimNum, Photo, MAJORITY, TOTAL 
 
 const BOTTOM_PARTIES = {
   ...PARTY_DEFAULTS,
-  'Others': { ...PARTY_DEFAULTS['Others'], label: 'நாதக', short: 'NTK', color: '#4B5563' }
+  'Others': { ...PARTY_DEFAULTS['Others'], label: 'நாதக', short: 'NTK', color: '#6B7280' }
 }
 
 export default function BottomBar() {
