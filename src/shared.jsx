@@ -20,7 +20,7 @@ export function useSettings() {
 
   useEffect(() => {
     fetchSettings()
-    const sub = supabase.channel('settings_changes')
+    const sub = supabase.channel('settings_' + Math.random())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, fetchSettings)
       .subscribe()
     return () => sub.unsubscribe()
@@ -43,7 +43,7 @@ export function useTally() {
 
   useEffect(() => {
     fetch()
-    const sub = supabase.channel('tally_ch')
+    const sub = supabase.channel('tally_' + Math.random())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'overall_tally' }, fetch)
       .subscribe()
     const poll = setInterval(fetch, 5000)
@@ -68,7 +68,7 @@ export function useConstituencies() {
 
   useEffect(() => {
     fetch()
-    const sub = supabase.channel('const_ch')
+    const sub = supabase.channel('const_' + Math.random())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'constituencies' }, fetch)
       .subscribe()
     const poll = setInterval(fetch, 5000)
