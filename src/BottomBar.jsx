@@ -11,7 +11,6 @@ export default function BottomBar() {
   const settings = useSettings()
   const { gT, gW, gL, totalDeclared } = useTally()
   const [time, setTime] = useState(new Date())
-  const [activeIdx, setActiveIdx] = useState(0)
 
   useEffect(() => {
     const t = setInterval(() => setTime(new Date()), 1000)
@@ -22,8 +21,10 @@ export default function BottomBar() {
   const [pulse, setPulse] = useState(false)
   useEffect(() => {
     const iv = setInterval(() => {
-      setPulse(true)
-      setTimeout(() => setPulse(false), 1000)
+      setPulse(p => {
+        setTimeout(() => setPulse(false), 800)
+        return true
+      })
     }, 5000)
     return () => clearInterval(iv)
   }, [])
