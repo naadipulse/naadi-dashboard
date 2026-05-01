@@ -4,7 +4,7 @@ import LeftPanel from './LeftPanel'
 import CenterViews from './CenterViews'
 import BottomBar from './BottomBar'
 import Admin from './Admin'
-import { useSettings, useTally, AnimNum, PARTY_DEFAULTS, MAJORITY } from './shared'
+import { useSettings, useTally, AnimNum, PARTY_DEFAULTS, MAJORITY } from './shared.jsx'
 
 // Full dashboard combining all panels
 function FullDashboard() {
