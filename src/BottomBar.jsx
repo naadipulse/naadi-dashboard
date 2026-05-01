@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { useSettings, useTally, PARTY_DEFAULTS, AnimNum, Photo, MAJORITY, TOTAL } from './shared.jsx'
+
+// Override Others label to NTK for bottom bar
+const BOTTOM_PARTIES = {
+  ...PARTY_DEFAULTS,
+  'Others': { ...PARTY_DEFAULTS['Others'], label: 'NTK', short: 'NTK' }
+}
 
 export default function BottomBar() {
   const settings = useSettings()
-  const { gT, totalDeclared } = useTally()
-  const [key, setKey] = useState(0)
+  const { gT, gW, gL, totalDeclared } = useTally()
+  const [time, setTime] = useState(new Date())
 
-  // Force a re-animation every 5 seconds
   useEffect(() => {
-    const timer = setInterval(() => setKey(prev => prev + 1), 5000)
-    return () => clearInterval(timer)
+    const t = setInterval(() => setTime(new Date()), 1000)
+    return () => clearInterval(t)
   }, [])
 
   const fs = parseInt(settings.font_large)
@@ -18,91 +22,108 @@ export default function BottomBar() {
   const fsm = parseInt(settings.font_small)
   const ff = settings.font_family
 
-  // Mapping configurations to match your instructions
-  const partyConfigMap = {
-    'DMK+': { color: '#DC2626', label: 'திமுக+', photoKey: 'photo_stalin' },
-    'ADMK+': { color: '#16A34A', label: 'அதிமுக+', photoKey: 'photo_eps' },
-    'TVK': { color: '#F59E0B', label: 'தவெக', photoKey: 'photo_tvk_leader' },
-    'NTK': { color: '#22C55E', label: 'நாம் தமிழர்', photoKey: 'photo_seeman' }
-  }
+  const timeStr = time.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', background: 'transparent' }}>
-      
-      {/* MAIN DATA BAR - 140px Height */}
-      <div style={{ 
-        fontFamily: ff, 
-        display: 'flex', 
-        height: 140, 
-        background: '#0F172A',
-        borderTop: '5px solid #DC2626',
-        overflow: 'hidden'
+    <div style={{ fontFamily: ff, display: 'flex', height: '100%', borderTop: '3px solid #DC2626' }}>
+
+      {/* Box 1 — முன்னிலை count */}
+      <div style={{
+        background: '#1E293B', minWidth: 110,
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center',
+        borderRight: '2px solid #334155', padding: '0 12px',
       }}>
-
-        {/* Status Box */}
-        <div style={{
-          background: 'linear-gradient(180deg, #1E293B 0%, #0F172A 100%)',
-          minWidth: 160,
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-          borderRight: '3px solid #334155'
-        }}>
-          <div style={{ fontSize: fsm, color: '#94A3B8', fontWeight: 900 }}>முடிவுகள்</div>
-          <AnimNum val={totalDeclared} color="#F59E0B" size={fs + 6} font={ff} />
+        <div style={{ fontSize: fsm - 1, color: '#94A3B8', fontWeight: 700, letterSpacing: 1 }}>முன்னிலை</div>
+        <AnimNum val={totalDeclared} color="#F59E0B" size={fs * 0.85} font={ff} />
+        <div style={{ width: '85%', height: 4, background: '#334155', borderRadius: 999, marginTop: 4 }}>
+          <div style={{ height: '100%', background: '#F59E0B', borderRadius: 999, width: `${(totalDeclared / TOTAL) * 100}%`, transition: 'width 1s ease' }} />
         </div>
+        <div style={{ fontSize: fsm - 2, color: '#64748B', marginTop: 2 }}>{TOTAL}</div>
+      </div>
 
-        {/* Animated Party Containers */}
-        <AnimatePresence mode="wait">
-          <motion.div 
-            key={key} // Resets animation every 5s
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.5 }}
-            style={{ display: 'flex', flex: 1 }}
-          >
-            {Object.entries(partyConfigMap).map(([pKey, cfg]) => {
-              const tot = gT(pKey === 'NTK' ? 'MATTRAVAI' : pKey) || 0;
-              const photoUrl = settings[cfg.photoKey];
+      {/* Party boxes */}
+      {Object.entries(BOTTOM_PARTIES).map(([p, cfg]) => {
+        const tot = gT(p), won = gW(p), lead = gL(p)
+        const hasMaj = tot >= MAJORITY
+        const photoUrl = settings[PARTY_DEFAULTS[p].photoKey]
 
-              return (
-                <div key={pKey} style={{
-                  flex: 1, 
-                  background: cfg.color, // Keeping exact colors as requested
-                  display: 'flex', alignItems: 'center', padding: '0 25px',
-                  borderRight: '2px solid rgba(0,0,0,0.1)'
-                }}>
-                  <Photo photoUrl={photoUrl} size={fs * 2.2} />
-                  
-                  <div style={{ display: 'flex', alignItems: 'baseline', marginLeft: 15 }}>
-                    <div style={{ fontSize: fm + 4, color: '#fff', fontWeight: 900, marginRight: 12 }}>
-                      {cfg.label}
-                    </div>
-                    <div style={{ fontSize: fs * 1.6, color: '#fff', fontWeight: 900 }}>
-                      {tot}
-                    </div>
-                  </div>
+        return (
+          <div key={p} style={{
+            flex: 1, background: cfg.color,
+            display: 'flex', alignItems: 'center', gap: 10,
+            padding: '0 14px', borderRight: '2px solid rgba(255,255,255,0.2)',
+            position: 'relative', overflow: 'hidden',
+            boxShadow: hasMaj ? `inset 0 0 40px rgba(255,255,255,0.15)` : 'none',
+          }}>
+            {hasMaj && (
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent)', animation: 'shimmer 2s linear infinite', zIndex: 0 }} />
+            )}
+
+            {/* Photo */}
+            <Photo photoUrl={photoUrl} fallback={cfg.short.slice(0, 2)} color="#fff" size={Math.max(44, fm * 2.2)} />
+
+            {/* Label + Number */}
+            <div style={{ flex: 1, zIndex: 1 }}>
+              {hasMaj && (
+                <div style={{ fontSize: fsm - 2, color: '#fff', fontWeight: 800, background: 'rgba(0,0,0,0.2)', borderRadius: 4, padding: '1px 6px', display: 'inline-block', marginBottom: 2, animation: 'pulse 1.5s infinite' }}>
+                  🏆 பெரும்பான்மை!
                 </div>
-              )
-            })}
-          </motion.div>
-        </AnimatePresence>
+              )}
+              <div style={{ fontSize: fm - 1, color: 'rgba(255,255,255,0.9)', fontWeight: 800 }}>{cfg.label}</div>
+              <AnimNum val={tot} color="#fff" size={fs - 2} font={ff} />
+            </div>
 
-        {/* NAADI Logo Card */}
+            {/* Won / Leading */}
+            <div style={{ textAlign: 'right', zIndex: 1 }}>
+              <div style={{ fontSize: fsm - 2, color: 'rgba(255,255,255,0.7)' }}>வென்றது</div>
+              <div style={{ fontSize: fm + 2, fontWeight: 900, color: '#fff' }}>{won}</div>
+              <div style={{ fontSize: fsm - 2, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>முன்னிலை</div>
+              <div style={{ fontSize: fm + 2, fontWeight: 900, color: '#FDE68A' }}>{lead}</div>
+            </div>
+          </div>
+        )
+      })}
+
+      {/* Naadi Logo + LIVE + Time */}
+      <div style={{
+        background: '#0F172A',
+        minWidth: 130,
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center',
+        borderLeft: '2px solid #334155',
+        padding: '0 12px', gap: 4,
+      }}>
+        {/* Naadi Logo */}
         <div style={{
-          background: '#1E293B', minWidth: 160,
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
-        }}>
-          <div style={{ width: 60, height: 60, background: '#fff', borderRadius: '50%', marginBottom: 5 }} /> 
-          <div style={{ fontSize: fsm, color: '#94A3B8', fontWeight: 900 }}>LIVE time</div>
+          fontSize: fm + 2, fontWeight: 900,
+          background: 'linear-gradient(90deg,#F59E0B,#DC2626)',
+          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+        }}>நாடி</div>
+
+        {/* LIVE badge */}
+        <div style={{
+          background: '#DC2626', color: '#fff',
+          fontSize: fsm - 1, fontWeight: 900,
+          padding: '2px 10px', borderRadius: 4,
+          animation: 'blink 1.5s infinite',
+          letterSpacing: 1,
+        }}>● LIVE</div>
+
+        {/* Time */}
+        <div style={{ fontSize: fsm, color: '#94A3B8', fontWeight: 600 }}>
+          {timeStr}
         </div>
 
+        {/* Date */}
+        <div style={{ fontSize: fsm - 3, color: '#475569' }}>May 4, 2026</div>
       </div>
 
-      {/* Bottom Ticker - 48px Height */}
-      <div style={{ height: 48, background: '#000', color: '#fff', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
-        <div style={{ background: '#DC2626', height: '100%', padding: '0 20px', display: 'flex', alignItems: 'center', fontWeight: 900, zIndex: 10 }}>FLASH</div>
-        <marquee style={{ fontSize: 20 }}>தமிழக தேர்தல் முடிவுகள் 2026 நேரலை... {TOTAL} தொகுதிகளின் முன்னிலை விவரங்கள்...</marquee>
-      </div>
+      <style>{`
+        @keyframes shimmer{0%{transform:translateX(-150%)}100%{transform:translateX(150%)}}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+      `}</style>
     </div>
   )
 }
