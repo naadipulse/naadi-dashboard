@@ -110,22 +110,21 @@ function View3({ tally, fm, fsm, ff }) {
   // Parliament arc rows — inner to outer (like Wikipedia)
   // Total arcs = 8, each arc has increasing count
   const ARC_ROWS = [
-    { r: 55,  count: 17 },
-    { r: 78,  count: 24 },
-    { r: 101, count: 31 },
-    { r: 124, count: 38 },
-    { r: 147, count: 44 },
-    { r: 170, count: 50 },
-    { r: 193, count: 30 },
+    { r: 80,  count: 17 },
+    { r: 110, count: 24 },
+    { r: 140, count: 31 },
+    { r: 170, count: 38 },
+    { r: 200, count: 44 },
+    { r: 230, count: 50 },
+    { r: 260, count: 30 },
   ]
 
-  const CX = 260, CY = 230
+  const CX = 360, CY = 320
 
   const dots = []
   let idx = 0
   ARC_ROWS.forEach(({ r, count }) => {
     for (let i = 0; i < count; i++) {
-      // Spread from π to 2π (bottom semicircle, left to right)
       const angle = Math.PI + (i / (count - 1)) * Math.PI
       dots.push({
         x: CX + r * Math.cos(angle),
@@ -135,7 +134,7 @@ function View3({ tally, fm, fsm, ff }) {
     }
   })
 
-  const W = 520, H = 260
+  const W = 720, H = 340
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', fontFamily: ff, background: '#fff', borderRadius: 14, padding: '12px 16px' }}>
@@ -147,11 +146,11 @@ function View3({ tally, fm, fsm, ff }) {
       <svg width={W} height={H + 20} viewBox={`0 0 ${W} ${H + 20}`} style={{ overflow: 'visible' }}>
         {/* Background arc outline */}
         <path
-          d={`M ${CX - 210} ${CY} A 210 210 0 0 1 ${CX + 210} ${CY}`}
+          d={`M ${CX - 285} ${CY} A 285 285 0 0 1 ${CX + 285} ${CY}`}
           fill="none" stroke="#E5E7EB" strokeWidth={1.5}
         />
         <path
-          d={`M ${CX - 45} ${CY} A 45 45 0 0 1 ${CX + 45} ${CY}`}
+          d={`M ${CX - 60} ${CY} A 60 60 0 0 1 ${CX + 60} ${CY}`}
           fill="none" stroke="#E5E7EB" strokeWidth={1}
         />
 
@@ -161,7 +160,7 @@ function View3({ tally, fm, fsm, ff }) {
           const isDeclared = d.party !== 'pending'
           return (
             <circle key={i}
-              cx={d.x} cy={d.y} r={6}
+              cx={d.x} cy={d.y} r={8}
               fill={isDeclared ? cfg?.color : '#D1D5DB'}
               opacity={isDeclared ? 1 : 0.4}
               style={{ transition: `fill 0.8s ease ${i * 0.003}s` }}
@@ -170,16 +169,16 @@ function View3({ tally, fm, fsm, ff }) {
         })}
 
         {/* Majority line */}
-        <line x1={CX} y1={CY - 200} x2={CX} y2={CY + 10}
-          stroke="#374151" strokeWidth={2} strokeDasharray="5,3" />
-        <text x={CX} y={CY - 205} textAnchor="middle"
-          fontSize={11} fill="#F59E0B" fontWeight="bold">
+        <line x1={CX} y1={CY - 280} x2={CX} y2={CY + 10}
+          stroke="#374151" strokeWidth={2} strokeDasharray="6,4" />
+        <text x={CX} y={CY - 285} textAnchor="middle"
+          fontSize={14} fill="#F59E0B" fontWeight="bold">
           118
         </text>
       </svg>
 
       {/* Party totals */}
-      <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
         {Object.entries(PARTY_DEFAULTS).map(([p, cfg]) => {
           const tot = get(p)
           const pct = ((tot / 234) * 100).toFixed(1)
@@ -188,11 +187,11 @@ function View3({ tally, fm, fsm, ff }) {
               textAlign: 'center',
               background: cfg.light,
               border: `2px solid ${cfg.color}`,
-              borderRadius: 10, padding: '6px 14px', minWidth: 70,
+              borderRadius: 10, padding: '8px 20px', minWidth: 80,
             }}>
-              <div style={{ fontSize: fsm - 1, color: cfg.color, fontWeight: 700 }}>{cfg.label}</div>
-              <div style={{ fontSize: fm + 8, fontWeight: 900, color: cfg.color, lineHeight: 1 }}>{tot}</div>
-              <div style={{ fontSize: fsm - 2, color: '#9CA3AF' }}>{pct}%</div>
+              <div style={{ fontSize: fsm, color: cfg.color, fontWeight: 700 }}>{cfg.label}</div>
+              <div style={{ fontSize: fm + 10, fontWeight: 900, color: cfg.color, lineHeight: 1 }}>{tot}</div>
+              <div style={{ fontSize: fsm - 1, color: '#9CA3AF' }}>{pct}%</div>
             </div>
           )
         })}
