@@ -86,7 +86,7 @@ export default function BottomBar() {
               {hasMaj && (
                 <div style={{
                   fontSize: fsm - 2, color: '#fff', fontWeight: 800,
-                  background: 'rgba(0,0,0,0.2)',
+                  background: 'rgba(0,0,0,0.2)', borderRadius: 4,
                   padding: '1px 6px', display: 'inline-block', marginBottom: 2,
                   animation: 'blink 1.5s infinite',
                 }}>
