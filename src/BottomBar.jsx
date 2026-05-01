@@ -61,25 +61,17 @@ export default function BottomBar() {
             )}
 
             {/* Photo */}
-            <Photo photoUrl={photoUrl} fallback={cfg.short.slice(0, 2)} color="#fff" size={Math.max(44, fm * 2.2)} />
+            <Photo photoUrl={photoUrl} fallback={cfg.short.slice(0, 2)} color="#fff" size={Math.max(50, fm * 2.5)} />
 
-            {/* Label + Number */}
-            <div style={{ flex: 1, zIndex: 1 }}>
+            {/* Label + Number only */}
+            <div style={{ zIndex: 1, textAlign: 'left' }}>
               {hasMaj && (
                 <div style={{ fontSize: fsm - 2, color: '#fff', fontWeight: 800, background: 'rgba(0,0,0,0.2)', borderRadius: 4, padding: '1px 6px', display: 'inline-block', marginBottom: 2, animation: 'pulse 1.5s infinite' }}>
                   🏆 பெரும்பான்மை!
                 </div>
               )}
-              <div style={{ fontSize: fm - 1, color: 'rgba(255,255,255,0.9)', fontWeight: 800 }}>{cfg.label}</div>
-              <AnimNum val={tot} color="#fff" size={fs - 2} font={ff} />
-            </div>
-
-            {/* Won / Leading */}
-            <div style={{ textAlign: 'right', zIndex: 1 }}>
-              <div style={{ fontSize: fsm - 2, color: 'rgba(255,255,255,0.7)' }}>வென்றது</div>
-              <div style={{ fontSize: fm + 2, fontWeight: 900, color: '#fff' }}>{won}</div>
-              <div style={{ fontSize: fsm - 2, color: 'rgba(255,255,255,0.7)', marginTop: 2 }}>முன்னிலை</div>
-              <div style={{ fontSize: fm + 2, fontWeight: 900, color: '#FDE68A' }}>{lead}</div>
+              <div style={{ fontSize: fm, color: 'rgba(255,255,255,0.9)', fontWeight: 800 }}>{cfg.label}</div>
+              <AnimNum val={tot} color="#fff" size={fs} font={ff} />
             </div>
           </div>
         )
@@ -88,35 +80,38 @@ export default function BottomBar() {
       {/* Naadi Logo + LIVE + Time */}
       <div style={{
         background: '#0F172A',
-        minWidth: 130,
+        minWidth: 140,
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
         borderLeft: '2px solid #334155',
         padding: '0 12px', gap: 4,
       }}>
-        {/* Naadi Logo */}
-        <div style={{
-          fontSize: fm + 2, fontWeight: 900,
-          background: 'linear-gradient(90deg,#F59E0B,#DC2626)',
-          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-        }}>நாடி</div>
+        {/* Naadi Logo Image — Admin-ல் URL set பண்ணுங்க */}
+        {settings.naadi_logo ? (
+          <img src={settings.naadi_logo} alt="நாடி" style={{ height: 36, objectFit: 'contain', maxWidth: 110 }} />
+        ) : (
+          <div style={{
+            fontSize: fm + 4, fontWeight: 900,
+            background: 'linear-gradient(90deg,#F59E0B,#DC2626)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          }}>நாடி</div>
+        )}
 
         {/* LIVE badge */}
         <div style={{
           background: '#DC2626', color: '#fff',
-          fontSize: fsm - 1, fontWeight: 900,
-          padding: '2px 10px', borderRadius: 4,
+          fontSize: fsm, fontWeight: 900,
+          padding: '2px 12px', borderRadius: 4,
           animation: 'blink 1.5s infinite',
           letterSpacing: 1,
         }}>● LIVE</div>
 
         {/* Time */}
-        <div style={{ fontSize: fsm, color: '#94A3B8', fontWeight: 600 }}>
+        <div style={{ fontSize: fsm, color: '#F59E0B', fontWeight: 700 }}>
           {timeStr}
         </div>
 
-        {/* Date */}
-        <div style={{ fontSize: fsm - 3, color: '#475569' }}>May 4, 2026</div>
+        <div style={{ fontSize: fsm - 3, color: '#475569' }}>TAMILNADU</div>
       </div>
 
       <style>{`
