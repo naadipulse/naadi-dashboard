@@ -49,22 +49,38 @@ function View1({ constituencies, fm, fsm, ff }) {
   )
 }
 
-// View 2: Animation video
+// View 2: மும்முனை போட்டி image
 function View2({ fm, ff }) {
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#0F172A', borderRadius: 14, fontFamily: ff }}>
-      <div style={{ fontSize: 60, marginBottom: 16, animation: 'spin 4s linear infinite' }}>🗳️</div>
-      <div style={{ fontSize: fm + 6, fontWeight: 900, color: '#fff', marginBottom: 8 }}>நாடி LIVE 2026</div>
-      <div style={{ fontSize: fm, color: '#94A3B8', textAlign: 'center' }}>
-        தமிழ்நாடு சட்டமன்றத் தேர்தல்
-      </div>
-      <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
-        {[0,1,2,3].map(i => (
-          <div key={i} style={{ width: 12, height: 12, borderRadius: '50%', background: '#DC2626', animation: `pulseDot 1.5s ease ${i * 0.2}s infinite` }} />
-        ))}
-      </div>
-      <div style={{ marginTop: 16, fontSize: fm - 2, color: '#475569', fontStyle: 'italic' }}>
-        video_url யை Admin-ல் set பண்ணுங்க
+    <div style={{
+      height: '100%',
+      borderRadius: 14,
+      overflow: 'hidden',
+      position: 'relative',
+      fontFamily: ff,
+    }}>
+      {/* Background image */}
+      <img
+        src="https://i.ibb.co/sdQrcBGx/3moonai.jpg"
+        alt="மும்முனை போட்டி"
+        style={{
+          width: '100%', height: '100%',
+          objectFit: 'cover', objectPosition: 'center',
+        }}
+      />
+      {/* Overlay with text */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0,
+        background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
+        padding: '30px 20px 16px',
+        textAlign: 'center',
+      }}>
+        <div style={{ fontSize: fm + 4, fontWeight: 900, color: '#fff' }}>
+          மும்முனைப் போட்டி
+        </div>
+        <div style={{ fontSize: fm, color: '#FCD34D', fontWeight: 700 }}>
+          யார் அந்த நாற்காலிக்கு? 🏛️
+        </div>
       </div>
     </div>
   )
