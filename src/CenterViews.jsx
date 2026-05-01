@@ -62,7 +62,7 @@ function View2({ fm, ff }) {
     }}>
       {/* Background image - full contain */}
       <img
-        src="https://i.ibb.co/nNfS4Wvd/5857325f-c3a8-4ae1-96b6-c2f8b225459b.png"
+        src="https://i.ibb.co/sdQrcBGx/3moonai.jpg"
         alt="மும்முனை போட்டி"
         style={{
           width: '100%',
@@ -73,7 +73,7 @@ function View2({ fm, ff }) {
         }}
         onError={e => {
           // Try direct URL format
-          e.target.src = 'https://i.ibb.co/nNfS4Wvd/5857325f-c3a8-4ae1-96b6-c2f8b225459b.png'
+          e.target.src = 'https://i.ibb.co/sdQrcBGx/image.jpg'
         }}
       />
       {/* Bottom overlay */}
@@ -94,66 +94,108 @@ function View2({ fm, ff }) {
   )
 }
 
-// View 3: Semicircle parliament dots
+// View 3: Wikipedia-style Parliament chart
 function View3({ tally, fm, fsm, ff }) {
   const get = p => { const d = tally.find(t => t.party === p); return d ? d.won + (d.leadingg || 0) : 0 }
 
+  // Build seat list sorted by party (left to right: DMK, TVK, Others, AIADMK)
+  const PARTY_ORDER = ['DMK+', 'TVK', 'Others', 'AIADMK+']
   const seatList = []
-  Object.keys(PARTY_DEFAULTS).forEach(p => {
+  PARTY_ORDER.forEach(p => {
     const tot = get(p)
     for (let i = 0; i < tot; i++) seatList.push(p)
   })
-  while (seatList.length < TOTAL) seatList.push('pending')
+  while (seatList.length < 234) seatList.push('pending')
 
-  const ROWS = [
-    { r: 170, count: 60 },
-    { r: 130, count: 80 },
-    { r: 90,  count: 94 },
+  // Parliament arc rows — inner to outer (like Wikipedia)
+  // Total arcs = 8, each arc has increasing count
+  const ARC_ROWS = [
+    { r: 55,  count: 17 },
+    { r: 78,  count: 24 },
+    { r: 101, count: 31 },
+    { r: 124, count: 38 },
+    { r: 147, count: 44 },
+    { r: 170, count: 50 },
+    { r: 193, count: 30 },
   ]
+
+  const CX = 260, CY = 230
 
   const dots = []
   let idx = 0
-  ROWS.forEach(({ r, count }) => {
+  ARC_ROWS.forEach(({ r, count }) => {
     for (let i = 0; i < count; i++) {
-      const angle = Math.PI + (i / count) * Math.PI
+      // Spread from π to 2π (bottom semicircle, left to right)
+      const angle = Math.PI + (i / (count - 1)) * Math.PI
       dots.push({
-        x: 210 + r * Math.cos(angle),
-        y: 190 + r * Math.sin(angle),
+        x: CX + r * Math.cos(angle),
+        y: CY + r * Math.sin(angle),
         party: seatList[idx++] || 'pending',
       })
     }
   })
 
+  const W = 520, H = 260
+
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', fontFamily: ff }}>
-      <div style={{ fontSize: fm, fontWeight: 800, color: '#374151', marginBottom: 8 }}>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', fontFamily: ff, background: '#fff', borderRadius: 14, padding: '12px 16px' }}>
+      <div style={{ fontSize: fm, fontWeight: 800, color: '#374151' }}>
         🏛️ சட்டமன்றம் — 234 இடங்கள்
       </div>
-      <svg width={420} height={210} style={{ overflow: 'visible' }}>
+
+      {/* Parliament SVG */}
+      <svg width={W} height={H + 20} viewBox={`0 0 ${W} ${H + 20}`} style={{ overflow: 'visible' }}>
+        {/* Background arc outline */}
+        <path
+          d={`M ${CX - 210} ${CY} A 210 210 0 0 1 ${CX + 210} ${CY}`}
+          fill="none" stroke="#E5E7EB" strokeWidth={1.5}
+        />
+        <path
+          d={`M ${CX - 45} ${CY} A 45 45 0 0 1 ${CX + 45} ${CY}`}
+          fill="none" stroke="#E5E7EB" strokeWidth={1}
+        />
+
+        {/* Dots */}
         {dots.map((d, i) => {
           const cfg = PARTY_DEFAULTS[d.party]
           const isDeclared = d.party !== 'pending'
           return (
-            <circle key={i} cx={d.x} cy={d.y} r={5}
-              fill={isDeclared ? cfg?.color : '#E5E7EB'}
-              stroke={isDeclared ? cfg?.color : '#D1D5DB'}
-              strokeWidth={0.5}
-              style={{ transition: `fill 0.8s ease ${i * 0.002}s` }}
+            <circle key={i}
+              cx={d.x} cy={d.y} r={6}
+              fill={isDeclared ? cfg?.color : '#D1D5DB'}
+              opacity={isDeclared ? 1 : 0.4}
+              style={{ transition: `fill 0.8s ease ${i * 0.003}s` }}
             />
           )
         })}
-        <line x1={40} y1={190} x2={380} y2={190} stroke="#D1D5DB" strokeWidth={1} strokeDasharray="4,3" />
-        <text x={210} y={208} textAnchor="middle" fontSize={fsm} fill="#374151" fontWeight="bold">
-          🎯 பெரும்பான்மை: 118
+
+        {/* Majority line */}
+        <line x1={CX} y1={CY - 200} x2={CX} y2={CY + 10}
+          stroke="#374151" strokeWidth={2} strokeDasharray="5,3" />
+        <text x={CX} y={CY - 205} textAnchor="middle"
+          fontSize={11} fill="#F59E0B" fontWeight="bold">
+          118
         </text>
       </svg>
-      <div style={{ display: 'flex', gap: 12, marginTop: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
-        {Object.entries(PARTY_DEFAULTS).map(([p, cfg]) => (
-          <div key={p} style={{ textAlign: 'center', background: cfg.light, border: `2px solid ${cfg.color}`, borderRadius: 10, padding: '6px 14px', minWidth: 65 }}>
-            <div style={{ fontSize: fsm, color: cfg.color, fontWeight: 700 }}>{cfg.short}</div>
-            <AnimNum val={get(p)} color={cfg.color} size={fm + 6} font={ff} />
-          </div>
-        ))}
+
+      {/* Party totals */}
+      <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', justifyContent: 'center' }}>
+        {Object.entries(PARTY_DEFAULTS).map(([p, cfg]) => {
+          const tot = get(p)
+          const pct = ((tot / 234) * 100).toFixed(1)
+          return (
+            <div key={p} style={{
+              textAlign: 'center',
+              background: cfg.light,
+              border: `2px solid ${cfg.color}`,
+              borderRadius: 10, padding: '6px 14px', minWidth: 70,
+            }}>
+              <div style={{ fontSize: fsm - 1, color: cfg.color, fontWeight: 700 }}>{cfg.label}</div>
+              <div style={{ fontSize: fm + 8, fontWeight: 900, color: cfg.color, lineHeight: 1 }}>{tot}</div>
+              <div style={{ fontSize: fsm - 2, color: '#9CA3AF' }}>{pct}%</div>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
