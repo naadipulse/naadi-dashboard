@@ -6,6 +6,14 @@ import BottomBar from './BottomBar'
 import Admin from './Admin'
 import { useSettings, useTally, AnimNum, PARTY_DEFAULTS, MAJORITY } from './shared.jsx'
 
+// Top of FullDashboard return:
+<div style={{ 
+  transform: `scale(${window.innerWidth / 1920})`,
+  transformOrigin: 'top left',
+  width: 1920,
+  height: 1080,
+}}>
+
 // Full dashboard combining all panels
 function FullDashboard() {
   const settings = useSettings()
