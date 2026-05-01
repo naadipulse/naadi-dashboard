@@ -110,16 +110,16 @@ function View3({ tally, fm, fsm, ff }) {
   // Parliament arc rows — inner to outer (like Wikipedia)
   // Total arcs = 8, each arc has increasing count
   const ARC_ROWS = [
-    { r: 80,  count: 17 },
-    { r: 110, count: 24 },
-    { r: 140, count: 31 },
-    { r: 170, count: 38 },
-    { r: 200, count: 44 },
-    { r: 230, count: 50 },
-    { r: 260, count: 30 },
+    { r: 110,  count: 17 },
+    { r: 148, count: 24 },
+    { r: 186, count: 31 },
+    { r: 224, count: 38 },
+    { r: 262, count: 44 },
+    { r: 300, count: 50 },
+    { r: 338, count: 30 },
   ]
 
-  const CX = 360, CY = 320
+  const CX = 460, CY = 420
 
   const dots = []
   let idx = 0
@@ -134,7 +134,7 @@ function View3({ tally, fm, fsm, ff }) {
     }
   })
 
-  const W = 720, H = 340
+  const W = 920, H = 450
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', fontFamily: ff, background: '#fff', borderRadius: 14, padding: '12px 16px' }}>
@@ -146,7 +146,7 @@ function View3({ tally, fm, fsm, ff }) {
       <svg width={W} height={H + 20} viewBox={`0 0 ${W} ${H + 20}`} style={{ overflow: 'visible' }}>
         {/* Background arc outline */}
         <path
-          d={`M ${CX - 285} ${CY} A 285 285 0 0 1 ${CX + 285} ${CY}`}
+          d={`M ${CX - 365} ${CY} A 365 365 0 0 1 ${CX + 365} ${CY}`}
           fill="none" stroke="#E5E7EB" strokeWidth={1.5}
         />
         <path
@@ -160,7 +160,7 @@ function View3({ tally, fm, fsm, ff }) {
           const isDeclared = d.party !== 'pending'
           return (
             <circle key={i}
-              cx={d.x} cy={d.y} r={8}
+              cx={d.x} cy={d.y} r={10}
               fill={isDeclared ? cfg?.color : '#D1D5DB'}
               opacity={isDeclared ? 1 : 0.4}
               style={{ transition: `fill 0.8s ease ${i * 0.003}s` }}
