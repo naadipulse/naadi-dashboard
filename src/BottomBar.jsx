@@ -11,70 +11,89 @@ export default function BottomBar() {
   const ff = settings.font_family
 
   return (
-    <div style={{ fontFamily: ff, display: 'flex', height: '100%', borderTop: '3px solid #DC2626' }}>
-
-      {/* Box 1 — முன்னிலை */}
-      <div style={{
-        background: '#1E293B', minWidth: 120,
-        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-        borderRight: '2px solid #334155', padding: '0 14px',
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      
+      {/* MAIN DATA BAR */}
+      <div style={{ 
+        fontFamily: ff, 
+        display: 'flex', 
+        flex: 1, 
+        background: '#0F172A',
+        borderTop: '4px solid #DC2626',
+        overflow: 'hidden'
       }}>
-        <div style={{ fontSize: fsm, color: '#94A3B8', fontWeight: 700, letterSpacing: 1 }}>முன்னிலை</div>
-        <AnimNum val={totalDeclared} color="#F59E0B" size={fs * 0.9} font={ff} />
-        <div style={{ width: '85%', height: 4, background: '#334155', borderRadius: 999, marginTop: 5 }}>
-          <div style={{ height: '100%', background: '#F59E0B', borderRadius: 999, width: `${(totalDeclared / TOTAL) * 100}%`, transition: 'width 1s ease' }} />
+
+        {/* Box 1 — Status */}
+        <div style={{
+          background: 'linear-gradient(180deg, #1E293B 0%, #0F172A 100%)',
+          minWidth: 160,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          borderRight: '3px solid #334155', padding: '0 10px',
+        }}>
+          <div style={{ fontSize: fsm, color: '#94A3B8', fontWeight: 900 }}>முடிவுகள்</div>
+          <AnimNum val={totalDeclared} color="#F59E0B" size={fs} font={ff} />
+          <div style={{ fontSize: fsm - 2, color: '#64748B' }}>மொத்தம்: {TOTAL}</div>
         </div>
-        <div style={{ fontSize: fsm - 1, color: '#64748B', marginTop: 3 }}>{TOTAL}</div>
+
+        {/* Party boxes */}
+        {Object.entries(PARTY_DEFAULTS).map(([p, cfg]) => {
+          const tot = gT(p), won = gW(p), lead = gL(p)
+          const hasMaj = tot >= MAJORITY
+          const photoUrl = settings[cfg.photoKey]
+
+          return (
+            <div key={p} style={{
+              flex: 1, 
+              background: `linear-gradient(90deg, ${cfg.color} 0%, ${cfg.color}CC 100%)`,
+              display: 'flex', alignItems: 'center', padding: '0 15px',
+              borderRight: '2px solid rgba(0,0,0,0.2)', position: 'relative'
+            }}>
+              <Photo photoUrl={photoUrl} size={fs * 1.5} />
+
+              <div style={{ marginLeft: 15, flex: 1 }}>
+                <div style={{ fontSize: fm, color: '#fff', fontWeight: 900, lineHeight: 1 }}>{cfg.label}</div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                   <AnimNum val={tot} color="#fff" size={fs * 1.2} font={ff} />
+                   {hasMaj && <span style={{ fontSize: 12, color: '#FFD700', fontWeight: 900 }}>🏆 WIN</span>}
+                </div>
+              </div>
+
+              {/* High-Contrast Breakdown */}
+              <div style={{ textAlign: 'right', background: 'rgba(0,0,0,0.3)', padding: '5px 10px', borderRadius: 8 }}>
+                <div style={{ fontSize: 10, color: '#CBD5E1', fontWeight: 800 }}>வெற்றி: <span style={{color: '#fff', fontSize: 16}}>{won}</span></div>
+                <div style={{ fontSize: 10, color: '#FDE68A', fontWeight: 800 }}>முன்னிலை: <span style={{fontSize: 16}}>{lead}</span></div>
+              </div>
+            </div>
+          )
+        })}
       </div>
 
-      {/* Party boxes */}
-      {Object.entries(PARTY_DEFAULTS).map(([p, cfg]) => {
-        const tot = gT(p), won = gW(p), lead = gL(p)
-        const hasMaj = tot >= MAJORITY
-        const photoUrl = settings[cfg.photoKey]
-
-        return (
-          <div key={p} style={{
-            flex: 1, background: cfg.color,
-            display: 'flex', alignItems: 'center', gap: 12,
-            padding: '0 18px', borderRight: '2px solid rgba(255,255,255,0.2)',
-            position: 'relative', overflow: 'hidden', transition: 'all 0.5s',
-            boxShadow: hasMaj ? `inset 0 0 40px rgba(255,255,255,0.15)` : 'none',
-          }}>
-            {/* Shimmer on majority */}
-            {hasMaj && <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.12) 50%,transparent 100%)', animation: 'shimmer 2s linear infinite', zIndex: 0 }} />}
-
-            {/* Photo */}
-            <Photo photoUrl={photoUrl} fallback={cfg.short.slice(0, 2)} color="#fff" size={Math.max(48, fm * 2.5)} />
-
-            {/* Label + Big number */}
-            <div style={{ flex: 1, zIndex: 1 }}>
-              {hasMaj && (
-                <div style={{ fontSize: fsm - 1, color: '#fff', fontWeight: 800, background: 'rgba(0,0,0,0.2)', borderRadius: 4, padding: '1px 6px', display: 'inline-block', marginBottom: 3, animation: 'pulse 1.5s infinite' }}>
-                  🏆 பெரும்பான்மை!
-                </div>
-              )}
-              <div style={{ fontSize: fm, color: 'rgba(255,255,255,0.9)', fontWeight: 800 }}>{cfg.label}</div>
-              <AnimNum val={tot} color="#fff" size={fs} font={ff} />
-            </div>
-
-            {/* Won / Leading */}
-            {/*
-            <div style={{ textAlign: 'right', zIndex: 1 }}>
-              <div style={{ fontSize: fsm, color: 'rgba(255,255,255,0.7)' }}>வென்றது</div>
-              <div style={{ fontSize: fm + 4, fontWeight: 900, color: '#fff' }}>{won}</div>              
-              <div style={{ fontSize: fsm, color: 'rgba(255,255,255,0.7)', marginTop: 3 }}>முன்னிலை</div>
-              <div style={{ fontSize: fm + 4, fontWeight: 900, color: '#FDE68A' }}>{lead}</div>
-              
-            </div>
-            */}
-          </div>
-        )
-      })}
+      {/* BOTTOM TICKER (The 74px Space) */}
+      <div style={{ 
+        height: 40, 
+        background: '#000', 
+        color: '#fff', 
+        display: 'flex', 
+        alignItems: 'center',
+        borderTop: '1px solid #334155',
+        overflow: 'hidden'
+      }}>
+        <div style={{ background: '#DC2626', height: '100%', padding: '0 20px', display: 'flex', alignItems: 'center', fontWeight: 900, fontSize: 14, zIndex: 2 }}>
+          FLASH
+        </div>
+        <div className="ticker-scroll" style={{ whiteSpace: 'nowrap', fontSize: 18, fontWeight: 500, paddingLeft: '100%' }}>
+          தமிழக தேர்தல் முடிவுகள் 2026 - நேரலை செய்திகள்... மும்முனை போட்டியில் கடும் இழுபறி... உடனுக்குடன் தெரிந்துகொள்ள இணைந்திருங்கள்...
+        </div>
+      </div>
 
       <style>{`
-        @keyframes shimmer{0%{transform:translateX(-150%)}100%{transform:translateX(150%)}}
-        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+        .ticker-scroll {
+          animation: marquee 30s linear infinite;
+        }
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-100%); }
+        }
       `}</style>
     </div>
   )
