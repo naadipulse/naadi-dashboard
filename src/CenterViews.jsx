@@ -62,7 +62,7 @@ function View2({ fm, ff }) {
     }}>
       {/* Background image - full contain */}
       <img
-        src="https://i.ibb.co/sdQrcBGx/3moonai.jpg"
+        src="https://i.ibb.co/nNfS4Wvd/5857325f-c3a8-4ae1-96b6-c2f8b225459b.png"
         alt="மும்முனை போட்டி"
         style={{
           width: '100%',
@@ -73,7 +73,7 @@ function View2({ fm, ff }) {
         }}
         onError={e => {
           // Try direct URL format
-          e.target.src = 'https://i.ibb.co/sdQrcBGx/image.jpg'
+          e.target.src = 'https://i.ibb.co/nNfS4Wvd/5857325f-c3a8-4ae1-96b6-c2f8b225459b.png'
         }}
       />
       {/* Bottom overlay */}
