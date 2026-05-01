@@ -4,7 +4,7 @@ import { useSettings, useTally, PARTY_DEFAULTS, AnimNum, Photo, MAJORITY, TOTAL 
 
 const BOTTOM_PARTIES = {
   ...PARTY_DEFAULTS,
-  'Others': { ...PARTY_DEFAULTS['Others'], label: 'நாதக', short: 'NTK' }
+  'Others': { ...PARTY_DEFAULTS['Others'], label: 'நாதக', short: 'NTK', color: '#4B5563' }
 }
 
 export default function BottomBar() {
@@ -70,10 +70,10 @@ export default function BottomBar() {
           <motion.div
             key={p}
             animate={{
-              scale: isActive ? [1, 1.02, 1] : 1,
+              scale: isActive ? [1, 1.06, 1, 1.06, 1] : 1,
               boxShadow: isActive ? `inset 0 0 30px rgba(255,255,255,0.25)` : hasMaj ? `inset 0 0 40px rgba(255,255,255,0.15)` : 'none',
             }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 1.5, times: [0, 0.25, 0.5, 0.75, 1] }}
             style={{
               flex: 1, background: cfg.color,
               display: 'flex', alignItems: 'center', gap: 12,
