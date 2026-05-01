@@ -25,14 +25,12 @@ export default function TopBar() {
             தமிழ்நாடு சட்டமன்றத் தேர்தல் 2026 — வாக்கு எண்ணிக்கை
           </span>
         </div>
-         {/*
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {Object.entries(PARTY_DEFAULTS).map(([p, cfg]) => (
             <div key={p} style={{ background: cfg.color, borderRadius: 8, padding: '4px 14px', display: 'flex', alignItems: 'center', gap: 6 }}>
               <span style={{ fontSize: fm - 2, color: '#fff', fontWeight: 700 }}>{cfg.short}</span>
               <AnimNum val={gT(p)} color="#fff" size={fs * 0.5} font={ff} />
             </div>
-            */}
           ))}
           <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: 8, padding: '4px 14px', textAlign: 'center' }}>
             <div style={{ fontSize: fm - 4, color: 'rgba(255,255,255,0.7)' }}>முடிவு</div>
