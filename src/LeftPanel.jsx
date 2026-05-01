@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSettings, useTally, PARTY_DEFAULTS, AnimNum, Photo, MAJORITY } from './shared'
+import { useSettings, useTally, PARTY_DEFAULTS, AnimNum, Photo, MAJORITY } from './shared.jsx'
 
 export default function LeftPanel() {
   const settings = useSettings()
