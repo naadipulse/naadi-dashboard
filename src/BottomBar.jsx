@@ -18,10 +18,12 @@ export default function BottomBar() {
     return () => clearInterval(t)
   }, [])
 
-  // Every 5 seconds highlight one party
+  // Every 5 seconds all parties animate together
+  const [pulse, setPulse] = useState(false)
   useEffect(() => {
     const iv = setInterval(() => {
-      setActiveIdx(i => (i + 1) % Object.keys(BOTTOM_PARTIES).length)
+      setPulse(true)
+      setTimeout(() => setPulse(false), 1000)
     }, 5000)
     return () => clearInterval(iv)
   }, [])
@@ -64,16 +66,15 @@ export default function BottomBar() {
         const tot = gT(p)
         const hasMaj = tot >= MAJORITY
         const photoUrl = settings[PARTY_DEFAULTS[p].photoKey]
-        const isActive = idx === activeIdx
-
+      
         return (
           <motion.div
             key={p}
             animate={{
-              scale: isActive ? [1, 1.06, 1, 1.06, 1] : 1,
-              boxShadow: isActive ? `inset 0 0 30px rgba(255,255,255,0.25)` : hasMaj ? `inset 0 0 40px rgba(255,255,255,0.15)` : 'none',
+              scale: pulse ? [1, 1.08, 0.97, 1.05, 1] : 1,
+              brightness: pulse ? [1, 1.3, 1] : 1,
             }}
-            transition={{ duration: 1.5, times: [0, 0.25, 0.5, 0.75, 1] }}
+            transition={{ duration: 0.8, times: [0, 0.3, 0.5, 0.7, 1] }}
             style={{
               flex: 1, background: cfg.color,
               display: 'flex', alignItems: 'center', gap: 12,
@@ -81,8 +82,8 @@ export default function BottomBar() {
               position: 'relative', overflow: 'hidden',
             }}>
 
-            {/* Shimmer on active */}
-            {(hasMaj || isActive) && (
+            {/* Shimmer */}
+            {(hasMaj || pulse) && (
               <motion.div
                 style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)', zIndex: 0 }}
                 animate={{ x: ['-150%', '150%'] }}
