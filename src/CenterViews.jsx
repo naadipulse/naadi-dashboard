@@ -58,27 +58,35 @@ function View2({ fm, ff }) {
       overflow: 'hidden',
       position: 'relative',
       fontFamily: ff,
+      background: '#0F172A',
     }}>
-      {/* Background image */}
+      {/* Background image - full contain */}
       <img
         src="https://i.ibb.co/sdQrcBGx/3moonai.jpg"
         alt="மும்முனை போட்டி"
         style={{
-          width: '100%', height: '100%',
-          objectFit: 'cover', objectPosition: 'center',
+          width: '100%',
+          height: '100%',
+          objectFit: 'contain',
+          objectPosition: 'center',
+          display: 'block',
+        }}
+        onError={e => {
+          // Try direct URL format
+          e.target.src = 'https://i.ibb.co/sdQrcBGx/image.jpg'
         }}
       />
-      {/* Overlay with text */}
+      {/* Bottom overlay */}
       <div style={{
         position: 'absolute', bottom: 0, left: 0, right: 0,
-        background: 'linear-gradient(transparent, rgba(0,0,0,0.8))',
-        padding: '30px 20px 16px',
+        background: 'linear-gradient(transparent, rgba(0,0,0,0.85))',
+        padding: '40px 20px 16px',
         textAlign: 'center',
       }}>
-        <div style={{ fontSize: fm + 4, fontWeight: 900, color: '#fff' }}>
-          மும்முனைப் போட்டி
+        <div style={{ fontSize: fm + 6, fontWeight: 900, color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
+          மும்முனைப் போட்டி 2026
         </div>
-        <div style={{ fontSize: fm, color: '#FCD34D', fontWeight: 700 }}>
+        <div style={{ fontSize: fm + 2, color: '#FCD34D', fontWeight: 700 }}>
           யார் அந்த நாற்காலிக்கு? 🏛️
         </div>
       </div>
