@@ -28,7 +28,7 @@ function FullDashboard() {
       {/* Background full screen */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 0,
-        backgroundImage: `url('https://i.ibb.co/LDQsbQRN/thalamai.jpg')`,
+        backgroundImage: `url('https://i.ibb.co/5XYJtY4K/0598f1fe-1086-4646-859a-b8814d7ece59.png')`,
         backgroundSize: 'cover', backgroundPosition: 'center',
       }} />
 
