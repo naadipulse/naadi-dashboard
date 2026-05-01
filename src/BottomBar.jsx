@@ -65,8 +65,9 @@ export default function BottomBar() {
               <div style={{ fontSize: fm + 4, fontWeight: 900, color: '#fff' }}>{won}</div>              
               <div style={{ fontSize: fsm, color: 'rgba(255,255,255,0.7)', marginTop: 3 }}>முன்னிலை</div>
               <div style={{ fontSize: fm + 4, fontWeight: 900, color: '#FDE68A' }}>{lead}</div>
-              */}
+              
             </div>
+            */}
           </div>
         )
       })}
