@@ -42,7 +42,7 @@ function FullDashboard() {
         transformOrigin: 'top left',
         display: 'flex',
         flexDirection: 'column',
-        background: `linear-gradient(rgba(241,245,249,0.88), rgba(241,245,249,0.88)), url('https://i.ibb.co/LDQsbQRN/thalamai.jpg') center/cover no-repeat`,
+        background: `linear-gradient(rgba(241,245,249,0.88), rgba(241,245,249,0.88)), url('https://i.ibb.co/5XYJtY4K/0598f1fe-1086-4646-859a-b8814d7ece59.png') center/cover no-repeat`,
         fontFamily: ff,
         overflow: 'hidden',
         flexShrink: 0,
