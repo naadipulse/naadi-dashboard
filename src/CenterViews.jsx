@@ -74,7 +74,7 @@ function View2({ tally, settings }) {
   })
 
   // Step 2: Sort ALL dots by x position (left to right)
-  const sortedDots = [...rawDots].sort((a, b) => a.x - b.x)
+  const sortedDots = [...rawDots].sort((a, b) => b.angle - a.angle)
 
   // Step 3: Assign colors to sorted dots
   const dots = sortedDots.map((d, i) => ({
