@@ -28,66 +28,67 @@ function View1({ settings }) {
   )
 }
 
-// View 2: Parliament chart using d3-parliament-chart library
+// View 2: Parliament chart - proper spacing calculation
 function View2({ tally, settings }) {
   const fm = parseInt(settings.font_medium) || 22
   const fsm = parseInt(settings.font_small) || 13
   const ff = settings.font_family || 'Segoe UI'
-  const [points, setPoints] = useState([])
 
   const get = p => { const d = tally.find(t => t.party === p); return d ? d.won + (d.leadingg || 0) : 0 }
-
-  // Sort parties descending by seats (highest = leftmost)
   const sortedParties = Object.keys(PARTY_DEFAULTS).sort((a, b) => get(b) - get(a))
 
-  // Party colors — use specific colors
   const COLORS = {
-    'DMK+':    '#DC2626',
-    'AIADMK+': '#16A34A',
-    'TVK':     '#D97706',
-    'Others':  '#4B5563',
-    'pending': '#D1D5DB',
+    'DMK+': '#DC2626', 'AIADMK+': '#16A34A',
+    'TVK': '#D97706', 'Others': '#4B5563', 'pending': '#D1D5DB',
   }
 
-  // Build seat color list left to right
   const seatColors = []
-  sortedParties.forEach(p => {
-    for (let i = 0; i < get(p); i++) seatColors.push(COLORS[p])
-  })
+  sortedParties.forEach(p => { for (let i = 0; i < get(p); i++) seatColors.push(COLORS[p]) })
   while (seatColors.length < 234) seatColors.push(COLORS['pending'])
 
-  const W = 920, H = 480
+  // Calculate parliament points with proper spacing
+  // Each row has capacity based on arc length / dot diameter
+  const W = 900, H = 460, SEAT_R = 9, ROW_H = 24
+  const graphH = H - 10
+  const graphR = graphH - SEAT_R
 
-  useEffect(() => {
-    // Dynamically load d3-parliament-chart
-    const script = document.createElement('script')
-    script.src = 'https://cdn.jsdelivr.net/npm/d3-parliament-chart@0.0.6/build/d3-parliament-chart.js'
-    script.onload = () => {
-      if (window.d3 && window.d3.getParliamentPoints) {
-        const pts = window.d3.getParliamentPoints(234, {
-          sections: 1,
-          sectionGap: 0,
-          seatRadius: 9,
-          rowHeight: 22,
-        }, W)
-        setPoints(pts)
+  const generatePoints = () => {
+    const points = []
+    let remaining = 234
+    let row = 0
+
+    while (remaining > 0 && row < 20) {
+      const rowR = graphR - (ROW_H * row)
+      if (rowR <= 0) break
+
+      // Gap radians to avoid dots going past bottom
+      const gapRad = Math.atan(SEAT_R / rowR)
+      const startRad = gapRad
+      const endRad = Math.PI - gapRad
+
+      // How many dots fit in this row
+      const step = Math.atan((2.5 * SEAT_R) / rowR)
+      const rowCount = Math.min(
+        Math.floor((endRad - startRad) / step),
+        remaining - 1
+      )
+      const adjStep = rowCount > 0 ? (endRad - startRad) / rowCount : 0
+
+      for (let i = 0; i <= rowCount; i++) {
+        const angle = rowCount > 0 ? (i * adjStep + startRad) : ((startRad + endRad) / 2)
+        points.push({
+          x: Math.cos(angle) * rowR + graphH,
+          y: graphH - Math.sin(angle) * rowR + SEAT_R,
+        })
       }
+      remaining -= (rowCount + 1)
+      row++
     }
-    if (!window.d3?.getParliamentPoints) {
-      document.head.appendChild(script)
-    } else {
-      const pts = window.d3.getParliamentPoints(234, {
-        sections: 1,
-        sectionGap: 0,
-        seatRadius: 9,
-        rowHeight: 22,
-      }, W)
-      setPoints(pts)
-    }
-  }, [])
+    return points
+  }
 
-  const totalDeclared = seatColors.filter(c => c !== COLORS['pending']).length
-  const CX = W / 2
+  const points = generatePoints()
+  const CX = graphH
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', fontFamily: ff, background: '#fff', borderRadius: 14, padding: '10px 16px' }}>
@@ -96,40 +97,39 @@ function View2({ tally, settings }) {
       </div>
 
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ flex: 1 }}>
-        {/* 118 line — behind dots */}
-        <line x1={CX} y1={10} x2={CX} y2={H - 30}
-          stroke="#374151" strokeWidth={2} strokeDasharray="8,5" opacity={0.5} />
-        <rect x={CX - 24} y={5} width={48} height={22} rx={4} fill="#F59E0B" />
-        <text x={CX} y={20} textAnchor="middle" fontSize={13} fill="#fff" fontWeight="bold">118</text>
+        {/* 118 line behind dots */}
+        <line x1={CX} y1={8} x2={CX} y2={H - 20}
+          stroke="#374151" strokeWidth={2} strokeDasharray="7,4" opacity={0.5} />
+        <rect x={CX - 22} y={2} width={44} height={20} rx={4} fill="#F59E0B" />
+        <text x={CX} y={16} textAnchor="middle" fontSize={12} fill="#fff" fontWeight="bold">118</text>
 
-        {/* Parliament dots */}
+        {/* Dots on top */}
         {points.map((pt, i) => (
           <circle key={i}
-            cx={pt.x} cy={pt.y} r={9}
+            cx={pt.x} cy={pt.y} r={SEAT_R}
             fill={seatColors[i] || COLORS['pending']}
             style={{ transition: `fill 0.6s ease ${i * 0.002}s` }}
           />
         ))}
       </svg>
 
-      {/* Party totals */}
-      <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
+      {/* Totals */}
+      <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
         {sortedParties.map(p => {
           const cfg = PARTY_DEFAULTS[p]
           const tot = get(p)
-          const pct = ((tot / 234) * 100).toFixed(1)
           const hasMaj = tot >= MAJORITY
           return (
             <div key={p} style={{
-              textAlign: 'center',
-              background: hasMaj ? COLORS[p] : cfg.light,
-              border: `2px solid ${COLORS[p]}`,
-              borderRadius: 10, padding: '6px 16px', minWidth: 75,
-              boxShadow: hasMaj ? `0 0 16px ${COLORS[p]}66` : 'none',
+              textAlign: 'center', background: hasMaj ? COLORS[p] : cfg.light,
+              border: `2px solid ${COLORS[p]}`, borderRadius: 10,
+              padding: '5px 14px', minWidth: 70,
             }}>
               <div style={{ fontSize: fsm, color: hasMaj ? '#fff' : COLORS[p], fontWeight: 700 }}>{cfg.label}</div>
-              <div style={{ fontSize: fm + 10, fontWeight: 900, color: hasMaj ? '#fff' : COLORS[p], lineHeight: 1 }}>{tot}</div>
-              <div style={{ fontSize: fsm - 1, color: hasMaj ? 'rgba(255,255,255,0.8)' : '#9CA3AF' }}>{pct}%</div>
+              <div style={{ fontSize: fm + 8, fontWeight: 900, color: hasMaj ? '#fff' : COLORS[p], lineHeight: 1 }}>{tot}</div>
+              <div style={{ fontSize: fsm - 1, color: hasMaj ? 'rgba(255,255,255,0.8)' : '#9CA3AF' }}>
+                {((tot / 234) * 100).toFixed(1)}%
+              </div>
             </div>
           )
         })}
