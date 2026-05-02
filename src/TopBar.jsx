@@ -1,9 +1,8 @@
 import React from 'react'
-import { useSettings } from './shared.jsx'
+import { useSettings, getComponentFonts } from './shared.jsx'
 
 export default function TopBar() {
   const settings = useSettings()
-  const ff = settings.font_family || 'Segoe UI'
   const { fs, fm, fsm, ff } = getComponentFonts(settings, 'top')
 
   return (
