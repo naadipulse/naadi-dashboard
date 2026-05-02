@@ -5,7 +5,7 @@ const VIEW_LABELS = ['வீடியோ', 'சட்டமன்றம்', 'Fl
 
 // View 1: மும்முனை போட்டி image
 function View1({ settings }) {
-  const imgUrl = settings.view1_image || 'https://i.ibb.co/sdQrcBGx/3moonai.jpg'
+  const imgUrl = settings.view1_image || 'https://i.ibb.co/nNfS4Wvd/5857325f-c3a8-4ae1-96b6-c2f8b225459b.png'
   const fm = parseInt(settings.font_medium) || 22
   const ff = settings.font_family || 'Segoe UI'
   return (
