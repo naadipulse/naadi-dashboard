@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from './supabaseClient.js'
-import { useSettings, PARTY_DEFAULTS } from './shared.jsx'
+import { useSettings, PARTY_DEFAULTS, getComponentFonts } from './shared.jsx'
 
 const DEFAULT_VIP_IDS = [4, 54, 9, 105, 15, 85, 11, 1]
 
@@ -41,9 +41,7 @@ export default function LeftPanel() {
     if (data) setAllConstituencies(data)
   }
 
-  const fm = parseInt(settings.font_medium) || 22
-  const fsm = parseInt(settings.font_small) || 13
-  const ff = settings.font_family || 'Segoe UI'
+  const { fs, fm, fsm, ff } = getComponentFonts(settings, 'left')
 
   const vipIds = settings.vip_constituencies
     ? settings.vip_constituencies.split(',').map(Number).filter(Boolean)
