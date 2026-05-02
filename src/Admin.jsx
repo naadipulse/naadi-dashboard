@@ -6,6 +6,280 @@ const ADMIN_PASSWORD = process.env.REACT_APP_ADMIN_PASSWORD || 'naadi2026'
 
 const FONTS = ['Segoe UI', 'Arial', 'Roboto', 'Noto Sans Tamil', 'Lato', 'Poppins', 'Open Sans', 'Tahoma']
 
+function ConstituenciesTab({ allConstituencies, loading, setLoading, msg, setMsg }) {
+  const [eciText, setEciText] = useState('')
+  const [vipText, setVipText] = useState('')
+  const [mode, setMode] = useState('constituency')
+  const [progress, setProgress] = useState('')
+  const [vipSearch, setVipSearch] = useState('')
+  const [selectedConst, setSelectedConst] = useState(null)
+  const [constSearchResults, setConstSearchResults] = useState([])
+
+  const PARTY_MAP = {
+    'DMK': 'DMK+', 'திமுக': 'DMK+', 'DMK+': 'DMK+',
+    'AIADMK': 'AIADMK+', 'அதிமுக': 'AIADMK+', 'AIADMK+': 'AIADMK+', 'ADMK': 'AIADMK+',
+    'TVK': 'TVK', 'தவெக': 'TVK',
+    'NTK': 'Others', 'நாதக': 'Others', 'Others': 'Others',
+  }
+
+  // Parse constituency-wise ECI data
+  const parseConstituencies = async () => {
+    if (!eciText.trim()) return
+    setLoading(true)
+    setMsg('🤖 Claude parsing constituencies...')
+    setProgress('Sending to Claude...')
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 4000,
+          messages: [{
+            role: 'user',
+            content: `You are parsing Tamil Nadu 2026 election results from ECI website data.
+Parse this data and return ONLY a JSON array. No explanation, no markdown, just raw JSON.
+
+For each constituency extract:
+- name: English name (match to official TN constituency names)
+- leading_party: one of "DMK+", "AIADMK+", "TVK", "Others" - map party names appropriately (DMK alliance = DMK+, AIADMK alliance = AIADMK+, TVK = TVK, rest = Others)
+- lead_margin: number (vote difference between 1st and 2nd)
+- status: "declared" if result final, "counting" if still counting
+- won: 1 if declared winner, 0 if still leading
+
+Return format:
+[{"name":"Kolathur","leading_party":"DMK+","lead_margin":15000,"status":"declared","won":1},...]
+
+Data:
+${eciText}`
+          }]
+        })
+      })
+      const data = await res.json()
+      const text = data.content[0].text.replace(/```json|```/g, '').trim()
+      const parsed = JSON.parse(text)
+
+      setProgress(`Parsed ${parsed.length} constituencies. Updating DB...`)
+
+      // Batch update constituencies
+      let updated = 0
+      for (const item of parsed) {
+        // Find constituency by name
+        const match = allConstituencies.find(c =>
+          c.name.toLowerCase() === item.name.toLowerCase() ||
+          c.name_tamil === item.name ||
+          c.name.toLowerCase().includes(item.name.toLowerCase())
+        )
+        if (match) {
+          await supabase.from('constituencies').update({
+            leading_party: item.leading_party,
+            lead_margin: item.lead_margin || 0,
+            status: item.status || 'counting',
+            updated_at: new Date(),
+          }).eq('id', match.id)
+          updated++
+        }
+      }
+
+      // Auto-update overall tally from constituency data
+      await updateOverallTally()
+
+      setProgress(`✅ ${updated}/${parsed.length} constituencies updated!`)
+      setMsg(`✅ ${updated} constituencies updated! Tally auto-calculated!`)
+    } catch (e) {
+      setMsg('❌ Error: ' + e.message)
+    }
+    setLoading(false)
+  }
+
+  // Auto-calculate overall tally from constituency results
+  const updateOverallTally = async () => {
+    const { data } = await supabase.from('constituencies').select('leading_party, status')
+    if (!data) return
+
+    const tally = { 'DMK+': { won: 0, leadingg: 0 }, 'AIADMK+': { won: 0, leadingg: 0 }, 'TVK': { won: 0, leadingg: 0 }, 'Others': { won: 0, leadingg: 0 } }
+
+    data.forEach(c => {
+      const p = c.leading_party
+      if (!p || p === 'pending') return
+      const party = PARTY_MAP[p] || 'Others'
+      if (tally[party]) {
+        if (c.status === 'declared') tally[party].won++
+        else tally[party].leadingg++
+      }
+    })
+
+    for (const [party, vals] of Object.entries(tally)) {
+      await supabase.from('overall_tally')
+        .update({ won: vals.won, leadingg: vals.leadingg, updated_at: new Date() })
+        .eq('party', party)
+    }
+  }
+
+  // Parse VIP constituency candidate results
+  const parseVipCandidates = async () => {
+    if (!vipText.trim() || !selectedConst) return
+    setLoading(true)
+    setMsg('🤖 Parsing VIP candidate results...')
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          messages: [{
+            role: 'user',
+            content: `Parse Tamil Nadu election candidate results for ${selectedConst.name_tamil} (${selectedConst.name}) constituency.
+Return ONLY JSON array. No markdown.
+
+Map parties: DMK/DMK alliance = "DMK+", AIADMK/AIADMK alliance = "AIADMK+", TVK = "TVK", others = "Others"
+
+Format: [{"candidate_name":"Name","candidate_name_tamil":"தமிழ் பெயர்","party":"DMK+","votes":12345},...]
+
+Sort by votes descending. Data:
+${vipText}`
+          }]
+        })
+      })
+      const data = await res.json()
+      const text = data.content[0].text.replace(/```json|```/g, '').trim()
+      const candidates = JSON.parse(text)
+
+      // Update existing candidates or insert new
+      for (const cand of candidates) {
+        const { data: existing } = await supabase.from('candidates')
+          .select('id').eq('constituency_id', selectedConst.id)
+          .ilike('candidate_name', `%${cand.candidate_name.split(' ')[0]}%`)
+          .single()
+
+        if (existing) {
+          await supabase.from('candidates').update({
+            votes: cand.votes,
+            candidate_name_tamil: cand.candidate_name_tamil || existing.candidate_name_tamil,
+          }).eq('id', existing.id)
+        } else {
+          await supabase.from('candidates').insert({
+            constituency_id: selectedConst.id,
+            constituency_name: selectedConst.name,
+            candidate_name: cand.candidate_name,
+            candidate_name_tamil: cand.candidate_name_tamil || cand.candidate_name,
+            party: cand.party,
+            votes: cand.votes,
+            is_vip: true,
+          })
+        }
+      }
+
+      setMsg(`✅ ${selectedConst.name_tamil} — ${candidates.length} candidates updated!`)
+      setVipText('')
+    } catch (e) { setMsg('❌ Error: ' + e.message) }
+    setLoading(false)
+  }
+
+  const searchConst = (q) => {
+    setVipSearch(q)
+    if (q.length < 2) { setConstSearchResults([]); return }
+    setConstSearchResults(
+      allConstituencies.filter(c =>
+        c.name?.toLowerCase().includes(q.toLowerCase()) ||
+        c.name_tamil?.includes(q)
+      ).slice(0, 6)
+    )
+  }
+
+  return (
+    <div style={{ background: '#111827', borderRadius: 12, padding: 20, border: '1px solid #1E293B' }}>
+      <div style={{ fontSize: 16, fontWeight: 700, color: '#F59E0B', marginBottom: 4 }}>🗺️ தொகுதி Result Update</div>
+      <div style={{ fontSize: 12, color: '#64748B', marginBottom: 16 }}>ECI data paste → Claude parse → Dashboard auto-update</div>
+
+      {/* Mode tabs */}
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+        <button onClick={() => setMode('constituency')}
+          style={{ background: mode === 'constituency' ? '#DC2626' : '#1E293B', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+          📊 All Constituencies
+        </button>
+        <button onClick={() => setMode('vip')}
+          style={{ background: mode === 'vip' ? '#F59E0B' : '#1E293B', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+          ⭐ VIP Candidates
+        </button>
+      </div>
+
+      {mode === 'constituency' && (
+        <>
+          <div style={{ fontSize: 12, color: '#64748B', marginBottom: 8 }}>
+            ECI result page-இல் இருந்து constituency-wise data copy பண்ணி paste பண்ணுங்க
+          </div>
+          <textarea
+            value={eciText}
+            onChange={e => setEciText(e.target.value)}
+            placeholder={`Paste ECI data here...\n\nExample:\nKolathur - DMK Leading by 15420\nEdappadi - AIADMK Declared Winner 28450\nVikravandi - TVK Leading by 8900`}
+            style={{ background: '#1E293B', border: '1px solid #334155', borderRadius: 8, color: '#fff', padding: 12, fontSize: 13, width: '100%', minHeight: 160, resize: 'vertical', marginBottom: 12, fontFamily: 'monospace' }}
+          />
+          {progress && (
+            <div style={{ fontSize: 12, color: '#F59E0B', marginBottom: 8, padding: '8px 12px', background: '#1E293B', borderRadius: 6 }}>
+              {progress}
+            </div>
+          )}
+          <div style={{ fontSize: 11, color: '#475569', marginBottom: 12 }}>
+            💡 Claude parse பண்ணி constituencies update + overall tally auto-calculate பண்ணும்!
+          </div>
+          <button onClick={parseConstituencies} disabled={loading || !eciText.trim()}
+            style={{ background: '#DC2626', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 0', width: '100%', fontSize: 16, fontWeight: 700, cursor: 'pointer', opacity: !eciText.trim() ? 0.5 : 1 }}>
+            {loading ? '⏳ Parsing & Updating...' : '🚀 Parse & Update All Constituencies'}
+          </button>
+        </>
+      )}
+
+      {mode === 'vip' && (
+        <>
+          <div style={{ fontSize: 12, color: '#64748B', marginBottom: 8 }}>
+            VIP constituency select → candidate results paste → auto-update
+          </div>
+
+          {/* Constituency search */}
+          <div style={{ position: 'relative', marginBottom: 12 }}>
+            <input type="text" value={vipSearch} onChange={e => searchConst(e.target.value)}
+              placeholder="தொகுதி search (e.g. Kolathur, கொளத்தூர்)..."
+              style={{ background: '#1E293B', border: `1px solid ${selectedConst ? '#F59E0B' : '#334155'}`, borderRadius: 8, color: '#fff', padding: '10px 14px', fontSize: 14, width: '100%' }} />
+            {constSearchResults.length > 0 && (
+              <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#1E293B', border: '1px solid #334155', borderRadius: 8, zIndex: 100, marginTop: 4 }}>
+                {constSearchResults.map(c => (
+                  <div key={c.id} onClick={() => { setSelectedConst(c); setVipSearch(c.name_tamil); setConstSearchResults([]) }}
+                    style={{ padding: '10px 14px', cursor: 'pointer', borderBottom: '1px solid #334155', fontSize: 13 }}
+                    onMouseEnter={e => e.currentTarget.style.background = '#374151'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                    <span style={{ color: '#fff', fontWeight: 700 }}>{c.name_tamil}</span>
+                    <span style={{ color: '#64748B', marginLeft: 8 }}>{c.name} • {c.district}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {selectedConst && (
+            <div style={{ background: '#1E293B', borderRadius: 8, padding: '8px 14px', marginBottom: 12, fontSize: 13, color: '#F59E0B', fontWeight: 700 }}>
+              ✅ Selected: {selectedConst.name_tamil} ({selectedConst.name})
+            </div>
+          )}
+
+          <textarea
+            value={vipText}
+            onChange={e => setVipText(e.target.value)}
+            placeholder={`Paste candidate results:\n\nExample:\nM.K.Stalin (DMK) - 45230 votes\nTVK Candidate - 12450 votes\nAIADMK Candidate - 8900 votes`}
+            style={{ background: '#1E293B', border: '1px solid #334155', borderRadius: 8, color: '#fff', padding: 12, fontSize: 13, width: '100%', minHeight: 140, resize: 'vertical', marginBottom: 12, fontFamily: 'monospace' }}
+          />
+
+          <button onClick={parseVipCandidates} disabled={loading || !vipText.trim() || !selectedConst}
+            style={{ background: '#F59E0B', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 0', width: '100%', fontSize: 16, fontWeight: 700, cursor: 'pointer', opacity: (!vipText.trim() || !selectedConst) ? 0.5 : 1 }}>
+            {loading ? '⏳ Updating...' : '⭐ Update VIP Candidate Votes'}
+          </button>
+        </>
+      )}
+    </div>
+  )
+}
+
 const COMPONENTS = [
   { key: 'top',    label: '🔝 Top Bar',    prefix: 'top' },
   { key: 'left',   label: '⬅️ Left Panel',  prefix: 'left' },
@@ -292,6 +566,7 @@ export default function Admin() {
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
         <button style={tabStyle('tally')} onClick={() => setTab('tally')}>📊 Tally</button>
+        <button style={tabStyle('constituencies')} onClick={() => setTab('constituencies')}>🗺️ தொகுதி</button>
         <button style={tabStyle('vip')} onClick={() => setTab('vip')}>⭐ VIP தொகுதிகள்</button>
         <button style={tabStyle('fonts')} onClick={() => setTab('fonts')}>🔤 Font Size</button>
         <button style={tabStyle('photos')} onClick={() => setTab('photos')}>📸 Photos</button>
@@ -339,6 +614,15 @@ export default function Admin() {
             </>
           )}
         </div>
+      )}
+
+      {/* CONSTITUENCIES TAB */}
+      {tab === 'constituencies' && (
+        <ConstituenciesTab
+          allConstituencies={allConstituencies}
+          loading={loading} setLoading={setLoading}
+          msg={msg} setMsg={setMsg}
+        />
       )}
 
       {/* VIP CONSTITUENCIES TAB */}
