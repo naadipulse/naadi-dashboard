@@ -4,7 +4,7 @@ import { useSettings } from './shared.jsx'
 export default function TopBar() {
   const settings = useSettings()
   const ff = settings.font_family || 'Segoe UI'
-  const fm = parseInt(settings.font_medium) || 22
+  const { fs, fm, fsm, ff } = getComponentFonts(settings, 'top')
 
   return (
     <div style={{ fontFamily: ff, width: '100%' }}>
