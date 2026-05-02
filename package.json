@@ -8,6 +8,7 @@
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "framer-motion": "^11.0.0"
+    "d3-parliament-chart": "^0.0.6",
   },
   "scripts": {
     "start": "react-scripts start",
