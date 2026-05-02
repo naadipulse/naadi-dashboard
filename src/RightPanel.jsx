@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { useSettings, useConstituencies, PARTY_DEFAULTS } from './shared.jsx'
+import { useSettings, useConstituencies, PARTY_DEFAULTS, getComponentFonts } from './shared.jsx'
 
 const DISTRICTS = [
   'சென்னை', 'திருவள்ளூர்', 'காஞ்சிபுரம்', 'செங்கல்பட்டு',
-  'ராணிப்பேட்டை', 'வேலூர்', 'திருப்பத்தூர்', 'விழுப்புரம்',
+  'இராணிப்பேட்டை', 'வேலூர்', 'திருப்பத்தூர்', 'விழுப்புரம்',
   'கள்ளக்குறிச்சி', 'கடலூர்', 'சேலம்', 'நாமக்கல்',
-  'தர்மபுரி', 'கிருஷ்ணகிரி', 'ஈரோடு', 'திருப்பூர்',
-  'கோவை', 'நீலகிரி', 'தஞ்சாவூர்', 'நாகப்பட்டினம்',
+  'தருமபுரி', 'கிருஷ்ணகிரி', 'ஈரோடு', 'திருப்பூர்',
+  'கோயம்புத்தூர்', 'நீலகிரி', 'தஞ்சாவூர்', 'நாகப்பட்டினம்',
   'திருவாரூர்', 'மயிலாடுதுறை', 'அரியலூர்', 'பெரம்பலூர்',
-  'திருச்சி', 'கரூர்', 'புதுக்கோட்டை', 'மதுரை',
-  'தேனி', 'திண்டுக்கல்', 'சிவகங்கை', 'ராமநாதபுரம்',
+  'திருச்சிராப்பள்ளி', 'கரூர்', 'புதுக்கோட்டை', 'மதுரை',
+  'தேனி', 'திண்டுக்கல்', 'சிவகங்கை', 'இராமநாதபுரம்',
   'விருதுநகர்', 'திருநெல்வேலி', 'தென்காசி', 'தூத்துக்குடி',
-  'கன்னியாகுமரி'
+  'கன்னியாகுமரி', 'திருவண்ணாமலை'
 ]
 
 export default function RightPanel() {
@@ -31,10 +31,7 @@ export default function RightPanel() {
     return () => clearInterval(iv)
   }, [])
 
-  const fs = parseInt(settings.font_large)
-  const fm = parseInt(settings.font_medium)
-  const fsm = parseInt(settings.font_small)
-  const ff = settings.font_family
+  const { fs, fm, fsm, ff } = getComponentFonts(settings, 'right')
 
   const currentDistrict = DISTRICTS[districtIdx]
 
