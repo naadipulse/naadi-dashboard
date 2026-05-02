@@ -1,44 +1,83 @@
-import React from 'react'
-import { useSettings, useTally, useConstituencies, PARTY_DEFAULTS, AnimNum, Photo, MAJORITY } from './shared.jsx'
+import React, { useState, useEffect } from 'react'
+import { supabase } from './supabaseClient.js'
+import { useSettings, useTally, PARTY_DEFAULTS, MAJORITY } from './shared.jsx'
 
-const DISTRICTS = [
-  { name: 'மதுரை', key: 'madurai' },
-  { name: 'சிவகங்கை', key: 'sivagangai' },
-  { name: 'திருநெல்வேலி', key: 'tirunelveli' },
-  { name: 'கோவை', key: 'coimbatore' },
-  { name: 'சேலம்', key: 'salem' },
-  { name: 'திருச்சி', key: 'trichy' },
-  { name: 'வேலூர்', key: 'vellore' },
-  { name: 'தஞ்சாவூர்', key: 'thanjavur' },
-  { name: 'விருதுநகர்', key: 'virudhunagar' },
-  { name: 'தூத்துக்குடி', key: 'tuticorin' },
+// VIP_CONSTITUENCIES now from settings
+const DEFAULT_VIP = [
+  { id: 4,   name: 'கொளத்தூர்',    english: 'Kolathur' },
+  { id: 54,  name: 'எடப்பாடி',     english: 'Edappadi' },
+  { id: 9,   name: 'சேப்பாக்கம்',  english: 'Chepauk' },
+  { id: 105, name: 'விக்கிரவாண்டி', english: 'Vikravandi' },
+  { id: 15,  name: 'மயிலாப்பூர்',  english: 'Mylapore' },
+  { id: 85,  name: 'கோவை தெற்கு',  english: 'Coimbatore South' },
+  { id: 11,  name: 'அண்ணா நகர்',   english: 'Anna Nagar' },
+  { id: 1,   name: 'திருவொற்றியூர்', english: 'Tiruvottiyur' },
 ]
+
+function Photo({ photoUrl, fallback, color, size = 36 }) {
+  const [err, setErr] = useState(false)
+  if (err || !photoUrl) return (
+    <div style={{ width: size, height: size, borderRadius: '50%', background: color + '22', border: `2px solid ${color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size * 0.28, fontWeight: 900, color, flexShrink: 0 }}>
+      {fallback}
+    </div>
+  )
+  return <img src={photoUrl} alt="" onError={() => setErr(true)} style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', objectPosition: 'top', border: `2px solid ${color}`, flexShrink: 0 }} />
+}
 
 export default function LeftPanel() {
   const settings = useSettings()
   const { gT, gW, gL } = useTally()
-  const constituencies = useConstituencies()
+  const [candidates, setCandidates] = useState([])
+  const vipConstituencies = settings.vip_constituencies
+    ? settings.vip_constituencies.split(",").map(Number).filter(Boolean).map(id => allConstituencies.find(c => c.id === id)).filter(Boolean)
+    : DEFAULT_VIP
+  const [vipIdx, setVipIdx] = useState(0)
+  const [fade, setFade] = useState(true)
+
+  useEffect(() => {
+    fetchCandidates()
+    const sub = supabase.channel('candidates_' + Math.random())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'candidates' }, fetchCandidates)
+      .subscribe()
+    return () => sub.unsubscribe()
+  }, [])
+
+  useEffect(() => {
+    const iv = setInterval(() => {
+      setFade(false)
+      setTimeout(() => {
+        setVipIdx(i => (i + 2) % VIP_CONSTITUENCIES.length)
+        setFade(true)
+      }, 400)
+    }, 5000)
+    return () => clearInterval(iv)
+  }, [])
+
+  const fetchCandidates = async () => {
+    const { data } = await supabase.from('candidates').select('*').eq('is_vip', true)
+    if (data) setCandidates(data)
+  }
 
   const fs = parseInt(settings.font_large)
   const fm = parseInt(settings.font_medium)
   const fsm = parseInt(settings.font_small)
   const ff = settings.font_family
 
-  // Group constituencies by district
-  const districtResults = DISTRICTS.map(district => {
-    const distConsts = constituencies.filter(c =>
-      c.name?.toLowerCase().includes(district.key) ||
-      c.name_tamil?.includes(district.name)
-    )
-    return { ...district, constituencies: distConsts }
-  })
-
-  // Get sorted parties for top display
   const sorted = Object.keys(PARTY_DEFAULTS).sort((a, b) => gT(b) - gT(a))
   const top3 = sorted.slice(0, 3)
 
+  // Current 2 VIP constituencies
+  const vip1 = VIP_CONSTITUENCIES[vipIdx % VIP_CONSTITUENCIES.length]
+  const vip2 = VIP_CONSTITUENCIES[(vipIdx + 1) % VIP_CONSTITUENCIES.length]
+
+  const getCandidates = (constId) => {
+    return candidates
+      .filter(c => c.constituency_id === constId)
+      .sort((a, b) => b.votes - a.votes)
+  }
+
   return (
-    <div style={{ fontFamily: ff, display: 'flex', flexDirection: 'column', gap: 8, height: '100%', padding: 8, background: 'transparent', overflow: 'hidden' }}>
+    <div style={{ fontFamily: ff, display: 'flex', flexDirection: 'column', gap: 8, height: '100%', overflow: 'hidden' }}>
 
       {/* Top 3 party cards */}
       {top3.map((p, rank) => {
@@ -52,94 +91,126 @@ export default function LeftPanel() {
           <div key={p} style={{
             background: hasMaj ? cfg.light : '#fff',
             border: `2px solid ${hasMaj ? cfg.color : '#E5E7EB'}`,
-            borderRadius: 12, padding: '10px 14px',
-            boxShadow: hasMaj ? `0 0 20px ${cfg.color}44` : '0 2px 6px rgba(0,0,0,0.08)',
+            borderRadius: 12, padding: '8px 12px',
+            boxShadow: hasMaj ? `0 0 16px ${cfg.color}44` : '0 2px 6px rgba(0,0,0,0.07)',
             transition: 'all 0.5s',
             position: 'relative', overflow: 'hidden',
           }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 4, background: cfg.color }} />
+            <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: cfg.color }} />
             {rank === 0 && tot > 0 && (
-              <div style={{ position: 'absolute', top: 7, right: 8, fontSize: fsm - 2, color: '#F59E0B', fontWeight: 800 }}>🥇 முன்னிலை</div>
+              <div style={{ position: 'absolute', top: 6, right: 8, fontSize: fsm - 2, color: '#F59E0B', fontWeight: 800 }}>🥇 முன்னிலை</div>
             )}
             {hasMaj && (
-              <div style={{ textAlign: 'center', background: cfg.color, color: '#fff', fontSize: fsm - 1, fontWeight: 800, borderRadius: 5, padding: '1px 0', marginBottom: 6, animation: 'pulse 1.5s infinite' }}>
+              <div style={{ textAlign: 'center', background: cfg.color, color: '#fff', fontSize: fsm - 2, fontWeight: 800, borderRadius: 4, padding: '1px 0', marginBottom: 6, animation: 'pulse 1.5s infinite' }}>
                 🏆 பெரும்பான்மை!
               </div>
             )}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8, marginTop: 4 }}>
-              <Photo photoUrl={photoUrl} fallback={cfg.short.slice(0, 2)} color={cfg.color} size={38} />
-              <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, marginTop: 4 }}>
+              <Photo photoUrl={photoUrl} fallback={cfg.short.slice(0, 2)} color={cfg.color} size={36} />
+              <div style={{ flex: 1 }}>
                 <div style={{ color: cfg.color, fontWeight: 900, fontSize: fm }}>{cfg.label}</div>
                 <div style={{ color: '#6B7280', fontSize: fsm - 2 }}>{cfg.leader}</div>
               </div>
+              <div style={{ fontSize: fs - 4, fontWeight: 900, color: cfg.color }}>{tot}</div>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: 8 }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: fsm - 2, color: '#6B7280' }}>மொத்தம்</div>
-                <AnimNum val={tot} color={cfg.color} size={fs - 4} font={ff} />
+            <div style={{ display: 'flex', gap: 6, marginBottom: 6 }}>
+              <div style={{ flex: 1, textAlign: 'center', background: '#F0FDF4', borderRadius: 6, padding: '3px 0' }}>
+                <div style={{ fontSize: fsm - 3, color: '#6B7280' }}>வென்றது</div>
+                <div style={{ fontSize: fm + 2, fontWeight: 800, color: '#16A34A' }}>{won}</div>
               </div>
-              <div style={{ width: 1, background: '#E5E7EB' }} />
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: fsm - 2, color: '#6B7280' }}>வென்றது</div>
-                <AnimNum val={won} color="#16A34A" size={fm + 2} font={ff} />
-              </div>
-              <div style={{ width: 1, background: '#E5E7EB' }} />
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: fsm - 2, color: '#6B7280' }}>முன்னிலை</div>
-                <AnimNum val={lead} color="#D97706" size={fm + 2} font={ff} />
+              <div style={{ flex: 1, textAlign: 'center', background: '#FEF3C7', borderRadius: 6, padding: '3px 0' }}>
+                <div style={{ fontSize: fsm - 3, color: '#6B7280' }}>முன்னிலை</div>
+                <div style={{ fontSize: fm + 2, fontWeight: 800, color: '#D97706' }}>{lead}</div>
               </div>
             </div>
-            <div style={{ background: '#E5E7EB', borderRadius: 999, height: 6, overflow: 'hidden' }}>
+            <div style={{ background: '#E5E7EB', borderRadius: 999, height: 5, overflow: 'hidden' }}>
               <div style={{ background: cfg.color, width: `${pct}%`, height: '100%', borderRadius: 999, transition: 'width 1s ease' }} />
             </div>
           </div>
         )
       })}
 
-      {/* District wise results — Polimer News style */}
-      <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column', gap: 6 }}>
-        <div style={{ fontSize: fm - 2, fontWeight: 800, color: '#374151', padding: '4px 8px', background: '#F3F4F6', borderRadius: 6 }}>
-          மாவட்டவாரி முன்னிலை
-        </div>
-
-        {districtResults.map((district, di) => {
-          const declared = district.constituencies.filter(c => c.leading_party && c.leading_party !== 'pending')
-
+      {/* VIP Constituencies */}
+      <div style={{
+        flex: 1, overflow: 'hidden',
+        opacity: fade ? 1 : 0,
+        transform: fade ? 'translateY(0)' : 'translateY(6px)',
+        transition: 'all 0.4s ease',
+        display: 'flex', flexDirection: 'column', gap: 6,
+      }}>
+        {[vip1, vip2].map((vip, vi) => {
+          const vipCandidates = getCandidates(vip.id)
           return (
-            <div key={di} style={{ background: '#fff', borderRadius: 8, overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
-              {/* District header */}
-              <div style={{ background: '#DC2626', padding: '4px 10px' }}>
-                <span style={{ fontSize: fm - 2, fontWeight: 800, color: '#fff' }}>{district.name}</span>
+            <div key={vi} style={{
+              background: '#fff',
+              border: '1px solid #E5E7EB',
+              borderRadius: 10,
+              overflow: 'hidden',
+              flex: 1,
+              boxShadow: '0 2px 6px rgba(0,0,0,0.07)',
+            }}>
+              {/* Constituency header */}
+              <div style={{ background: '#1E293B', padding: '6px 12px' }}>
+                <div style={{ fontSize: fm, fontWeight: 900, color: '#fff' }}>{vip.name}</div>
+                <div style={{ fontSize: fsm - 2, color: '#94A3B8' }}>{vip.english}</div>
               </div>
 
-              {/* Constituency rows */}
-              {declared.length === 0 ? (
-                <div style={{ padding: '6px 10px', fontSize: fsm - 2, color: '#9CA3AF' }}>⏳ தொடங்கவில்லை</div>
+              {/* Candidates */}
+              {vipCandidates.length === 0 ? (
+                <div style={{ padding: '10px 12px', color: '#9CA3AF', fontSize: fsm - 1 }}>
+                  ⏳ வாக்கு எண்ணிக்கை தொடங்கவில்லை
+                </div>
               ) : (
-                declared.slice(0, 3).map((c, i) => {
-                  const lp = PARTY_DEFAULTS[c.leading_party] || PARTY_DEFAULTS['Others']
+                vipCandidates.slice(0, 4).map((cand, i) => {
+                  const cfg = PARTY_DEFAULTS[cand.party] || PARTY_DEFAULTS['Others']
+                  const maxVotes = vipCandidates[0]?.votes || 1
+                  const pct = ((cand.votes / maxVotes) * 100)
                   return (
                     <div key={i} style={{
-                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                      padding: '5px 10px', borderTop: i > 0 ? '1px solid #F3F4F6' : 'none',
-                      animation: `slideIn 0.3s ease ${i * 0.05}s both`,
+                      padding: '6px 12px',
+                      borderBottom: i < vipCandidates.length - 1 ? '1px solid #F3F4F6' : 'none',
+                      background: i === 0 ? cfg.light : '#fff',
                     }}>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: fsm - 1, fontWeight: 600, color: '#111827' }}>
-                          {c.name_tamil || c.name}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 3 }}>
+                        {/* Rank */}
+                        <div style={{
+                          width: 20, height: 20, borderRadius: '50%',
+                          background: i === 0 ? cfg.color : '#E5E7EB',
+                          color: i === 0 ? '#fff' : '#6B7280',
+                          fontSize: fsm - 2, fontWeight: 800,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          flexShrink: 0,
+                        }}>{i + 1}</div>
+
+                        {/* Party symbol */}
+                        <div style={{
+                          width: 28, height: 28, borderRadius: '50%',
+                          background: cfg.color,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: 8, color: '#fff', fontWeight: 800, flexShrink: 0,
+                        }}>{cfg.short}</div>
+
+                        {/* Name */}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: fsm, fontWeight: 700, color: '#111827', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {cand.candidate_name_tamil || cand.candidate_name}
+                          </div>
+                          <div style={{ fontSize: fsm - 2, color: cfg.color, fontWeight: 600 }}>{cfg.label}</div>
                         </div>
-                        <div style={{ fontSize: fsm - 3, color: '#9CA3AF' }}>
-                          {c.status === 'declared' ? 'முடிவு' : 'முன்னிலை'}
-                          {c.lead_margin > 0 && ` +${c.lead_margin}`}
+
+                        {/* Votes */}
+                        <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                          <div style={{ fontSize: fm, fontWeight: 900, color: i === 0 ? cfg.color : '#374151' }}>
+                            {cand.votes > 0 ? cand.votes.toLocaleString('en-IN') : '—'}
+                          </div>
                         </div>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        {/* Party symbol placeholder */}
-                        <div style={{ width: 20, height: 20, borderRadius: '50%', background: lp.color + '22', border: `1px solid ${lp.color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, color: lp.color, fontWeight: 700 }}>
-                          {lp.short.slice(0, 2)}
+                      {/* Vote bar */}
+                      {cand.votes > 0 && (
+                        <div style={{ background: '#E5E7EB', borderRadius: 999, height: 3, overflow: 'hidden', marginLeft: 56 }}>
+                          <div style={{ background: cfg.color, width: `${pct}%`, height: '100%', borderRadius: 999, transition: 'width 1s ease' }} />
                         </div>
-                        <span style={{ fontSize: fsm - 1, color: lp.color, fontWeight: 800 }}>முன்னிலை</span>
-                      </div>
+                      )}
                     </div>
                   )
                 })
@@ -151,7 +222,6 @@ export default function LeftPanel() {
 
       <style>{`
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
-        @keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
       `}</style>
     </div>
   )
