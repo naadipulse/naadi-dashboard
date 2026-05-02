@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { supabase } from './supabaseClient'
-import { useSettings, PARTY_DEFAULTS } from './shared'
+import { supabase } from './supabaseClient.js'
+import { useSettings, PARTY_DEFAULTS } from './shared.jsx'
 
 const ADMIN_PASSWORD = process.env.REACT_APP_ADMIN_PASSWORD || 'naadi2026'
 
-const FONTS = [
-  'Segoe UI', 'Arial', 'Roboto', 'Noto Sans Tamil',
-  'Lato', 'Poppins', 'Open Sans', 'Tahoma'
-]
+const FONTS = ['Segoe UI', 'Arial', 'Roboto', 'Noto Sans Tamil', 'Lato', 'Poppins', 'Open Sans', 'Tahoma']
 
 export default function Admin() {
   const [auth, setAuth] = useState(false)
@@ -16,25 +13,33 @@ export default function Admin() {
   const [tab, setTab] = useState('tally')
   const settings = useSettings()
 
-  // Tally state
+  // Tally
   const [manualData, setManualData] = useState({
-    'DMK+':    { won: 0, leadingg: 0 },
+    'DMK+': { won: 0, leadingg: 0 },
     'AIADMK+': { won: 0, leadingg: 0 },
-    'TVK':     { won: 0, leadingg: 0 },
-    'Others':  { won: 0, leadingg: 0 },
+    'TVK': { won: 0, leadingg: 0 },
+    'Others': { won: 0, leadingg: 0 },
   })
   const [llmText, setLlmText] = useState('')
   const [mode, setMode] = useState('manual')
   const [loading, setLoading] = useState(false)
 
-  // Settings state
+  // Font/Photo settings
   const [fontLarge, setFontLarge] = useState(52)
   const [fontMedium, setFontMedium] = useState(22)
   const [fontSmall, setFontSmall] = useState(13)
   const [fontFamily, setFontFamily] = useState('Segoe UI')
-  const [photos, setPhotos] = useState({
-    photo_dmk: '', photo_aiadmk: '', photo_tvk: '', photo_others: ''
-  })
+  const [photos, setPhotos] = useState({ photo_dmk: '', photo_aiadmk: '', photo_tvk: '', photo_others: '' })
+
+  // VIP constituencies
+  const [allConstituencies, setAllConstituencies] = useState([])
+  const [vipIds, setVipIds] = useState([])
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState([])
+
+  useEffect(() => {
+    fetchAllConstituencies()
+  }, [])
 
   useEffect(() => {
     if (settings) {
@@ -48,8 +53,16 @@ export default function Admin() {
         photo_tvk: settings.photo_tvk || '',
         photo_others: settings.photo_others || '',
       })
+      if (settings.vip_constituencies) {
+        setVipIds(settings.vip_constituencies.split(',').map(Number).filter(Boolean))
+      }
     }
   }, [settings])
+
+  const fetchAllConstituencies = async () => {
+    const { data } = await supabase.from('constituencies').select('id, name, name_tamil, district').order('id')
+    if (data) setAllConstituencies(data)
+  }
 
   const login = () => {
     if (pw === ADMIN_PASSWORD) setAuth(true)
@@ -71,10 +84,18 @@ export default function Admin() {
         saveSetting('font_family', fontFamily),
         ...Object.entries(photos).map(([k, v]) => saveSetting(k, v)),
       ])
-      setMsg('✅ Settings saved! All views updated!')
-    } catch (e) {
-      setMsg('❌ Error: ' + e.message)
-    }
+      setMsg('✅ Settings saved!')
+    } catch (e) { setMsg('❌ Error: ' + e.message) }
+    setLoading(false)
+  }
+
+  const saveVipConstituencies = async () => {
+    setLoading(true)
+    setMsg('💾 Saving VIP list...')
+    try {
+      await saveSetting('vip_constituencies', vipIds.join(','))
+      setMsg('✅ VIP தொகுதிகள் saved! Left panel updated!')
+    } catch (e) { setMsg('❌ Error: ' + e.message) }
     setLoading(false)
   }
 
@@ -88,9 +109,7 @@ export default function Admin() {
           .eq('party', party)
       }
       setMsg('✅ Tally updated!')
-    } catch (e) {
-      setMsg('❌ Error: ' + e.message)
-    }
+    } catch (e) { setMsg('❌ Error: ' + e.message) }
     setLoading(false)
   }
 
@@ -105,12 +124,11 @@ export default function Admin() {
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
           max_tokens: 500,
-          messages: [{ role: 'user', content: `Parse election data and return ONLY JSON, no explanation:\n"${llmText}"\n\nFormat: {"DMK+":{"won":0,"leadingg":0},"AIADMK+":{"won":0,"leadingg":0},"TVK":{"won":0,"leadingg":0},"Others":{"won":0,"leadingg":0}}` }]
+          messages: [{ role: 'user', content: `Parse election data and return ONLY JSON:\n"${llmText}"\nFormat: {"DMK+":{"won":0,"leadingg":0},"AIADMK+":{"won":0,"leadingg":0},"TVK":{"won":0,"leadingg":0},"Others":{"won":0,"leadingg":0}}` }]
         })
       })
       const data = await res.json()
-      const text = data.content[0].text.replace(/```json|```/g, '').trim()
-      const parsed = JSON.parse(text)
+      const parsed = JSON.parse(data.content[0].text.replace(/```json|```/g, '').trim())
       for (const [party, vals] of Object.entries(parsed)) {
         await supabase.from('overall_tally')
           .update({ won: vals.won || 0, leadingg: vals.leadingg || 0, updated_at: new Date() })
@@ -118,11 +136,31 @@ export default function Admin() {
       }
       setMsg('✅ Parsed & updated!')
       setLlmText('')
-    } catch (e) {
-      setMsg('❌ Error: ' + e.message)
-    }
+    } catch (e) { setMsg('❌ Error: ' + e.message) }
     setLoading(false)
   }
+
+  // Search constituencies
+  const handleSearch = (q) => {
+    setSearchQuery(q)
+    if (q.length < 2) { setSearchResults([]); return }
+    const results = allConstituencies.filter(c =>
+      c.name?.toLowerCase().includes(q.toLowerCase()) ||
+      c.name_tamil?.includes(q) ||
+      c.district?.includes(q)
+    ).slice(0, 8)
+    setSearchResults(results)
+  }
+
+  const addVip = (id) => {
+    if (!vipIds.includes(id)) setVipIds([...vipIds, id])
+    setSearchQuery('')
+    setSearchResults([])
+  }
+
+  const removeVip = (id) => setVipIds(vipIds.filter(v => v !== id))
+
+  const getConstituency = (id) => allConstituencies.find(c => c.id === id)
 
   if (!auth) return (
     <div style={{ background: '#0A0F1E', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Segoe UI' }}>
@@ -139,7 +177,7 @@ export default function Admin() {
   )
 
   const tabStyle = (t) => ({
-    padding: '8px 18px', borderRadius: 8, cursor: 'pointer', fontWeight: 700, fontSize: 14,
+    padding: '8px 16px', borderRadius: 8, cursor: 'pointer', fontWeight: 700, fontSize: 13,
     background: tab === t ? '#DC2626' : '#1E293B',
     color: tab === t ? '#fff' : '#94A3B8', border: 'none',
   })
@@ -150,8 +188,9 @@ export default function Admin() {
       <div style={{ fontSize: 12, color: '#64748B', marginBottom: 20 }}>Election Dashboard Control</div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
-        <button style={tabStyle('tally')} onClick={() => setTab('tally')}>📊 Tally Update</button>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+        <button style={tabStyle('tally')} onClick={() => setTab('tally')}>📊 Tally</button>
+        <button style={tabStyle('vip')} onClick={() => setTab('vip')}>⭐ VIP தொகுதிகள்</button>
         <button style={tabStyle('fonts')} onClick={() => setTab('fonts')}>🔤 Font Size</button>
         <button style={tabStyle('photos')} onClick={() => setTab('photos')}>📸 Photos</button>
       </div>
@@ -160,10 +199,9 @@ export default function Admin() {
       {tab === 'tally' && (
         <div style={{ background: '#111827', borderRadius: 12, padding: 20, border: '1px solid #1E293B' }}>
           <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-            <button onClick={() => setMode('manual')} style={{ ...tabStyle(mode === 'manual' ? 'manual' : ''), background: mode === 'manual' ? '#DC2626' : '#1E293B' }}>✏️ Manual</button>
-            <button onClick={() => setMode('llm')} style={{ ...tabStyle(mode === 'llm' ? 'llm' : ''), background: mode === 'llm' ? '#DC2626' : '#1E293B' }}>🤖 LLM</button>
+            <button onClick={() => setMode('manual')} style={{ ...tabStyle('x'), background: mode === 'manual' ? '#DC2626' : '#1E293B', color: '#fff' }}>✏️ Manual</button>
+            <button onClick={() => setMode('llm')} style={{ ...tabStyle('x'), background: mode === 'llm' ? '#DC2626' : '#1E293B', color: '#fff' }}>🤖 LLM</button>
           </div>
-
           {mode === 'manual' && (
             <>
               {Object.entries(PARTY_DEFAULTS).map(([party, cfg]) => (
@@ -188,11 +226,10 @@ export default function Admin() {
               </button>
             </>
           )}
-
           {mode === 'llm' && (
             <>
-              <div style={{ fontSize: 12, color: '#64748B', marginBottom: 8 }}>ECI-யிலிருந்து copy paste பண்ணுங்க</div>
-              <textarea value={llmText} onChange={e => setLlmText(e.target.value)} placeholder="ECI data paste பண்ணுங்க..."
+              <div style={{ fontSize: 12, color: '#64748B', marginBottom: 8 }}>ECI data paste பண்ணுங்க</div>
+              <textarea value={llmText} onChange={e => setLlmText(e.target.value)} placeholder="Paste election data..."
                 style={{ background: '#1E293B', border: '1px solid #334155', borderRadius: 8, color: '#fff', padding: 12, fontSize: 14, width: '100%', minHeight: 100, resize: 'vertical', marginBottom: 12 }} />
               <button onClick={parseLLM} disabled={loading} style={{ background: '#DC2626', color: '#fff', border: 'none', borderRadius: 8, padding: 12, width: '100%', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
                 {loading ? '⏳ Processing...' : '🚀 Parse & Update'}
@@ -202,12 +239,98 @@ export default function Admin() {
         </div>
       )}
 
+      {/* VIP CONSTITUENCIES TAB */}
+      {tab === 'vip' && (
+        <div style={{ background: '#111827', borderRadius: 12, padding: 20, border: '1px solid #1E293B' }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: '#F59E0B', marginBottom: 4 }}>⭐ VIP தொகுதிகள்</div>
+          <div style={{ fontSize: 12, color: '#64748B', marginBottom: 16 }}>
+            Left panel-ல் 2 at a time show ஆகும் • இப்போ {vipIds.length} தொகுதிகள்
+          </div>
+
+          {/* Search */}
+          <div style={{ position: 'relative', marginBottom: 16 }}>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={e => handleSearch(e.target.value)}
+              placeholder="தொகுதி பெயர் search பண்ணுங்க... (Tamil or English)"
+              style={{ background: '#1E293B', border: '1px solid #F59E0B', borderRadius: 8, color: '#fff', padding: '10px 16px', fontSize: 14, width: '100%' }}
+            />
+            {/* Search results dropdown */}
+            {searchResults.length > 0 && (
+              <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#1E293B', border: '1px solid #334155', borderRadius: 8, zIndex: 100, maxHeight: 280, overflow: 'auto', marginTop: 4 }}>
+                {searchResults.map(c => (
+                  <div key={c.id}
+                    onClick={() => addVip(c.id)}
+                    style={{ padding: '10px 16px', cursor: 'pointer', borderBottom: '1px solid #334155', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                    onMouseEnter={e => e.target.style.background = '#374151'}
+                    onMouseLeave={e => e.target.style.background = 'transparent'}
+                  >
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: vipIds.includes(c.id) ? '#22C55E' : '#fff' }}>
+                        {vipIds.includes(c.id) ? '✅ ' : ''}{c.name_tamil}
+                      </div>
+                      <div style={{ fontSize: 11, color: '#64748B' }}>{c.name} • {c.district}</div>
+                    </div>
+                    {!vipIds.includes(c.id) && (
+                      <span style={{ fontSize: 18, color: '#F59E0B' }}>+</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Current VIP list */}
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ fontSize: 13, color: '#94A3B8', marginBottom: 8 }}>தேர்ந்தெடுக்கப்பட்ட தொகுதிகள்:</div>
+            {vipIds.length === 0 ? (
+              <div style={{ color: '#475569', fontSize: 13, padding: 12, background: '#1E293B', borderRadius: 8 }}>
+                இன்னும் தொகுதிகள் select பண்ணவில்லை
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                {vipIds.map((id, i) => {
+                  const c = getConstituency(id)
+                  if (!c) return null
+                  return (
+                    <div key={id} style={{
+                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                      background: '#1E293B', borderRadius: 8, padding: '10px 14px',
+                      border: '1px solid #334155',
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                        <span style={{ fontSize: 12, color: '#F59E0B', fontWeight: 700, width: 24 }}>{i + 1}</span>
+                        <div>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>{c.name_tamil}</div>
+                          <div style={{ fontSize: 11, color: '#64748B' }}>{c.name} • {c.district}</div>
+                        </div>
+                      </div>
+                      <button onClick={() => removeVip(id)} style={{ background: '#DC2626', color: '#fff', border: 'none', borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontSize: 13, fontWeight: 700 }}>
+                        ✕
+                      </button>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Reorder hint */}
+          <div style={{ fontSize: 11, color: '#475569', marginBottom: 12 }}>
+            💡 Add பண்ணிய order-ல் rotate ஆகும் • 2 at a time • 5 seconds each
+          </div>
+
+          <button onClick={saveVipConstituencies} disabled={loading} style={{ background: '#16A34A', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 0', width: '100%', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
+            {loading ? '⏳...' : `✅ Save VIP List (${vipIds.length} தொகுதிகள்)`}
+          </button>
+        </div>
+      )}
+
       {/* FONTS TAB */}
       {tab === 'fonts' && (
         <div style={{ background: '#111827', borderRadius: 12, padding: 20, border: '1px solid #1E293B' }}>
           <div style={{ fontSize: 16, fontWeight: 700, color: '#F59E0B', marginBottom: 16 }}>🔤 Font Size Control</div>
-
-          {/* Font Family */}
           <div style={{ marginBottom: 20 }}>
             <div style={{ fontSize: 14, color: '#94A3B8', marginBottom: 8 }}>Font Family</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
@@ -218,40 +341,20 @@ export default function Admin() {
               ))}
             </div>
           </div>
-
-          {/* Font Large — Party numbers */}
-          <div style={{ marginBottom: 20 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-              <div style={{ fontSize: 14, color: '#94A3B8' }}>கட்சி எண்கள் (Party Numbers)</div>
-              <span style={{ fontSize: 14, color: '#F59E0B', fontWeight: 700 }}>{fontLarge}px</span>
+          {[
+            { label: 'கட்சி எண்கள்', val: fontLarge, set: setFontLarge, min: 28, max: 80, preview: '158', color: '#DC2626' },
+            { label: 'Label Text', val: fontMedium, set: setFontMedium, min: 12, max: 36, preview: 'திமுக+ | தவெக', color: '#16A34A' },
+            { label: 'Sub Text', val: fontSmall, set: setFontSmall, min: 9, max: 20, preview: 'வென்றது • முன்னிலை', color: '#94A3B8' },
+          ].map(({ label, val, set, min, max, preview, color }) => (
+            <div key={label} style={{ marginBottom: 20 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+                <div style={{ fontSize: 14, color: '#94A3B8' }}>{label}</div>
+                <span style={{ fontSize: 14, color: '#F59E0B', fontWeight: 700 }}>{val}px</span>
+              </div>
+              <input type="range" min={min} max={max} value={val} onChange={e => set(parseInt(e.target.value))} style={{ width: '100%', accentColor: '#DC2626' }} />
+              <div style={{ fontSize: val, fontWeight: 900, color, textAlign: 'center', marginTop: 8, fontFamily }}>{preview}</div>
             </div>
-            <input type="range" min={28} max={80} value={fontLarge} onChange={e => setFontLarge(parseInt(e.target.value))}
-              style={{ width: '100%', accentColor: '#DC2626' }} />
-            <div style={{ fontSize: fontLarge, fontWeight: 900, color: '#DC2626', textAlign: 'center', marginTop: 8, fontFamily: fontFamily }}>158</div>
-          </div>
-
-          {/* Font Medium — Labels */}
-          <div style={{ marginBottom: 20 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-              <div style={{ fontSize: 14, color: '#94A3B8' }}>Label Text (Party names etc)</div>
-              <span style={{ fontSize: 14, color: '#F59E0B', fontWeight: 700 }}>{fontMedium}px</span>
-            </div>
-            <input type="range" min={12} max={36} value={fontMedium} onChange={e => setFontMedium(parseInt(e.target.value))}
-              style={{ width: '100%', accentColor: '#DC2626' }} />
-            <div style={{ fontSize: fontMedium, fontWeight: 700, color: '#DC2626', textAlign: 'center', marginTop: 8, fontFamily: fontFamily }}>திமுக+ | தவெக</div>
-          </div>
-
-          {/* Font Small — Sub text */}
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-              <div style={{ fontSize: 14, color: '#94A3B8' }}>Sub Text (won/leading etc)</div>
-              <span style={{ fontSize: 14, color: '#F59E0B', fontWeight: 700 }}>{fontSmall}px</span>
-            </div>
-            <input type="range" min={9} max={20} value={fontSmall} onChange={e => setFontSmall(parseInt(e.target.value))}
-              style={{ width: '100%', accentColor: '#DC2626' }} />
-            <div style={{ fontSize: fontSmall, color: '#94A3B8', textAlign: 'center', marginTop: 8, fontFamily: fontFamily }}>வென்றது • முன்னிலை • @naadipulse</div>
-          </div>
-
+          ))}
           <button onClick={saveAllSettings} disabled={loading} style={{ background: '#16A34A', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 0', width: '100%', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
             {loading ? '⏳...' : '✅ Save — All Views Update!'}
           </button>
@@ -262,35 +365,26 @@ export default function Admin() {
       {tab === 'photos' && (
         <div style={{ background: '#111827', borderRadius: 12, padding: 20, border: '1px solid #1E293B' }}>
           <div style={{ fontSize: 16, fontWeight: 700, color: '#F59E0B', marginBottom: 4 }}>📸 Leader Photos</div>
-          <div style={{ fontSize: 12, color: '#64748B', marginBottom: 16 }}>imgbb.com-ல் upload பண்ணி direct link paste பண்ணுங்க</div>
-
+          <div style={{ fontSize: 12, color: '#64748B', marginBottom: 16 }}>imgbb.com direct link paste பண்ணுங்க</div>
           {[
             { key: 'photo_dmk', label: 'திமுக+ (Stalin)', color: '#DC2626' },
             { key: 'photo_aiadmk', label: 'அதிமுக+ (Edappadi)', color: '#16A34A' },
             { key: 'photo_tvk', label: 'தவெக (Vijay)', color: '#D97706' },
-            { key: 'photo_others', label: 'மற்றவை (Seeman)', color: '#7C3AED' },
+            { key: 'photo_others', label: 'நாதக (Seeman)', color: '#7C3AED' },
           ].map(({ key, label, color }) => (
             <div key={key} style={{ marginBottom: 16, display: 'flex', gap: 12, alignItems: 'center' }}>
-              {/* Preview */}
               <div style={{ width: 52, height: 52, borderRadius: '50%', overflow: 'hidden', border: `2px solid ${color}`, flexShrink: 0, background: color + '22', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {photos[key] ? (
-                  <img src={photos[key]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                ) : (
-                  <span style={{ fontSize: 10, color, fontWeight: 700 }}>NO</span>
-                )}
+                {photos[key] ? <img src={photos[key]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 10, color, fontWeight: 700 }}>NO</span>}
               </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 13, color, fontWeight: 700, marginBottom: 6 }}>{label}</div>
-                <input type="text" value={photos[key]}
-                  onChange={e => setPhotos({ ...photos, [key]: e.target.value })}
-                  placeholder="https://i.ibb.co/..."
+                <input type="text" value={photos[key]} onChange={e => setPhotos({ ...photos, [key]: e.target.value })} placeholder="https://i.ibb.co/..."
                   style={{ background: '#1E293B', border: `1px solid ${color}44`, borderRadius: 8, color: '#fff', padding: '8px 12px', fontSize: 13, width: '100%' }} />
               </div>
             </div>
           ))}
-
           <button onClick={saveAllSettings} disabled={loading} style={{ background: '#16A34A', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 0', width: '100%', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
-            {loading ? '⏳...' : '✅ Save Photos — All Views Update!'}
+            {loading ? '⏳...' : '✅ Save Photos'}
           </button>
         </div>
       )}
@@ -301,20 +395,13 @@ export default function Admin() {
         </div>
       )}
 
-      {/* URLs reference */}
+      {/* OBS URLs */}
       <div style={{ marginTop: 24, background: '#111827', borderRadius: 12, padding: 16, border: '1px solid #1E293B' }}>
         <div style={{ fontSize: 14, fontWeight: 700, color: '#F59E0B', marginBottom: 10 }}>📺 OBS Browser Source URLs</div>
-        {[
-          { url: '/', label: 'Full Dashboard' },
-          { url: '/top', label: 'Top Bar only' },
-          { url: '/left', label: 'Left Cards only' },
-          { url: '/center', label: 'Center Views only' },
-          { url: '/bottom', label: 'Bottom Bar only' },
-          { url: '/admin', label: 'Admin Panel' },
-        ].map(({ url, label }) => (
+        {['/', '/top', '/left', '/center', '/bottom', '/admin'].map(url => (
           <div key={url} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #1E293B', fontSize: 13 }}>
-            <span style={{ color: '#94A3B8' }}>{label}</span>
-            <span style={{ color: '#38BDF8', fontFamily: 'monospace' }}>your-domain.vercel.app{url}</span>
+            <span style={{ color: '#94A3B8' }}>{url === '/' ? 'Full Dashboard' : url.slice(1).charAt(0).toUpperCase() + url.slice(2) + ' only'}</span>
+            <span style={{ color: '#38BDF8', fontFamily: 'monospace' }}>naadi-dashboard-f9z6.vercel.app{url}</span>
           </div>
         ))}
       </div>
