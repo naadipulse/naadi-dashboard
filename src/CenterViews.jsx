@@ -5,7 +5,7 @@ const VIEW_LABELS = ['வீடியோ', 'சட்டமன்றம்', 'Fl
 
 // View 1: மும்முனை போட்டி image
 function View1({ settings }) {
-  const imgUrl = settings.view1_image || 'https://i.ibb.co/nNfS4Wvd/5857325f-c3a8-4ae1-96b6-c2f8b225459b.png'
+  const imgUrl = settings.view1_image || 'https://i.ibb.co/sdQrcBGx/3moonai.jpg'
   const fm = parseInt(settings.font_medium) || 22
   const ff = settings.font_family || 'Segoe UI'
   return (
@@ -28,7 +28,7 @@ function View1({ settings }) {
   )
 }
 
-// View 2: Parliament chart - proportional seats per row
+// View 2: Parliament chart - proper spacing + correct left-right coloring
 function View2({ tally, settings }) {
   const fm = parseInt(settings.font_medium) || 22
   const fsm = parseInt(settings.font_small) || 13
@@ -42,40 +42,48 @@ function View2({ tally, settings }) {
     'TVK': '#D97706', 'Others': '#4B5563', 'pending': '#D1D5DB',
   }
 
-  // Build seat color list - left to right
+  // Build color list - highest party first (leftmost)
   const seatColors = []
   sortedParties.forEach(p => { for (let i = 0; i < get(p); i++) seatColors.push(COLORS[p]) })
   while (seatColors.length < 234) seatColors.push(COLORS['pending'])
 
-  // Rows: outermost first, each row own seat count
-  // Total = 30+50+44+38+31+24+17 = 234
-  const ROWS = [
-    { r: 340, count: 30 },
-    { r: 296, count: 50 },
-    { r: 252, count: 44 },
-    { r: 208, count: 38 },
-    { r: 164, count: 31 },
-    { r: 120, count: 24 },
-    { r: 76,  count: 17 },
-  ]
-
   const W = 920, H = 460
-  const CX = W / 2, CY = H - 10
+  const CX = W / 2, CY = H - 5
+  const DOT_R = 8
 
-  const dots = []
-  let seatIdx = 0
+  // Rows: innermost first, proportional count per row
+  const ROWS = [
+    { r: 80,  count: 17 },
+    { r: 128, count: 24 },
+    { r: 176, count: 31 },
+    { r: 224, count: 38 },
+    { r: 272, count: 44 },
+    { r: 324, count: 50 },
+    { r: 372, count: 30 },
+  ]
+  // Total = 17+24+31+38+44+50+30 = 234 ✅
 
+  // Step 1: Generate all dot positions row by row
+  const rawDots = []
   ROWS.forEach(({ r, count }) => {
     for (let i = 0; i < count; i++) {
-      // Spread evenly from left (π) to right (0) — left to right
-      const angle = Math.PI - (i / (count - 1)) * Math.PI
-      dots.push({
+      const angle = Math.PI - (i / (count - 1)) * Math.PI // π to 0 = left to right
+      rawDots.push({
         x: CX + r * Math.cos(angle),
         y: CY - r * Math.sin(angle),
-        color: seatColors[seatIdx++] || COLORS['pending'],
+        angle: angle,
       })
     }
   })
+
+  // Step 2: Sort ALL dots by x position (left to right)
+  const sortedDots = [...rawDots].sort((a, b) => a.x - b.x)
+
+  // Step 3: Assign colors to sorted dots
+  const dots = sortedDots.map((d, i) => ({
+    ...d,
+    color: seatColors[i] || COLORS['pending'],
+  }))
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', fontFamily: ff, background: '#fff', borderRadius: 14, padding: '10px 16px' }}>
@@ -84,23 +92,23 @@ function View2({ tally, settings }) {
       </div>
 
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ flex: 1 }}>
-        {/* 118 line — behind dots */}
-        <line x1={CX} y1={10} x2={CX} y2={H}
-          stroke="#374151" strokeWidth={2} strokeDasharray="7,4" opacity={0.45} />
-        <rect x={CX - 22} y={8} width={44} height={20} rx={4} fill="#F59E0B" />
-        <text x={CX} y={22} textAnchor="middle" fontSize={12} fill="#fff" fontWeight="bold">118</text>
+        {/* 118 line behind dots */}
+        <line x1={CX} y1={8} x2={CX} y2={H}
+          stroke="#374151" strokeWidth={2} strokeDasharray="7,4" opacity={0.4} />
+        <rect x={CX - 22} y={6} width={44} height={20} rx={4} fill="#F59E0B" />
+        <text x={CX} y={20} textAnchor="middle" fontSize={12} fill="#fff" fontWeight="bold">118</text>
 
-        {/* Dots on top */}
+        {/* Dots on top of line */}
         {dots.map((d, i) => (
           <circle key={i}
-            cx={d.x} cy={d.y} r={10}
+            cx={d.x} cy={d.y} r={DOT_R}
             fill={d.color}
             style={{ transition: `fill 0.6s ease ${i * 0.002}s` }}
           />
         ))}
       </svg>
 
-      {/* Totals */}
+      {/* Party totals */}
       <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
         {sortedParties.map(p => {
           const cfg = PARTY_DEFAULTS[p]
