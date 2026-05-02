@@ -5,7 +5,7 @@ const VIEW_LABELS = ['வீடியோ', 'சட்டமன்றம்', 'Fl
 
 // View 1: மும்முனை போட்டி image
 function View1({ settings }) {
-  const imgUrl = settings.view1_image || 'https://i.ibb.co/nNfS4Wvd/5857325f-c3a8-4ae1-96b6-c2f8b225459b.png'
+  const imgUrl = settings.view1_image || 'https://i.ibb.co/sdQrcBGx/3moonai.jpg'
   const fm = parseInt(settings.font_medium) || 22
   const ff = settings.font_family || 'Segoe UI'
   return (
@@ -47,33 +47,36 @@ function View2({ tally, settings }) {
   })
   while (seatList.length < TOTAL) seatList.push('pending')
 
-  // Arc rows — 7 rows, inner to outer
+  // Arc rows — OUTER first so dot 1 starts bottom-left
+  // Fill order: row1(outermost) left→right, row2 left→right, etc.
   const ARC_ROWS = [
-    { r: 110, count: 17 },
-    { r: 148, count: 24 },
-    { r: 186, count: 31 },
-    { r: 224, count: 38 },
-    { r: 262, count: 44 },
-    { r: 300, count: 50 },
-    { r: 338, count: 30 },
+    { r: 340, count: 30 },
+    { r: 296, count: 50 },
+    { r: 252, count: 44 },
+    { r: 208, count: 38 },
+    { r: 164, count: 31 },
+    { r: 120, count: 24 },
+    { r: 76,  count: 17 },
   ]
 
-  const CX = 460, CY = 420
+  const CX = 460, CY = 430
   const dots = []
   let idx = 0
+
   ARC_ROWS.forEach(({ r, count }) => {
     for (let i = 0; i < count; i++) {
+      // Left to right: angle from π (left) to 2π (right)
       const angle = Math.PI + (i / (count - 1)) * Math.PI
       dots.push({
         x: CX + r * Math.cos(angle),
         y: CY + r * Math.sin(angle),
         party: seatList[idx++] || 'pending',
+        seatNum: idx,
       })
     }
   })
 
-  const W = 920, H = 450
-  const totalDeclared = tally.reduce((s, t) => s + t.won + (t.leadingg || 0), 0)
+  const W = 920, H = 460
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', fontFamily: ff, background: '#fff', borderRadius: 14, padding: '10px 16px' }}>
@@ -82,29 +85,31 @@ function View2({ tally, settings }) {
       </div>
 
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ overflow: 'visible', flex: 1 }}>
-        {/* Dots first */}
+
+        {/* 118 majority line — drawn FIRST so dots appear on top */}
+        <line
+          x1={CX} y1={CY - 360}
+          x2={CX} y2={CY + 8}
+          stroke="#374151" strokeWidth={2.5}
+          strokeDasharray="8,5"
+          opacity={0.6}
+        />
+        <rect x={CX - 26} y={CY - 382} width={52} height={24} rx={5} fill="#F59E0B" />
+        <text x={CX} y={CY - 364} textAnchor="middle" fontSize={14} fill="#fff" fontWeight="bold">118</text>
+
+        {/* Dots — drawn AFTER line so they appear on top */}
         {dots.map((d, i) => {
           const cfg = PARTY_DEFAULTS[d.party]
           const isDeclared = d.party !== 'pending'
           return (
             <circle key={i}
-              cx={d.x} cy={d.y} r={10}
+              cx={d.x} cy={d.y} r={12}
               fill={isDeclared ? cfg?.color : '#E5E7EB'}
               opacity={isDeclared ? 1 : 0.5}
               style={{ transition: `fill 0.8s ease ${i * 0.002}s` }}
             />
           )
         })}
-
-        {/* 118 majority line ON TOP of dots */}
-        <line
-          x1={CX} y1={CY - 360}
-          x2={CX} y2={CY + 5}
-          stroke="#1E293B" strokeWidth={3}
-          strokeDasharray="8,5"
-        />
-        <rect x={CX - 30} y={CY - 385} width={60} height={26} rx={5} fill="#F59E0B" />
-        <text x={CX} y={CY - 367} textAnchor="middle" fontSize={16} fill="#fff" fontWeight="bold">118</text>
       </svg>
 
       {/* Party totals */}
@@ -116,9 +121,10 @@ function View2({ tally, settings }) {
           const hasMaj = tot >= MAJORITY
           return (
             <div key={p} style={{
-              textAlign: 'center', background: hasMaj ? cfg.color : cfg.light,
+              textAlign: 'center',
+              background: hasMaj ? cfg.color : cfg.light,
               border: `2px solid ${cfg.color}`,
-              borderRadius: 10, padding: '6px 16px', minWidth: 75,
+              borderRadius: 10, padding: '6px 18px', minWidth: 80,
               boxShadow: hasMaj ? `0 0 16px ${cfg.color}66` : 'none',
             }}>
               <div style={{ fontSize: fsm, color: hasMaj ? '#fff' : cfg.color, fontWeight: 700 }}>{cfg.label}</div>
