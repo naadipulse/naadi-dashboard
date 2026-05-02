@@ -6,6 +6,108 @@ const ADMIN_PASSWORD = process.env.REACT_APP_ADMIN_PASSWORD || 'naadi2026'
 
 const FONTS = ['Segoe UI', 'Arial', 'Roboto', 'Noto Sans Tamil', 'Lato', 'Poppins', 'Open Sans', 'Tahoma']
 
+const COMPONENTS = [
+  { key: 'top',    label: '🔝 Top Bar',    prefix: 'top' },
+  { key: 'left',   label: '⬅️ Left Panel',  prefix: 'left' },
+  { key: 'center', label: '🎯 Center',      prefix: 'center' },
+  { key: 'bottom', label: '⬇️ Bottom Bar',  prefix: 'bottom' },
+  { key: 'right',  label: '➡️ Right Panel', prefix: 'right' },
+]
+
+function FontsTab({ settings, saveSetting, loading, setMsg }) {
+  const [activeComp, setActiveComp] = useState('top')
+  const comp = COMPONENTS.find(c => c.key === activeComp)
+  const prefix = comp.prefix
+
+  const [vals, setVals] = useState({})
+  const [fontFamily, setFontFamily] = useState('Segoe UI')
+
+  useEffect(() => {
+    const v = {}
+    COMPONENTS.forEach(c => {
+      v[`${c.prefix}_font_large`]  = parseInt(settings[`${c.prefix}_font_large`])  || parseInt(settings.font_large)  || 52
+      v[`${c.prefix}_font_medium`] = parseInt(settings[`${c.prefix}_font_medium`]) || parseInt(settings.font_medium) || 22
+      v[`${c.prefix}_font_small`]  = parseInt(settings[`${c.prefix}_font_small`])  || parseInt(settings.font_small)  || 13
+    })
+    setVals(v)
+    setFontFamily(settings.font_family || 'Segoe UI')
+  }, [settings])
+
+  const set = (key, val) => setVals(prev => ({ ...prev, [key]: val }))
+
+  const save = async () => {
+    try {
+      await saveSetting('font_family', fontFamily)
+      for (const [k, v] of Object.entries(vals)) {
+        await saveSetting(k, v)
+      }
+      setMsg('✅ Font settings saved!')
+    } catch (e) { setMsg('❌ ' + e.message) }
+  }
+
+  const fl = vals[`${prefix}_font_large`]  || 52
+  const fm = vals[`${prefix}_font_medium`] || 22
+  const fs = vals[`${prefix}_font_small`]  || 13
+
+  return (
+    <div style={{ background: '#111827', borderRadius: 12, padding: 20, border: '1px solid #1E293B' }}>
+      <div style={{ fontSize: 16, fontWeight: 700, color: '#F59E0B', marginBottom: 16 }}>🔤 Font Size — Per Component</div>
+
+      {/* Font Family */}
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ fontSize: 13, color: '#94A3B8', marginBottom: 8 }}>Font Family (all views)</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          {FONTS.map(f => (
+            <button key={f} onClick={() => setFontFamily(f)}
+              style={{ background: fontFamily === f ? '#DC2626' : '#1E293B', color: '#fff', border: `1px solid ${fontFamily === f ? '#DC2626' : '#334155'}`, borderRadius: 6, padding: '5px 12px', fontSize: 12, cursor: 'pointer', fontFamily: f }}>
+              {f}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Component selector */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 20, flexWrap: 'wrap' }}>
+        {COMPONENTS.map(c => (
+          <button key={c.key} onClick={() => setActiveComp(c.key)}
+            style={{ background: activeComp === c.key ? '#DC2626' : '#1E293B', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+            {c.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Sliders for selected component */}
+      <div style={{ background: '#0F172A', borderRadius: 10, padding: 16, marginBottom: 16 }}>
+        <div style={{ fontSize: 14, color: '#F59E0B', fontWeight: 700, marginBottom: 14 }}>{comp.label} Font Sizes</div>
+
+        {[
+          { key: `${prefix}_font_large`,  label: 'Large (numbers)',  min: 20, max: 90, val: fl, preview: '158', color: '#DC2626' },
+          { key: `${prefix}_font_medium`, label: 'Medium (labels)',  min: 10, max: 40, val: fm, preview: 'திமுக+ | தவெக', color: '#16A34A' },
+          { key: `${prefix}_font_small`,  label: 'Small (sub text)', min: 8,  max: 22, val: fs, preview: 'வென்றது • முன்னிலை', color: '#94A3B8' },
+        ].map(({ key, label, min, max, val, preview, color }) => (
+          <div key={key} style={{ marginBottom: 18 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+              <span style={{ fontSize: 13, color: '#94A3B8' }}>{label}</span>
+              <span style={{ fontSize: 13, color: '#F59E0B', fontWeight: 700 }}>{val}px</span>
+            </div>
+            <input type="range" min={min} max={max} value={val}
+              onChange={e => set(key, parseInt(e.target.value))}
+              style={{ width: '100%', accentColor: '#DC2626' }} />
+            <div style={{ fontSize: val, fontWeight: 900, color, textAlign: 'center', marginTop: 6, fontFamily, overflow: 'hidden', whiteSpace: 'nowrap' }}>
+              {preview}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <button onClick={save} disabled={loading}
+        style={{ background: '#16A34A', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 0', width: '100%', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
+        {loading ? '⏳...' : '✅ Save All Font Settings'}
+      </button>
+    </div>
+  )
+}
+
 export default function Admin() {
   const [auth, setAuth] = useState(false)
   const [pw, setPw] = useState('')
@@ -329,36 +431,7 @@ export default function Admin() {
 
       {/* FONTS TAB */}
       {tab === 'fonts' && (
-        <div style={{ background: '#111827', borderRadius: 12, padding: 20, border: '1px solid #1E293B' }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: '#F59E0B', marginBottom: 16 }}>🔤 Font Size Control</div>
-          <div style={{ marginBottom: 20 }}>
-            <div style={{ fontSize: 14, color: '#94A3B8', marginBottom: 8 }}>Font Family</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {FONTS.map(f => (
-                <button key={f} onClick={() => setFontFamily(f)} style={{ background: fontFamily === f ? '#DC2626' : '#1E293B', color: '#fff', border: `1px solid ${fontFamily === f ? '#DC2626' : '#334155'}`, borderRadius: 8, padding: '6px 14px', fontSize: 13, cursor: 'pointer', fontFamily: f }}>
-                  {f}
-                </button>
-              ))}
-            </div>
-          </div>
-          {[
-            { label: 'கட்சி எண்கள்', val: fontLarge, set: setFontLarge, min: 28, max: 80, preview: '158', color: '#DC2626' },
-            { label: 'Label Text', val: fontMedium, set: setFontMedium, min: 12, max: 36, preview: 'திமுக+ | தவெக', color: '#16A34A' },
-            { label: 'Sub Text', val: fontSmall, set: setFontSmall, min: 9, max: 20, preview: 'வென்றது • முன்னிலை', color: '#94A3B8' },
-          ].map(({ label, val, set, min, max, preview, color }) => (
-            <div key={label} style={{ marginBottom: 20 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                <div style={{ fontSize: 14, color: '#94A3B8' }}>{label}</div>
-                <span style={{ fontSize: 14, color: '#F59E0B', fontWeight: 700 }}>{val}px</span>
-              </div>
-              <input type="range" min={min} max={max} value={val} onChange={e => set(parseInt(e.target.value))} style={{ width: '100%', accentColor: '#DC2626' }} />
-              <div style={{ fontSize: val, fontWeight: 900, color, textAlign: 'center', marginTop: 8, fontFamily }}>{preview}</div>
-            </div>
-          ))}
-          <button onClick={saveAllSettings} disabled={loading} style={{ background: '#16A34A', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 0', width: '100%', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
-            {loading ? '⏳...' : '✅ Save — All Views Update!'}
-          </button>
-        </div>
+        <FontsTab settings={settings} saveSetting={saveSetting} loading={loading} setMsg={setMsg} />
       )}
 
       {/* PHOTOS TAB */}
