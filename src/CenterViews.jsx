@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { useSettings, useTally, PARTY_DEFAULTS, MAJORITY, TOTAL } from './shared.jsx'
+import { useSettings, useTally, PARTY_DEFAULTS, MAJORITY, TOTAL, getComponentFonts } from './shared.jsx'
 
 const VIEW_LABELS = ['வீடியோ', 'சட்டமன்றம்', 'Flash 1', 'Flash 2']
 
 // View 1: மும்முனை போட்டி image
 function View1({ settings }) {
   const imgUrl = settings.view1_image || 'https://i.ibb.co/sdQrcBGx/3moonai.jpg'
-  const fm = parseInt(settings.font_medium) || 22
-  const ff = settings.font_family || 'Segoe UI'
+  const { fs, fm, fsm, ff } = getComponentFonts(settings, 'center')
   return (
     <div style={{ height: '100%', borderRadius: 14, overflow: 'hidden', position: 'relative', background: '#0F172A', fontFamily: ff }}>
       <img src={imgUrl} alt="view1"
@@ -30,9 +29,7 @@ function View1({ settings }) {
 
 // View 2: Parliament chart - proper spacing + correct left-right coloring
 function View2({ tally, settings }) {
-  const fm = parseInt(settings.font_medium) || 22
-  const fsm = parseInt(settings.font_small) || 13
-  const ff = settings.font_family || 'Segoe UI'
+  const { fs, fm, fsm, ff } = getComponentFonts(settings, 'center')
 
   const get = p => { const d = tally.find(t => t.party === p); return d ? d.won + (d.leadingg || 0) : 0 }
   const sortedParties = Object.keys(PARTY_DEFAULTS).sort((a, b) => get(b) - get(a))
@@ -76,8 +73,8 @@ function View2({ tally, settings }) {
     }
   })
 
-  // Step 2: Sort ALL dots by angle (π→0 = left to right)
-  const sortedDots = [...rawDots].sort((a, b) => b.angle - a.angle)
+  // Step 2: Sort ALL dots by x position (left to right)
+  const sortedDots = [...rawDots].sort((a, b) => a.x - b.x)
 
   // Step 3: Assign colors to sorted dots
   const dots = sortedDots.map((d, i) => ({
@@ -137,9 +134,7 @@ function View2({ tally, settings }) {
 
 // View 3 & 4: Dynamic Flash News
 function FlashView({ settings, viewNum }) {
-  const fm = parseInt(settings.font_medium) || 22
-  const fsm = parseInt(settings.font_small) || 13
-  const ff = settings.font_family || 'Segoe UI'
+  const { fs, fm, fsm, ff } = getComponentFonts(settings, 'center')
 
   const title = settings[`flash${viewNum}_title`]
   const subtitle = settings[`flash${viewNum}_subtitle`]
