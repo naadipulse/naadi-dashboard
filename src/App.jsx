@@ -4,6 +4,7 @@ import LeftPanel from './LeftPanel.jsx'
 import CenterViews from './CenterViews.jsx'
 import BottomBar from './BottomBar.jsx'
 import Admin from './Admin.jsx'
+import RightPanel from './RightPanel.jsx'
 import { useSettings, useTally, AnimNum, PARTY_DEFAULTS } from './shared.jsx'
 
 function FullDashboard() {
@@ -28,7 +29,7 @@ function FullDashboard() {
       {/* Background full screen */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 0,
-        backgroundImage: `url('https://i.ibb.co/5XYJtY4K/0598f1fe-1086-4646-859a-b8814d7ece59.png')`,
+        backgroundImage: `url('https://i.ibb.co/LDQsbQRN/thalamai.jpg')`,
         backgroundSize: 'cover', backgroundPosition: 'center',
       }} />
 
@@ -87,11 +88,12 @@ function FullDashboard() {
 
           {/* Main content */}
           <div style={{
-            flex: 1, display: 'grid', gridTemplateColumns: '260px 1fr',
+            flex: 1, display: 'grid', gridTemplateColumns: '260px 1fr 280px',
             gap: 10, padding: '8px 60px', minHeight: 0, overflow: 'hidden',
           }}>
             <LeftPanel />
             <CenterViews />
+            <RightPanel />
           </div>
 
           {/* Bottom Bar */}
