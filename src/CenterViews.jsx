@@ -137,12 +137,6 @@ function View2({ tally, settings }) {
     </div>
   )
 }
-  const fm = parseInt(settings.font_medium) || 22
-  const fsm = parseInt(settings.font_small) || 13
-  const ff = settings.font_family || 'Segoe UI'
-
-  const get = p => { const d = tally.find(t => t.party === p); return d ? d.won + (d.leadingg || 0) : 0 }
-  const sortedParties = Object.keys(PARTY_DEFAULTS).sort((a, b) => get(b) - get(a))
 
 // View 3 & 4: Dynamic Flash News
 function FlashView({ settings, viewNum }) {
