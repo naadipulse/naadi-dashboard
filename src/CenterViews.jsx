@@ -28,74 +28,66 @@ function View1({ settings }) {
   )
 }
 
-// View 2: Parliament dots — column by column, inner→outer per column
+// View 2: Parliament chart using d3-parliament-chart library
 function View2({ tally, settings }) {
   const fm = parseInt(settings.font_medium) || 22
   const fsm = parseInt(settings.font_small) || 13
   const ff = settings.font_family || 'Segoe UI'
+  const [points, setPoints] = useState([])
 
   const get = p => { const d = tally.find(t => t.party === p); return d ? d.won + (d.leadingg || 0) : 0 }
+
+  // Sort parties descending by seats (highest = leftmost)
   const sortedParties = Object.keys(PARTY_DEFAULTS).sort((a, b) => get(b) - get(a))
 
-  const seatList = []
-  sortedParties.forEach(p => {
-    for (let i = 0; i < get(p); i++) seatList.push(p)
-  })
-  while (seatList.length < TOTAL) seatList.push('pending')
-
-  // 7 arc rows, innermost first
-  const ARCS = [
-    { r: 76  },
-    { r: 120 },
-    { r: 164 },
-    { r: 208 },
-    { r: 252 },
-    { r: 296 },
-    { r: 340 },
-  ]
-  const NUM_ROWS = 7
-  // 34 columns × 7 rows = 238, we skip last 4 pending
-  const NUM_COLS = 34
-  const CX = 460, CY = 430
-
-  // Generate dots column by column
-  // Columns go from left (angle=π) to right (angle=2π)
-  // 118 line = at center (angle = 1.5π = top)
-  // Column 16 ends at seat 112, column 17 starts at 113
-  // Gap: leave small angular gap near center (angle ≈ 1.5π)
-
-  const GAP_ANGLE = 0.04 // radians gap around center
-
-  const dots = []
-  let seatIdx = 0
-
-  for (let col = 0; col < NUM_COLS; col++) {
-    // Angle for this column: spread from π to 2π across NUM_COLS columns
-    const t = col / (NUM_COLS - 1) // 0 to 1
-    let angle = Math.PI + t * Math.PI
-
-    // Add gap near center (angle ≈ 1.5π)
-    const distFromCenter = angle - 1.5 * Math.PI
-    if (Math.abs(distFromCenter) < GAP_ANGLE) {
-      // Push dots away from center line
-      angle += distFromCenter > 0 ? GAP_ANGLE : -GAP_ANGLE
-    }
-
-    for (let row = 0; row < NUM_ROWS; row++) {
-      if (seatIdx >= 234) break
-      const r = ARCS[row].r
-      const x = CX + r * Math.cos(angle)
-      const y = CY + r * Math.sin(angle)
-      dots.push({
-        x, y,
-        party: seatList[seatIdx] || 'pending',
-        seatNum: seatIdx + 1,
-      })
-      seatIdx++
-    }
+  // Party colors — use specific colors
+  const COLORS = {
+    'DMK+':    '#DC2626',
+    'AIADMK+': '#16A34A',
+    'TVK':     '#D97706',
+    'Others':  '#4B5563',
+    'pending': '#D1D5DB',
   }
 
-  const W = 920, H = 460
+  // Build seat color list left to right
+  const seatColors = []
+  sortedParties.forEach(p => {
+    for (let i = 0; i < get(p); i++) seatColors.push(COLORS[p])
+  })
+  while (seatColors.length < 234) seatColors.push(COLORS['pending'])
+
+  const W = 920, H = 480
+
+  useEffect(() => {
+    // Dynamically load d3-parliament-chart
+    const script = document.createElement('script')
+    script.src = 'https://cdn.jsdelivr.net/npm/d3-parliament-chart@0.0.6/build/d3-parliament-chart.js'
+    script.onload = () => {
+      if (window.d3 && window.d3.getParliamentPoints) {
+        const pts = window.d3.getParliamentPoints(234, {
+          sections: 1,
+          sectionGap: 0,
+          seatRadius: 9,
+          rowHeight: 22,
+        }, W)
+        setPoints(pts)
+      }
+    }
+    if (!window.d3?.getParliamentPoints) {
+      document.head.appendChild(script)
+    } else {
+      const pts = window.d3.getParliamentPoints(234, {
+        sections: 1,
+        sectionGap: 0,
+        seatRadius: 9,
+        rowHeight: 22,
+      }, W)
+      setPoints(pts)
+    }
+  }, [])
+
+  const totalDeclared = seatColors.filter(c => c !== COLORS['pending']).length
+  const CX = W / 2
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', fontFamily: ff, background: '#fff', borderRadius: 14, padding: '10px 16px' }}>
@@ -103,46 +95,40 @@ function View2({ tally, settings }) {
         🏛️ சட்டமன்றம் — 234 இடங்கள்
       </div>
 
-      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ overflow: 'visible', flex: 1 }}>
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ flex: 1 }}>
+        {/* 118 line — behind dots */}
+        <line x1={CX} y1={10} x2={CX} y2={H - 30}
+          stroke="#374151" strokeWidth={2} strokeDasharray="8,5" opacity={0.5} />
+        <rect x={CX - 24} y={5} width={48} height={22} rx={4} fill="#F59E0B" />
+        <text x={CX} y={20} textAnchor="middle" fontSize={13} fill="#fff" fontWeight="bold">118</text>
 
-        {/* 118 line — drawn FIRST, dots on top */}
-        <line x1={CX} y1={CY - 365} x2={CX} y2={CY + 8}
-          stroke="#374151" strokeWidth={2.5} strokeDasharray="8,5" opacity={0.7} />
-        <rect x={CX - 26} y={CY - 388} width={52} height={24} rx={5} fill="#F59E0B" />
-        <text x={CX} y={CY - 370} textAnchor="middle" fontSize={14} fill="#fff" fontWeight="bold">118</text>
-
-        {/* Dots — on top of line */}
-        {dots.map((d, i) => {
-          const cfg = PARTY_DEFAULTS[d.party]
-          const isDeclared = d.party !== 'pending'
-          return (
-            <circle key={i}
-              cx={d.x} cy={d.y} r={11}
-              fill={isDeclared ? cfg?.color : '#E5E7EB'}
-              opacity={isDeclared ? 1 : 0.5}
-              style={{ transition: `fill 0.8s ease ${i * 0.003}s` }}
-            />
-          )
-        })}
+        {/* Parliament dots */}
+        {points.map((pt, i) => (
+          <circle key={i}
+            cx={pt.x} cy={pt.y} r={9}
+            fill={seatColors[i] || COLORS['pending']}
+            style={{ transition: `fill 0.6s ease ${i * 0.002}s` }}
+          />
+        ))}
       </svg>
 
       {/* Party totals */}
-      <div style={{ display: 'flex', gap: 14, justifyContent: 'center' }}>
+      <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
         {sortedParties.map(p => {
           const cfg = PARTY_DEFAULTS[p]
           const tot = get(p)
-          const pct = ((tot / TOTAL) * 100).toFixed(1)
+          const pct = ((tot / 234) * 100).toFixed(1)
           const hasMaj = tot >= MAJORITY
           return (
             <div key={p} style={{
               textAlign: 'center',
-              background: hasMaj ? cfg.color : cfg.light,
-              border: `2px solid ${cfg.color}`,
+              background: hasMaj ? COLORS[p] : cfg.light,
+              border: `2px solid ${COLORS[p]}`,
               borderRadius: 10, padding: '6px 16px', minWidth: 75,
-              boxShadow: hasMaj ? `0 0 16px ${cfg.color}66` : 'none',
+              boxShadow: hasMaj ? `0 0 16px ${COLORS[p]}66` : 'none',
             }}>
-              <div style={{ fontSize: fsm, color: hasMaj ? '#fff' : cfg.color, fontWeight: 700 }}>{cfg.label}</div>
-              <div style={{ fontSize: fm + 10, fontWeight: 900, color: hasMaj ? '#fff' : cfg.color, lineHeight: 1 }}>{tot}</div>
+              <div style={{ fontSize: fsm, color: hasMaj ? '#fff' : COLORS[p], fontWeight: 700 }}>{cfg.label}</div>
+              <div style={{ fontSize: fm + 10, fontWeight: 900, color: hasMaj ? '#fff' : COLORS[p], lineHeight: 1 }}>{tot}</div>
               <div style={{ fontSize: fsm - 1, color: hasMaj ? 'rgba(255,255,255,0.8)' : '#9CA3AF' }}>{pct}%</div>
             </div>
           )
@@ -151,6 +137,12 @@ function View2({ tally, settings }) {
     </div>
   )
 }
+  const fm = parseInt(settings.font_medium) || 22
+  const fsm = parseInt(settings.font_small) || 13
+  const ff = settings.font_family || 'Segoe UI'
+
+  const get = p => { const d = tally.find(t => t.party === p); return d ? d.won + (d.leadingg || 0) : 0 }
+  const sortedParties = Object.keys(PARTY_DEFAULTS).sort((a, b) => get(b) - get(a))
 
 // View 3 & 4: Dynamic Flash News
 function FlashView({ settings, viewNum }) {
