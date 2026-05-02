@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { useSettings, useTally, PARTY_DEFAULTS, AnimNum, Photo, MAJORITY, TOTAL } from './shared.jsx'
+import { useSettings, useTally, PARTY_DEFAULTS, AnimNum, Photo, MAJORITY, TOTAL, getComponentFonts } from './shared.jsx'
 
 const BOTTOM_PARTIES = {
   ...PARTY_DEFAULTS,
@@ -17,10 +17,7 @@ export default function BottomBar() {
     return () => clearInterval(t)
   }, [])
 
-  const fs = parseInt(settings.font_large)
-  const fm = parseInt(settings.font_medium)
-  const fsm = parseInt(settings.font_small)
-  const ff = settings.font_family
+  const { fs, fm, fsm, ff } = getComponentFonts(settings, 'bottom')
 
   const timeStr = time.toLocaleTimeString('en-IN', {
     hour: '2-digit', minute: '2-digit', hour12: true
@@ -119,7 +116,7 @@ export default function BottomBar() {
           <img
             src={logoUrl}
             alt="நாடி"
-            style={{ height: 32, maxWidth: 220, objectFit: 'contain' }}
+            style={{ height: 44, maxWidth: 120, objectFit: 'contain' }}
             onError={e => { e.target.style.display = 'none' }}
           />
         ) : (
