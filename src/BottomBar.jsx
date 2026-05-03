@@ -39,7 +39,13 @@ export default function BottomBar() {
         borderRight: '2px solid #334155', padding: '0 12px',
       }}>
         <div style={{ fontSize: fsm, color: '#94A3B8', fontWeight: 700 }}>முன்னிலை</div>
-        <div key={totalDeclared} style={{ animation: 'numFlip 0.6s ease-out', perspective: '1000px' }}>
+        <div key={totalDeclared} style={{ 
+          animation: 'numFlip 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)', 
+          perspective: '1000px',
+          display: 'inline-block',
+          backfaceVisibility: 'hidden',
+          transformOrigin: 'center center'
+        }}>
           <AnimNum val={totalDeclared} color="#F59E0B" size={fs * 0.85} font={ff} />
         </div>
         <div style={{ width: '85%', height: 4, background: '#334155', borderRadius: 999, marginTop: 4 }}>
@@ -97,11 +103,15 @@ export default function BottomBar() {
               <div style={{ fontSize: fm + 2, color: 'rgba(255,255,255,0.9)', fontWeight: 800 }}>
                 {cfg.label}
               </div>
-              <div 
+              <div
                 key={tot}
                 style={{
-                  fontSize: fs + 6, fontWeight: 900, lineHeight: 1, color: '#fff',
-                  animation: 'numFlip 0.6s ease-out', perspective: '1000px'
+                  fontSize: fs + 6, fontWeight: 900, lineHeight: '1', color: '#fff',
+                  animation: 'numFlip 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)', 
+                  perspective: '1000px',
+                  display: 'inline-block',
+                  backfaceVisibility: 'hidden',
+                  transformOrigin: 'center center'
                 }}>
                 <AnimNum val={tot} color="#fff" size={fs + 6} font={ff} />
               </div>
@@ -159,7 +169,8 @@ export default function BottomBar() {
           20% { transform: scale(1); filter: brightness(1); }
         }
         @keyframes numFlip {
-          0% { transform: rotateX(-90deg); opacity: 0; }
+          0% { transform: rotateX(-95deg); opacity: 0; }
+          60% { transform: rotateX(25deg); }
           100% { transform: rotateX(0deg); opacity: 1; }
         }
         @keyframes shimmer {

@@ -72,8 +72,8 @@ export function useConstituencies() {
 }
 
 export function AnimNum({ val, color, size = 48, font }) {
-  const [n, setN] = useState(0)
-  const prev = useRef(0)
+  const [n, setN] = useState(val)
+  const prev = useRef(val)
   useEffect(() => {
     const s = prev.current, e = val
     if (s === e) return
