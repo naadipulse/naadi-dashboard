@@ -31,7 +31,7 @@ export default function TopBar() {
 
           <span style={{
             fontWeight: 900,
-            fontSize: fm + 2,
+            fontSize: fm,
             color: '#fff',
             letterSpacing: 0.5,
           }}>

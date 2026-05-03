@@ -84,8 +84,8 @@ export default function LeftPanel() {
         minHeight: 0,
       }}>
         {/* Header */}
-        <div style={{ background: '#1E293B', padding: '8px 14px', flexShrink: 0 }}>
-          <div style={{ fontSize: fm + 2, fontWeight: 900, color: '#fff' }}>
+        <div style={{ background: '#1E293B', padding: '6px 14px', flexShrink: 0 }}>
+          <div style={{ fontSize: fm, fontWeight: 900, color: '#fff' }}>
             {vip.name_tamil || vip.name}
           </div>
           <div style={{ fontSize: fsm - 1, color: '#94A3B8' }}>{vip.district}</div>
@@ -104,7 +104,7 @@ export default function LeftPanel() {
               const pct = (cand.votes / maxVotes) * 100
               return (
                 <div key={i} style={{
-                  padding: '10px 14px',
+                  padding: '6px 14px',
                   borderBottom: '1px solid #F3F4F6',
                   background: i === 0 ? cfg.light : '#fff',
                   flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center',
@@ -128,12 +128,12 @@ export default function LeftPanel() {
 
                     {/* Name & Votes Stack */}
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: fm, fontWeight: 700, color: '#111827', lineHeight: 1.2 }}>
+                      <div style={{ fontSize: fsm + 1, fontWeight: 700, color: '#111827', lineHeight: 1.1 }}>
                         {i === 0 && '👑 '}{cand.candidate_name_tamil || cand.candidate_name}
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginTop: 2 }}>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginTop: 1 }}>
                         <div style={{ fontSize: fsm - 2, color: cfg.color, fontWeight: 600 }}>{cfg.label}</div>
-                        <div style={{ fontSize: fm, fontWeight: 900, color: i === 0 ? cfg.color : '#374151' }}>
+                        <div style={{ fontSize: fsm + 1, fontWeight: 900, color: i === 0 ? cfg.color : '#374151' }}>
                           {cand.votes > 0 ? cand.votes.toLocaleString('en-IN') : '—'}
                           <span style={{ fontSize: fsm - 2, marginLeft: 4, opacity: 0.8 }}>({pct.toFixed(1)}%)</span>
                         </div>
@@ -142,8 +142,8 @@ export default function LeftPanel() {
                   </div>
 
                   {cand.votes > 0 && (
-                    <div style={{ marginTop: 6, marginLeft: 58 }}>
-                      <div style={{ background: '#E5E7EB', borderRadius: 999, height: 3, marginBottom: 4 }}>
+                    <div style={{ marginTop: 4, marginLeft: 58 }}>
+                      <div style={{ background: '#E5E7EB', borderRadius: 999, height: 3, marginBottom: 2 }}>
                         <div style={{ background: cfg.color, width: `${pct}%`, height: '100%', borderRadius: 999, transition: 'width 1s ease' }} />
                       </div>
                       {i === 0 && vipCandidates[1] && (

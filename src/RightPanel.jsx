@@ -76,7 +76,7 @@ export default function RightPanel() {
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
       }}>
         <div>
-          <div style={{ fontSize: fm + 4, fontWeight: 900, color: '#fff' }}>
+          <div style={{ fontSize: fm, fontWeight: 900, color: '#fff' }}>
             {currentSlide.district} {currentSlide.total > 1 ? `(${currentSlide.page}/${currentSlide.total})` : ''}
           </div>
           <div style={{ fontSize: fsm - 1, color: 'rgba(255,255,255,0.9)', marginTop: 2 }}>
