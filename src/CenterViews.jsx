@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSettings, useTally, PARTY_DEFAULTS, MAJORITY, TOTAL, getComponentFonts } from './shared.jsx'
 
-const VIEW_LABELS = ['வீடியோ', 'சட்டமன்றம்', 'Flash 1', 'Flash 2']
+const VIEW_LABELS = ['வீடியோ', 'சட்டமன்றம்', 'மக்களின் விருப்பம் 1', 'மக்களின் விருப்பம் 2']
 
 // View 1: மும்முனை போட்டி image
 function View1({ settings }) {
@@ -153,9 +153,9 @@ function FlashView({ settings, viewNum }) {
         border: '2px dashed #E2E8F0',
       }}>
         <div style={{ fontSize: 40, marginBottom: 12 }}>📰</div>
-        <div style={{ fontSize: fm, fontWeight: 700, color: '#94A3B8' }}>Flash News {viewNum}</div>
+        <div style={{ fontSize: fm, fontWeight: 700, color: '#94A3B8' }}>மக்களின் விருப்பம் {viewNum - 2}</div>
         <div style={{ fontSize: fsm, color: '#CBD5E1', marginTop: 8, textAlign: 'center', maxWidth: 280 }}>
-          Admin panel → Flash {viewNum} tab-ல் content add பண்ணுங்க
+          Admin panel → Special Views tab-ல் விவரங்களைச் சேர்க்கவும்.
         </div>
       </div>
     )

@@ -10,7 +10,7 @@ CREATE TABLE overall_tally (
 );
 
 -- Insert initial data
-INSERT INTO overall_tally (party, won, leading) VALUES
+INSERT INTO overall_tally (party, won, leadingg) VALUES
 ('DMK+', 0, 0),
 ('AIADMK+', 0, 0),
 ('TVK', 0, 0),

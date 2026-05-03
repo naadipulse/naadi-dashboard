@@ -98,7 +98,7 @@ export default function RightPanel() {
 
       {/* Column headers */}
       <div style={{
-        display: 'grid', gridTemplateColumns: '1fr 70px 50px',
+        display: 'grid', gridTemplateColumns: '1fr 70px 80px',
         padding: '6px 12px',
         background: '#F3F4F6',
         borderBottom: '1px solid #E5E7EB',
@@ -127,6 +127,7 @@ export default function RightPanel() {
               <div key={c.id} style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 70px 50px',
+                gridTemplateColumns: '1fr 70px 80px',
                 padding: '8px 12px',
                 borderBottom: '1px solid #F3F4F6',
                 background: isWon ? lp?.light || '#FCD34D22' : (i % 2 === 0 ? '#fff' : '#FAFAFA'),

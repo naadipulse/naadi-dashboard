@@ -416,6 +416,10 @@ export default function Admin() {
   const [fontSmall, setFontSmall] = useState(13)
   const [fontFamily, setFontFamily] = useState('Segoe UI')
   const [photos, setPhotos] = useState({ photo_dmk: '', photo_aiadmk: '', photo_tvk: '', photo_others: '', naadi_logo: '', view1_image: '' })
+  const [flashData, setFlashData] = useState({
+    flash3_title: '', flash3_subtitle: '', flash3_image: '', flash3_bg: '#0F172A', flash3_textcolor: '#ffffff',
+    flash4_title: '', flash4_subtitle: '', flash4_image: '', flash4_bg: '#0F172A', flash4_textcolor: '#ffffff',
+  })
 
   // VIP constituencies
   const [allConstituencies, setAllConstituencies] = useState([])
@@ -440,6 +444,18 @@ export default function Admin() {
         photo_others: settings.photo_others || '',
         naadi_logo: settings.naadi_logo || '',
         view1_image: settings.view1_image || '',
+      })
+      setFlashData({
+        flash3_title: settings.flash3_title || '',
+        flash3_subtitle: settings.flash3_subtitle || '',
+        flash3_image: settings.flash3_image || '',
+        flash3_bg: settings.flash3_bg || '#0F172A',
+        flash3_textcolor: settings.flash3_textcolor || '#ffffff',
+        flash4_title: settings.flash4_title || '',
+        flash4_subtitle: settings.flash4_subtitle || '',
+        flash4_image: settings.flash4_image || '',
+        flash4_bg: settings.flash4_bg || '#0F172A',
+        flash4_textcolor: settings.flash4_textcolor || '#ffffff',
       })
       if (settings.vip_constituencies) {
         setVipIds(settings.vip_constituencies.split(',').map(Number).filter(Boolean))
@@ -497,6 +513,16 @@ export default function Admin() {
           .eq('party', party)
       }
       setMsg('✅ Tally updated!')
+    } catch (e) { setMsg('❌ Error: ' + e.message) }
+    setLoading(false)
+  }
+
+  const saveFlashSettings = async () => {
+    setLoading(true)
+    setMsg('💾 Saving special views...')
+    try {
+      await Promise.all(Object.entries(flashData).map(([k, v]) => saveSetting(k, v)))
+      setMsg('✅ Special views updated!')
     } catch (e) { setMsg('❌ Error: ' + e.message) }
     setLoading(false)
   }
@@ -585,6 +611,7 @@ export default function Admin() {
         <button style={tabStyle('tally')} onClick={() => setTab('tally')}>📊 Tally</button>
         <button style={tabStyle('constituencies')} onClick={() => setTab('constituencies')}>🗺️ தொகுதி</button>
         <button style={tabStyle('vip')} onClick={() => setTab('vip')}>⭐ VIP தொகுதிகள்</button>
+        <button style={tabStyle('flash')} onClick={() => setTab('flash')}>🎯 Special Views</button>
         <button style={tabStyle('fonts')} onClick={() => setTab('fonts')}>🔤 Font Size</button>
         <button style={tabStyle('photos')} onClick={() => setTab('photos')}>📸 Photos</button>
       </div>
@@ -726,6 +753,62 @@ export default function Admin() {
 
           <button onClick={saveVipConstituencies} disabled={loading} style={{ background: '#16A34A', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 0', width: '100%', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
             {loading ? '⏳...' : `✅ Save VIP List (${vipIds.length} தொகுதிகள்)`}
+          </button>
+        </div>
+      )}
+
+      {/* FLASH / SPECIAL VIEWS TAB */}
+      {tab === 'flash' && (
+        <div style={{ background: '#111827', borderRadius: 12, padding: 20, border: '1px solid #1E293B' }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: '#F59E0B', marginBottom: 4 }}>🎯 Special Views (சந்தாதாரர் விருப்பம்)</div>
+          <div style={{ fontSize: 12, color: '#64748B', marginBottom: 20 }}>Center view-ல் காட்டப்படும் சிறப்புக் காட்சிகள்</div>
+
+          {[3, 4].map(num => (
+            <div key={num} style={{ marginBottom: 30, padding: 16, background: '#0F172A', borderRadius: 10, border: '1px solid #334155' }}>
+              <div style={{ fontSize: 14, color: '#F59E0B', fontWeight: 700, marginBottom: 14 }}>மக்களின் விருப்பம் {num - 2}</div>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
+                <div>
+                  <div style={{ fontSize: 11, color: '#94A3B8', marginBottom: 4 }}>Title (Constituency Name)</div>
+                  <input type="text" value={flashData[`flash${num}_title`]} 
+                    onChange={e => setFlashData({...flashData, [`flash${num}_title`]: e.target.value})}
+                    style={{ background: '#1E293B', border: '1px solid #334155', borderRadius: 8, color: '#fff', padding: '8px 12px', fontSize: 13, width: '100%' }} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, color: '#94A3B8', marginBottom: 4 }}>Subtitle (Result Info)</div>
+                  <input type="text" value={flashData[`flash${num}_subtitle`]} 
+                    onChange={e => setFlashData({...flashData, [`flash${num}_subtitle`]: e.target.value})}
+                    style={{ background: '#1E293B', border: '1px solid #334155', borderRadius: 8, color: '#fff', padding: '8px 12px', fontSize: 13, width: '100%' }} />
+                </div>
+              </div>
+
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ fontSize: 11, color: '#94A3B8', marginBottom: 4 }}>Background Image URL (Optional)</div>
+                <input type="text" value={flashData[`flash${num}_image`]} 
+                  onChange={e => setFlashData({...flashData, [`flash${num}_image`]: e.target.value})}
+                  style={{ background: '#1E293B', border: '1px solid #334155', borderRadius: 8, color: '#fff', padding: '8px 12px', fontSize: 13, width: '100%' }} />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <div>
+                  <div style={{ fontSize: 11, color: '#94A3B8', marginBottom: 4 }}>BG Color</div>
+                  <input type="color" value={flashData[`flash${num}_bg`]} 
+                    onChange={e => setFlashData({...flashData, [`flash${num}_bg`]: e.target.value})}
+                    style={{ background: '#1E293B', border: 'none', height: 36, width: '100%', cursor: 'pointer' }} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, color: '#94A3B8', marginBottom: 4 }}>Text Color</div>
+                  <input type="color" value={flashData[`flash${num}_textcolor`]} 
+                    onChange={e => setFlashData({...flashData, [`flash${num}_textcolor`]: e.target.value})}
+                    style={{ background: '#1E293B', border: 'none', height: 36, width: '100%', cursor: 'pointer' }} />
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <button onClick={saveFlashSettings} disabled={loading}
+            style={{ background: '#16A34A', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 0', width: '100%', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
+            {loading ? '⏳...' : '✅ Save Special Views'}
           </button>
         </div>
       )}
