@@ -45,7 +45,7 @@ export default function TopBar() {
             src={logoUrl}
             alt="நாடி"
             style={{ 
-              maxHeight: '60px', 
+              maxHeight: '55px', 
               maxWidth: '300px', 
               width: 'auto', 
               height: 'auto', 
