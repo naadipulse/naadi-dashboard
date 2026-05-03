@@ -15,7 +15,7 @@ export default function TopBar() {
       {/* Main top bar — title + logo */}
       <div style={{
         background: 'linear-gradient(90deg,#B91C1C,#7F1D1D)',
-        padding: '10px 60px',
+        padding: '6px 60px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -23,15 +23,15 @@ export default function TopBar() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{
             background: '#fff', color: '#DC2626',
-            fontWeight: 900, fontSize: fm - 2,
-            padding: '3px 12px', borderRadius: 4,
+            fontWeight: 900, fontSize: fm - 4,
+            padding: '2px 10px', borderRadius: 4,
             animation: 'blink 1.5s infinite',
             flexShrink: 0,
           }}>● LIVE</div>
 
           <span style={{
             fontWeight: 900,
-            fontSize: fm + 4,
+            fontSize: fm + 2,
             color: '#fff',
             letterSpacing: 0.5,
           }}>
@@ -45,7 +45,7 @@ export default function TopBar() {
             src={logoUrl}
             alt="நாடி"
             style={{ 
-              maxHeight: '80px', 
+              maxHeight: '60px', 
               maxWidth: '300px', 
               width: 'auto', 
               height: 'auto', 

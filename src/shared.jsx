@@ -92,11 +92,11 @@ export function AnimNum({ val, color, size = 48, font }) {
 export function Photo({ photoUrl, fallback, color, size = 56 }) {
   const [err, setErr] = useState(false)
   if (err || !photoUrl) return (
-    <div style={{ width: size, height: size, borderRadius: '50%', background: color + '22', border: `3px solid ${color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size * 0.28, fontWeight: 900, color, flexShrink: 0 }}>
+    <div style={{ width: size, height: size, background: color + '22', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size * 0.28, fontWeight: 900, color, flexShrink: 0 }}>
       {fallback}
     </div>
   )
-  return <img src={photoUrl} alt="" onError={() => setErr(true)} style={{ width: size, height: size, borderRadius: '50%', objectFit: 'cover', objectPosition: 'top', border: `3px solid ${color}`, flexShrink: 0 }} />
+  return <img src={photoUrl} alt="" onError={() => setErr(true)} style={{ width: size, height: size, objectFit: 'cover', objectPosition: 'top', flexShrink: 0 }} />
 }
 
 export const PARTY_DEFAULTS = {

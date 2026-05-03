@@ -58,8 +58,8 @@ export default function BottomBar() {
             style={{
               flex: 1,
               background: cfg.color,
-              display: 'flex', alignItems: 'center', gap: 12,
-              padding: '0 16px', borderRight: '2px solid rgba(255,255,255,0.2)',
+              display: 'flex', alignItems: 'center', gap: 8,
+              padding: '0 10px', borderRight: '2px solid rgba(255,255,255,0.2)',
               position: 'relative', overflow: 'hidden',
               animation: 'partyPulse 5s ease-in-out infinite',
               boxShadow: hasMaj ? `inset 0 0 40px rgba(255,255,255,0.15)` : 'none',
@@ -91,11 +91,11 @@ export default function BottomBar() {
                   🏆 பெரும்பான்மை!
                 </div>
               )}
-              <div style={{ fontSize: fm + 4, color: 'rgba(255,255,255,0.9)', fontWeight: 800 }}>
+              <div style={{ fontSize: fm + 2, color: 'rgba(255,255,255,0.9)', fontWeight: 800 }}>
                 {cfg.label}
               </div>
               <div style={{
-                fontSize: fs + 10, fontWeight: 900, lineHeight: 1, color: '#fff',
+                fontSize: fs + 6, fontWeight: 900, lineHeight: 1, color: '#fff',
                 animation: 'numPop 5s ease-in-out infinite',
               }}>
                 {tot}
@@ -107,11 +107,11 @@ export default function BottomBar() {
 
       {/* Naadi Logo + LIVE + Time */}
       <div style={{
-        background: '#0F172A', minWidth: 220,
+        background: '#0F172A', minWidth: 180,
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
         borderLeft: '2px solid #334155',
-        padding: '4px 15px', gap: 2,
+        padding: '2px 15px', gap: 1,
         overflow: 'hidden'
       }}>
         {hasLogo ? (
