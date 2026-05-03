@@ -111,21 +111,23 @@ export default function BottomBar() {
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
         borderLeft: '2px solid #334155',
-        padding: '10px 15px', gap: 8,
+        padding: '4px 15px', gap: 2,
+        overflow: 'hidden'
       }}>
         {hasLogo ? (
-          <img
-            src={logoUrl}
-            alt="நாடி"
-            style={{ 
-              maxHeight: '145px', 
-              maxWidth: '240px', 
-              width: 'auto', 
-              height: 'auto', 
-              objectFit: 'contain' 
-            }}
-            onError={e => { e.target.style.display = 'none' }}
-          />
+          <div style={{ height: '55%', width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <img
+              src={logoUrl}
+              alt="நாடி"
+              style={{ 
+                height: '100%', 
+                width: 'auto', 
+                maxWidth: '100%', 
+                objectFit: 'contain' 
+              }}
+              onError={e => { e.target.style.display = 'none' }}
+            />
+          </div>
         ) : (
           <div style={{
             fontSize: fm + 6, fontWeight: 900,
@@ -136,13 +138,13 @@ export default function BottomBar() {
 
         <div style={{
           background: '#DC2626', color: '#fff',
-          fontSize: fsm, fontWeight: 900,
-          padding: '3px 14px', borderRadius: 4,
+          fontSize: fsm - 2, fontWeight: 900,
+          padding: '1px 10px', borderRadius: 4,
           letterSpacing: 1,
           animation: 'blink 1.5s infinite',
         }}>● LIVE</div>
 
-        <div style={{ fontSize: fm, color: '#F59E0B', fontWeight: 700 }}>{timeStr}</div>
+        <div style={{ fontSize: fm - 2, color: '#F59E0B', fontWeight: 700 }}>{timeStr}</div>
       </div>
 
       <style>{`
