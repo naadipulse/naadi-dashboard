@@ -48,8 +48,9 @@ export default function LeftPanel() {
   const { fs, fm, fsm, ff } = getComponentFonts(settings, 'left')
 
   // Get VIP IDs from settings ONLY — no defaults
-  const vipIds = settings.vip_constituencies
-    ? Array.from(new Set(settings.vip_constituencies.split(',').map(Number).filter(Boolean)))
+  const rawVip = settings && settings.vip_constituencies ? settings.vip_constituencies : ""
+  const vipIds = rawVip
+    ? Array.from(new Set(rawVip.split(',').map(Number).filter(Boolean)))
     : []
 
   const vipList = vipIds
