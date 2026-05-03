@@ -104,7 +104,7 @@ export default function LeftPanel() {
               const pct = (cand.votes / maxVotes) * 100
               return (
                 <div key={i} style={{
-                  padding: '6px 14px',
+                  padding: '10px 14px',
                   borderBottom: '1px solid #F3F4F6',
                   background: i === 0 ? cfg.light : '#fff',
                   flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center',
@@ -128,21 +128,31 @@ export default function LeftPanel() {
 
                     {/* Name */}
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: fsm + 1, fontWeight: 700, color: '#111827', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {cand.candidate_name_tamil || cand.candidate_name}
+                      <div style={{ fontSize: fm, fontWeight: 700, color: '#111827', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {i === 0 && '👑 '}{cand.candidate_name_tamil || cand.candidate_name}
                       </div>
                       <div style={{ fontSize: fsm - 2, color: cfg.color, fontWeight: 600 }}>{cfg.label}</div>
                     </div>
 
                     {/* Votes */}
-                    <div style={{ fontSize: fm + 2, fontWeight: 900, color: i === 0 ? cfg.color : '#374151', flexShrink: 0 }}>
-                      {cand.votes > 0 ? cand.votes.toLocaleString('en-IN') : '—'}
+                    <div style={{ fontSize: fm + 2, fontWeight: 900, color: i === 0 ? cfg.color : '#374151', flexShrink: 0, textAlign: 'right' }}>
+                      <div>{cand.votes > 0 ? cand.votes.toLocaleString('en-IN') : '—'}</div>
+                      <div style={{ fontSize: fsm - 1, color: i === 0 ? cfg.color : '#9CA3AF', fontWeight: 600 }}>
+                        {cand.votes > 0 ? `${pct.toFixed(1)}%` : ''}
+                      </div>
                     </div>
                   </div>
 
                   {cand.votes > 0 && (
-                    <div style={{ background: '#E5E7EB', borderRadius: 999, height: 3, marginTop: 5, marginLeft: 58 }}>
-                      <div style={{ background: cfg.color, width: `${pct}%`, height: '100%', borderRadius: 999, transition: 'width 1s ease' }} />
+                    <div style={{ marginTop: 6, marginLeft: 58 }}>
+                      <div style={{ background: '#E5E7EB', borderRadius: 999, height: 3, marginBottom: 4 }}>
+                        <div style={{ background: cfg.color, width: `${pct}%`, height: '100%', borderRadius: 999, transition: 'width 1s ease' }} />
+                      </div>
+                      {i === 0 && vipCandidates[1] && (
+                        <div style={{ fontSize: fsm - 2, color: '#6B7280', fontWeight: 600 }}>
+                          Lead: +{(vipCandidates[0].votes - vipCandidates[1].votes).toLocaleString('en-IN')}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
