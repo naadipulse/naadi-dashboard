@@ -415,7 +415,7 @@ export default function Admin() {
   const [fontMedium, setFontMedium] = useState(22)
   const [fontSmall, setFontSmall] = useState(13)
   const [fontFamily, setFontFamily] = useState('Segoe UI')
-  const [photos, setPhotos] = useState({ photo_dmk: '', photo_aiadmk: '', photo_tvk: '', photo_others: '' })
+  const [photos, setPhotos] = useState({ photo_dmk: '', photo_aiadmk: '', photo_tvk: '', photo_others: '', naadi_logo: '' })
 
   // VIP constituencies
   const [allConstituencies, setAllConstituencies] = useState([])
@@ -438,6 +438,7 @@ export default function Admin() {
         photo_aiadmk: settings.photo_aiadmk || '',
         photo_tvk: settings.photo_tvk || '',
         photo_others: settings.photo_others || '',
+        naadi_logo: settings.naadi_logo || '',
       })
       if (settings.vip_constituencies) {
         setVipIds(settings.vip_constituencies.split(',').map(Number).filter(Boolean))
@@ -738,6 +739,19 @@ export default function Admin() {
         <div style={{ background: '#111827', borderRadius: 12, padding: 20, border: '1px solid #1E293B' }}>
           <div style={{ fontSize: 16, fontWeight: 700, color: '#F59E0B', marginBottom: 4 }}>📸 Leader Photos</div>
           <div style={{ fontSize: 12, color: '#64748B', marginBottom: 16 }}>imgbb.com direct link paste பண்ணுங்க</div>
+          
+          {/* Main Logo Field */}
+          <div style={{ marginBottom: 24, padding: 16, background: '#0F172A', borderRadius: 10, border: '1px solid #334155' }}>
+            <div style={{ fontSize: 14, color: '#F59E0B', fontWeight: 700, marginBottom: 10 }}>Main Logo (Naadi)</div>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+              <div style={{ width: 100, height: 50, background: '#1E293B', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                {photos.naadi_logo ? <img src={photos.naadi_logo} alt="Preview" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> : <span style={{ fontSize: 10, color: '#475569' }}>NO LOGO</span>}
+              </div>
+              <input type="text" value={photos.naadi_logo} onChange={e => setPhotos({ ...photos, naadi_logo: e.target.value })} placeholder="Main Logo URL (i.ibb.co...)"
+                style={{ flex: 1, background: '#1E293B', border: '1px solid #334155', borderRadius: 8, color: '#fff', padding: '10px 14px', fontSize: 13 }} />
+            </div>
+          </div>
+
           {[
             { key: 'photo_dmk', label: 'திமுக+ (Stalin)', color: '#DC2626' },
             { key: 'photo_aiadmk', label: 'அதிமுக+ (Edappadi)', color: '#16A34A' },

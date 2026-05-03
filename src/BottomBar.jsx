@@ -24,8 +24,9 @@ export default function BottomBar() {
   })
 
   const logoUrl = settings.naadi_logo
-    ? settings.naadi_logo.replace('https://ibb.co/', 'https://i.ibb.co/')
+    ? settings.naadi_logo.trim().replace('https://ibb.co/', 'https://i.ibb.co/')
     : null
+  const hasLogo = !!(logoUrl && logoUrl.length > 5)
 
   return (
     <div style={{ fontFamily: ff, display: 'flex', height: '100%', borderTop: '3px solid #DC2626' }}>
@@ -112,7 +113,7 @@ export default function BottomBar() {
         borderLeft: '2px solid #334155',
         padding: '10px 15px', gap: 8,
       }}>
-        {logoUrl ? (
+        {hasLogo ? (
           <img
             src={logoUrl}
             alt="நாடி"
