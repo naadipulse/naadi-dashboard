@@ -105,7 +105,7 @@ function FullDashboard() {
         </div>
 
         {/* Bottom Bar */}
-        <div style={{ height: 140, flexShrink: 0, padding: '0 60px 10px' }}>
+        <div style={{ height: 170, flexShrink: 0, padding: '0 60px 10px' }}>
           <BottomBar />
         </div>
 

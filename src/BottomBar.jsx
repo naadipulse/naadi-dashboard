@@ -106,17 +106,17 @@ export default function BottomBar() {
 
       {/* Naadi Logo + LIVE + Time */}
       <div style={{
-        background: '#0F172A', minWidth: 180,
+        background: '#0F172A', minWidth: 220,
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
         borderLeft: '2px solid #334155',
-        padding: '0 12px', gap: 5,
+        padding: '10px 15px', gap: 8,
       }}>
         {logoUrl ? (
           <img
             src={logoUrl}
             alt="நாடி"
-            style={{ height: 110, maxWidth: 170, objectFit: 'contain' }}
+            style={{ height: 120, maxWidth: 200, objectFit: 'contain' }}
             onError={e => { e.target.style.display = 'none' }}
           />
         ) : (

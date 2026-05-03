@@ -39,7 +39,7 @@ export default function TopBar() {
           <img
             src={settings.naadi_logo.replace('https://ibb.co/', 'https://i.ibb.co/')}
             alt="நாடி"
-            style={{ height: 60, maxWidth: 140, objectFit: 'contain', flexShrink: 0 }}
+            style={{ height: 80, maxWidth: 220, objectFit: 'contain', flexShrink: 0 }}
             onError={e => { e.target.style.display = 'none' }}
           />
         )}
