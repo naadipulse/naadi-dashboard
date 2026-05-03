@@ -205,15 +205,15 @@ export default function LeftPanel() {
 
       <style>{`
         .flip-in {
-          animation: flipInX 0.5s ease forwards;
+          animation: flipInY 0.5s ease forwards;
           backface-visibility: hidden;
         }
         .flip-out {
-          animation: flipOutX 0.4s ease forwards;
+          animation: flipOutY 0.4s ease forwards;
           backface-visibility: hidden;
         }
-        @keyframes flipInX { from { transform: rotateX(-90deg); opacity: 0; } to { transform: rotateX(0deg); opacity: 1; } }
-        @keyframes flipOutX { from { transform: rotateX(0deg); opacity: 1; } to { transform: rotateX(90deg); opacity: 0; } }
+        @keyframes flipInY { from { transform: rotateY(-90deg); opacity: 0; } to { transform: rotateY(0deg); opacity: 1; } }
+        @keyframes flipOutY { from { transform: rotateY(0deg); opacity: 1; } to { transform: rotateY(90deg); opacity: 0; } }
       `}</style>
     </div>
   )
