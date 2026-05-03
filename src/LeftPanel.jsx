@@ -9,6 +9,19 @@ export default function LeftPanel() {
   const [vipIdx, setVipIdx] = useState(0)
   const [fade, setFade] = useState(true)
 
+  // Move data derivation logic ABOVE the useEffect hooks to avoid "Temporal Dead Zone" errors
+  const { fs, fm, fsm, ff } = getComponentFonts(settings, 'left')
+
+  // Get VIP IDs from settings ONLY — no defaults
+  const rawVip = settings && settings.vip_constituencies ? settings.vip_constituencies : ""
+  const vipIds = rawVip
+    ? Array.from(new Set(rawVip.split(',').map(Number).filter(Boolean)))
+    : []
+
+  const vipList = vipIds
+    .map(id => allConstituencies.find(c => c.id === id))
+    .filter(Boolean)
+
   useEffect(() => {
     fetchCandidates()
     fetchConstituencies()
@@ -44,18 +57,6 @@ export default function LeftPanel() {
     const { data } = await supabase.from('constituencies').select('id, name, name_tamil, district')
     if (data) setAllConstituencies(data)
   }
-
-  const { fs, fm, fsm, ff } = getComponentFonts(settings, 'left')
-
-  // Get VIP IDs from settings ONLY — no defaults
-  const rawVip = settings && settings.vip_constituencies ? settings.vip_constituencies : ""
-  const vipIds = rawVip
-    ? Array.from(new Set(rawVip.split(',').map(Number).filter(Boolean)))
-    : []
-
-  const vipList = vipIds
-    .map(id => allConstituencies.find(c => c.id === id))
-    .filter(Boolean)
 
   // No VIP set yet
   if (vipList.length === 0) {
