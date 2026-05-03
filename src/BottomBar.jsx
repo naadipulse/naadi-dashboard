@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
 import { useSettings, useTally, PARTY_DEFAULTS, AnimNum, Photo, MAJORITY, TOTAL, getComponentFonts } from './shared.jsx'
 
 const BOTTOM_PARTIES = {
@@ -11,11 +10,20 @@ export default function BottomBar() {
   const settings = useSettings()
   const { gT, totalDeclared } = useTally()
   const [time, setTime] = useState(new Date())
+  const [animationTick, setAnimationTick] = useState(0); // New state for animation trigger
 
   useEffect(() => {
     const t = setInterval(() => setTime(new Date()), 1000)
     return () => clearInterval(t)
   }, [])
+
+  // New useEffect to trigger animation every 5 seconds
+  useEffect(() => {
+    const animationInterval = setInterval(() => {
+      setAnimationTick(prev => prev + 1);
+    }, 5000); // Trigger every 5 seconds
+    return () => clearInterval(animationInterval);
+  }, []); // Run once on mount
 
   const { fs, fm, fsm, ff } = getComponentFonts(settings, 'bottom')
 
@@ -39,7 +47,7 @@ export default function BottomBar() {
         borderRight: '2px solid #334155', padding: '0 12px',
       }}>
         <div style={{ fontSize: fsm, color: '#94A3B8', fontWeight: 700 }}>முன்னிலை</div>
-        <div key={totalDeclared} style={{ 
+        <div key={`${totalDeclared}-${animationTick}`} style={{ // Modified key to include animationTick
           animation: 'numFlip 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)', 
           perspective: '1000px',
           display: 'inline-block',
@@ -104,7 +112,7 @@ export default function BottomBar() {
                 {cfg.label}
               </div>
               <div
-                key={tot}
+                key={`${tot}-${animationTick}`} // Modified key to include animationTick
                 style={{
                   fontSize: fs + 6, fontWeight: 900, lineHeight: '1', color: '#fff',
                   animation: 'numFlip 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)', 
