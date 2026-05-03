@@ -10,7 +10,7 @@ function View1({ settings }) {
   return (
     <div style={{ height: '100%', borderRadius: 14, overflow: 'hidden', position: 'relative', background: '#0F172A', fontFamily: ff }}>
       <img src={imgUrl} alt="view1"
-        style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block' }} />
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
       <div style={{
         position: 'absolute', bottom: 0, left: 0, right: 0,
         background: 'linear-gradient(transparent, rgba(0,0,0,0.85))',

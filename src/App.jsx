@@ -94,7 +94,7 @@ function FullDashboard() {
         <div style={{
           flex: 1,
           display: 'grid',
-          gridTemplateColumns: '280px 1fr 290px',
+          gridTemplateColumns: '350px 1fr 360px',
           gap: 10,
           padding: '10px 60px',
           minHeight: 0, overflow: 'hidden',
@@ -105,7 +105,7 @@ function FullDashboard() {
         </div>
 
         {/* Bottom Bar */}
-        <div style={{ height: 100, flexShrink: 0, padding: '0 60px 10px' }}>
+        <div style={{ height: 140, flexShrink: 0, padding: '0 60px 10px' }}>
           <BottomBar />
         </div>
 
