@@ -117,7 +117,13 @@ export default function BottomBar() {
           <img
             src={logoUrl}
             alt="நாடி"
-            style={{ height: 120, maxWidth: 200, objectFit: 'contain' }}
+            style={{ 
+              maxHeight: '145px', 
+              maxWidth: '240px', 
+              width: 'auto', 
+              height: 'auto', 
+              objectFit: 'contain' 
+            }}
             onError={e => { e.target.style.display = 'none' }}
           />
         ) : (

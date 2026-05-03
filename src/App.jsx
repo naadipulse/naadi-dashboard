@@ -166,7 +166,7 @@ export default function App() {
   if (path === '/top') return <div style={{ background: 'transparent' }}><TopBar /></div>
   if (path === '/left') return <div style={{ background: 'transparent', height: '100vh' }}><LeftPanel /></div>
   if (path === '/center') return <div style={{ background: 'transparent', height: '100vh', padding: 8 }}><CenterViews /></div>
-  if (path === '/bottom') return <div style={{ background: 'transparent', height: 100 }}><BottomBar /></div>
+  if (path === '/bottom') return <div style={{ background: 'transparent', height: 170 }}><BottomBar /></div>
   if (path === '/admin') return <Admin />
   return <FullDashboard />
 }
