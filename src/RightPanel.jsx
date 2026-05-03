@@ -151,7 +151,7 @@ export default function RightPanel() {
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
                   {lp ? (
                     <div style={{
-                      width: 32, height: 32, borderRadius: '50%',
+                      width: 32, height: 32, borderRadius: 4,
                       background: lp.color,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontSize: 10, color: '#fff', fontWeight: 800,
@@ -160,7 +160,7 @@ export default function RightPanel() {
                       {lp.short.slice(0, 2)}
                     </div>
                   ) : (
-                    <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#E5E7EB' }} />
+                    <div style={{ width: 32, height: 32, borderRadius: 4, background: '#E5E7EB' }} />
                   )}
                   <span style={{
                     fontSize: fsm - 3, fontWeight: 700,

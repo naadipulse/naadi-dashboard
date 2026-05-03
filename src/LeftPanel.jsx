@@ -15,7 +15,10 @@ export default function LeftPanel() {
     const sub = supabase.channel('cands_' + Math.random())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'candidates' }, fetchCandidates)
       .subscribe()
-    return () => sub.unsubscribe()
+    const sub2 = supabase.channel('consts_' + Math.random())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'constituencies' }, fetchConstituencies)
+      .subscribe()
+    return () => { sub.unsubscribe(); sub2.unsubscribe() }
   }, [])
 
   useEffect(() => {
@@ -84,8 +87,8 @@ export default function LeftPanel() {
         minHeight: 0,
       }}>
         {/* Header */}
-        <div style={{ background: '#1E293B', padding: '6px 14px', flexShrink: 0 }}>
-          <div style={{ fontSize: fm, fontWeight: 900, color: '#fff' }}>
+        <div style={{ background: '#1E293B', padding: '4px 14px', flexShrink: 0 }}>
+          <div style={{ fontSize: fm - 2, fontWeight: 900, color: '#fff' }}>
             {vip.name_tamil || vip.name}
           </div>
           <div style={{ fontSize: fsm - 1, color: '#94A3B8' }}>{vip.district}</div>
@@ -98,21 +101,23 @@ export default function LeftPanel() {
               ⏳ வாக்கு எண்ணிக்கை தொடங்கவில்லை
             </div>
           ) : (
-            vipCandidates.slice(0, 4).map((cand, i) => {
+            vipCandidates.slice(0, 4).map((cand, i, arr) => {
               const cfg = PARTY_DEFAULTS[cand.party] || PARTY_DEFAULTS['Others']
               const maxVotes = vipCandidates[0]?.votes || 1
               const pct = (cand.votes / maxVotes) * 100
               return (
                 <div key={i} style={{
-                  padding: '6px 14px',
-                  borderBottom: '1px solid #F3F4F6',
+                  padding: '4px 14px',
+                  borderBottom: i === arr.length - 1 ? 'none' : '1px solid #F3F4F6',
                   background: i === 0 ? cfg.light : '#fff',
-                  flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                  flex: '1 1 0%', 
+                  minHeight: 0,
+                  display: 'flex', flexDirection: 'column', justifyContent: 'center',
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     {/* Rank */}
                     <div style={{
-                      width: 22, height: 22, borderRadius: '50%',
+                      width: 22, height: 22, borderRadius: 4,
                       background: i === 0 ? cfg.color : '#E5E7EB',
                       color: i === 0 ? '#fff' : '#6B7280',
                       fontSize: fsm - 1, fontWeight: 800,
@@ -121,7 +126,7 @@ export default function LeftPanel() {
 
                     {/* Party circle */}
                     <div style={{
-                      width: 28, height: 28, borderRadius: '50%',
+                      width: 28, height: 28, borderRadius: 4,
                       background: cfg.color, display: 'flex', alignItems: 'center',
                       justifyContent: 'center', fontSize: 8, color: '#fff', fontWeight: 800, flexShrink: 0,
                     }}>{cfg.short}</div>
@@ -184,7 +189,7 @@ export default function LeftPanel() {
         gap: 8,
       }}>
         <VipCard vip={vip1} />
-        {vip2 && <VipCard vip={vip2} />}
+        {vip2 ? <VipCard vip={vip2} /> : <div style={{ flex: 1 }} />}
       </div>
 
       {/* Pagination dots */}

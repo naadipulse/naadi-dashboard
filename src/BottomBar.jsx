@@ -59,7 +59,7 @@ export default function BottomBar() {
               flex: 1,
               background: cfg.color,
               display: 'flex', alignItems: 'center', gap: 8,
-              padding: '0 10px', borderRight: '2px solid rgba(255,255,255,0.2)',
+              padding: '0 12px 0 0', borderRight: '2px solid rgba(255,255,255,0.2)',
               position: 'relative', overflow: 'hidden',
               animation: 'partyPulse 5s ease-in-out infinite',
               boxShadow: hasMaj ? `inset 0 0 40px rgba(255,255,255,0.15)` : 'none',
@@ -77,7 +77,8 @@ export default function BottomBar() {
               photoUrl={photoUrl}
               fallback={cfg.short.slice(0, 2)}
               color="#fff"
-              size={Math.max(50, fm * 2.5)}
+              size={110}
+              style={{ height: '100%', width: 'auto', minWidth: 100, zIndex: 1 }}
             />
 
             <div style={{ zIndex: 1 }}>

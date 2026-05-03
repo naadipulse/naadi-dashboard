@@ -89,14 +89,14 @@ export function AnimNum({ val, color, size = 48, font }) {
   return <span style={{ color, fontSize: size, fontWeight: 900, lineHeight: 1, fontFamily: font || 'inherit' }}>{n}</span>
 }
 
-export function Photo({ photoUrl, fallback, color, size = 56 }) {
+export function Photo({ photoUrl, fallback, color, size = 56, style = {} }) {
   const [err, setErr] = useState(false)
   if (err || !photoUrl) return (
-    <div style={{ width: size, height: size, background: color + '22', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: size * 0.28, fontWeight: 900, color, flexShrink: 0 }}>
+    <div style={{ width: size, height: size, background: color + '22', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: (typeof size === 'number' ? size : 56) * 0.28, fontWeight: 900, color, flexShrink: 0, ...style }}>
       {fallback}
     </div>
   )
-  return <img src={photoUrl} alt="" onError={() => setErr(true)} style={{ width: size, height: size, objectFit: 'cover', objectPosition: 'top', flexShrink: 0 }} />
+  return <img src={photoUrl} alt="" onError={() => setErr(true)} style={{ width: size, height: size, objectFit: 'cover', objectPosition: 'top', flexShrink: 0, ...style }} />
 }
 
 export const PARTY_DEFAULTS = {
