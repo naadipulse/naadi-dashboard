@@ -107,15 +107,14 @@ export default function LeftPanel() {
               const pct = (cand.votes / maxVotes) * 100
               return (
                 <div key={i} style={{
-                  padding: '10px 14px',
+                  padding: '6px 14px',
                   borderBottom: i === arr.length - 1 ? 'none' : '1px solid #F3F4F6',
                   background: i === 0 ? cfg.light : '#fff',
                   flex: '1 1 0%', 
                   minHeight: 0,
-                  display: 'flex', gap: 8,
+                  display: 'flex', flexDirection: 'column', justifyContent: 'center',
                 }}>
-                  {/* Rank + Party */}
-                  <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     {/* Rank */}
                     <div style={{
                       width: 22, height: 22, borderRadius: 4,
@@ -131,21 +130,20 @@ export default function LeftPanel() {
                       background: cfg.color, display: 'flex', alignItems: 'center',
                       justifyContent: 'center', fontSize: 8, color: '#fff', fontWeight: 800, flexShrink: 0,
                     }}>{cfg.short}</div>
-                  </div>
 
-                  {/* Name, Party Label, Votes Stack */}
-                  <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 2 }}>
-                    <div style={{ fontSize: fm, fontWeight: 700, color: '#111827', lineHeight: 1.2, wordBreak: 'break-word' }}>
-                      {i === 0 && '👑 '}{cand.candidate_name_tamil || cand.candidate_name}
+                    {/* Name & Votes Stack */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: fsm + 1, fontWeight: 700, color: '#111827', lineHeight: 1.1 }}>
+                        {i === 0 && '👑 '}{cand.candidate_name_tamil || cand.candidate_name}
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginTop: 1 }}>
+                        <div style={{ fontSize: fsm - 2, color: cfg.color, fontWeight: 600 }}>{cfg.label}</div>
+                        <div style={{ fontSize: fsm + 1, fontWeight: 900, color: i === 0 ? cfg.color : '#374151' }}>
+                          {cand.votes > 0 ? cand.votes.toLocaleString('en-IN') : '—'}
+                          <span style={{ fontSize: fsm - 2, marginLeft: 4, opacity: 0.8 }}>({pct.toFixed(1)}%)</span>
+                        </div>
+                      </div>
                     </div>
-                    <div style={{ fontSize: fsm - 2, color: cfg.color, fontWeight: 600 }}>{cfg.label}</div>
-                    <div style={{ fontSize: fm, fontWeight: 900, color: i === 0 ? cfg.color : '#374151' }}>
-                      {cand.votes > 0 ? cand.votes.toLocaleString('en-IN') : '—'}
-                      <span style={{ fontSize: fsm, marginLeft: 4, opacity: 0.8 }}>({pct.toFixed(1)}%)</span>
-                    </div>
-                  </div>
-                </div>
-
                   {cand.votes > 0 && (
                     <div style={{ marginTop: 4, marginLeft: 58 }}>
                       <div style={{ background: '#E5E7EB', borderRadius: 999, height: 3, marginBottom: 2 }}>
