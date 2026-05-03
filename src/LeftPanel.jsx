@@ -71,7 +71,6 @@ const VipCard = ({ vip, candidates, fm, fsm, PARTY_DEFAULTS }) => {
                       <div style={{ fontSize: fsm - 2, color: cfg.color, fontWeight: 600 }}>{cfg.label}</div>
                       <div style={{ fontSize: fsm + 1, fontWeight: 900, color: i === 0 ? cfg.color : '#374151' }}>
                         {cand.votes > 0 ? cand.votes.toLocaleString('en-IN') : '—'}
-                        <span style={{ fontSize: fsm - 2, marginLeft: 4, opacity: 0.8 }}>({pct.toFixed(1)}%)</span>
                       </div>
                     </div>
                   </div>
