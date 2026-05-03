@@ -109,13 +109,13 @@ export default function BottomBar() {
                   🏆 பெரும்பான்மை!
                 </div>
               )}
-              <div style={{ fontSize: fm + 4, color: 'rgba(255,255,255,0.9)', fontWeight: 900 }}>
+              <div style={{ fontSize: fm + 2, color: 'rgba(255,255,255,0.9)', fontWeight: 800 }}>
                 {cfg.label}
               </div>
               <div
                 key={`${tot}-${animationTick}`} // Modified key to include animationTick
                 style={{
-                  fontSize: fs + 10, fontWeight: 900, lineHeight: '1', color: '#fff',
+                  fontSize: fs + 6, fontWeight: 900, lineHeight: '1', color: '#fff',
                   animation: 'numFlip 0.8s ease-out', 
                   perspective: '1200px',
                   display: 'inline-block',
@@ -123,7 +123,7 @@ export default function BottomBar() {
                   transformOrigin: 'center center',
                   transformStyle: 'preserve-3d'
                 }}>
-                <AnimNum val={tot} color="#fff" size={fs + 10} font={ff} />
+                <AnimNum val={tot} color="#fff" size={fs + 6} font={ff} />
               </div>
             </div>
           </div>
@@ -132,15 +132,15 @@ export default function BottomBar() {
 
       {/* Naadi Logo + LIVE + Time */}
       <div style={{
-        background: '#0F172A', minWidth: 200,
+        background: '#0F172A', minWidth: 180,
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
         borderLeft: '2px solid #334155',
-        padding: '4px 15px', gap: 4,
+        padding: '2px 15px', gap: 1,
         overflow: 'hidden'
       }}>
         {hasLogo ? (
-          <div style={{ height: '70%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ height: '58%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <img
               src={logoUrl}
               alt="நாடி"

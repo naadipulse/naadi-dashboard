@@ -415,7 +415,7 @@ export default function Admin() {
   const [fontMedium, setFontMedium] = useState(22)
   const [fontSmall, setFontSmall] = useState(13)
   const [fontFamily, setFontFamily] = useState('Segoe UI')
-  const [photos, setPhotos] = useState({ photo_dmk: '', photo_aiadmk: '', photo_tvk: '', photo_others: '', naadi_logo: '' })
+  const [photos, setPhotos] = useState({ photo_dmk: '', photo_aiadmk: '', photo_tvk: '', photo_others: '', naadi_logo: '', view1_image: '' })
 
   // VIP constituencies
   const [allConstituencies, setAllConstituencies] = useState([])
@@ -439,6 +439,7 @@ export default function Admin() {
         photo_tvk: settings.photo_tvk || '',
         photo_others: settings.photo_others || '',
         naadi_logo: settings.naadi_logo || '',
+        view1_image: settings.view1_image || '',
       })
       if (settings.vip_constituencies) {
         setVipIds(settings.vip_constituencies.split(',').map(Number).filter(Boolean))
@@ -748,6 +749,18 @@ export default function Admin() {
                 {photos.naadi_logo ? <img src={photos.naadi_logo} alt="Preview" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> : <span style={{ fontSize: 10, color: '#475569' }}>NO LOGO</span>}
               </div>
               <input type="text" value={photos.naadi_logo} onChange={e => setPhotos({ ...photos, naadi_logo: e.target.value })} placeholder="Paste your Supabase logo URL here..."
+                style={{ flex: 1, background: '#1E293B', border: '1px solid #334155', borderRadius: 8, color: '#fff', padding: '10px 14px', fontSize: 13 }} />
+            </div>
+          </div>
+
+          {/* Center View Image */}
+          <div style={{ marginBottom: 24, padding: 16, background: '#0F172A', borderRadius: 10, border: '1px solid #334155' }}>
+            <div style={{ fontSize: 14, color: '#F59E0B', fontWeight: 700, marginBottom: 10 }}>Center View (Slide 1) Image</div>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+              <div style={{ width: 100, height: 50, background: '#1E293B', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                {photos.view1_image ? <img src={photos.view1_image} alt="Preview" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 10, color: '#475569' }}>NO IMAGE</span>}
+              </div>
+              <input type="text" value={photos.view1_image} onChange={e => setPhotos({ ...photos, view1_image: e.target.value })} placeholder="Paste your Supabase slide image URL here..."
                 style={{ flex: 1, background: '#1E293B', border: '1px solid #334155', borderRadius: 8, color: '#fff', padding: '10px 14px', fontSize: 13 }} />
             </div>
           </div>

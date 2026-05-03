@@ -25,12 +25,15 @@ export default function LeftPanel() {
     const iv = setInterval(() => {
       setFade(false)
       setTimeout(() => {
-        setVipIdx(i => i + 2)
+        setVipIdx(i => {
+          const next = i + 2
+          return next >= (vipList.length || 0) ? 0 : next
+        })
         setFade(true)
       }, 400)
     }, 5000)
     return () => clearInterval(iv)
-  }, [])
+  }, [vipList.length])
 
   const fetchCandidates = async () => {
     const { data } = await supabase.from('candidates').select('*').eq('is_vip', true)
@@ -46,7 +49,7 @@ export default function LeftPanel() {
 
   // Get VIP IDs from settings ONLY — no defaults
   const vipIds = settings.vip_constituencies
-    ? settings.vip_constituencies.split(',').map(Number).filter(Boolean)
+    ? Array.from(new Set(settings.vip_constituencies.split(',').map(Number).filter(Boolean)))
     : []
 
   const vipList = vipIds
@@ -133,7 +136,7 @@ export default function LeftPanel() {
 
                     {/* Name & Votes Stack */}
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: fsm + 1, fontWeight: 700, color: '#111827', lineHeight: 1.1 }}>
+                      <div style={{ fontSize: fsm + 1, fontWeight: 700, color: '#111827', lineHeight: 1.1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {i === 0 && '👑 '}{cand.candidate_name_tamil || cand.candidate_name}
                       </div>
                       <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginTop: 1 }}>

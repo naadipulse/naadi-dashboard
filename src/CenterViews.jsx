@@ -5,7 +5,9 @@ const VIEW_LABELS = ['வீடியோ', 'சட்டமன்றம்', 'Fl
 
 // View 1: மும்முனை போட்டி image
 function View1({ settings }) {
-  const imgUrl = settings.view1_image || 'https://i.ibb.co/sdQrcBGx/3moonai.jpg'
+  const imgUrl = settings.view1_image 
+    ? settings.view1_image.trim().replace('https://ibb.co/', 'https://i.ibb.co/')
+    : 'https://i.ibb.co/nNfS4Wvd/5857325f-c3a8-4ae1-96b6-c2f8b225459b.png'
   const { fs, fm, fsm, ff } = getComponentFonts(settings, 'center')
   return (
     <div style={{ height: '100%', borderRadius: 14, overflow: 'hidden', position: 'relative', background: '#0F172A', fontFamily: ff }}>
