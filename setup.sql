@@ -5,7 +5,7 @@ CREATE TABLE overall_tally (
   id SERIAL PRIMARY KEY,
   party TEXT NOT NULL UNIQUE,
   won INT DEFAULT 0,
-  leading INT DEFAULT 0,
+  leadingg INT DEFAULT 0,
   updated_at TIMESTAMP DEFAULT NOW()
 );
 

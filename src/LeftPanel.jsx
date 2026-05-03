@@ -1,37 +1,31 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { supabase } from './supabaseClient.js'
-import { useSettings, PARTY_DEFAULTS, getComponentFonts } from './shared.jsx'
+import { useSettings, useConstituencies, PARTY_DEFAULTS, getComponentFonts } from './shared.jsx'
 
 export default function LeftPanel() {
   const settings = useSettings()
+  const constituencies = useConstituencies()
   const [candidates, setCandidates] = useState([])
-  const [allConstituencies, setAllConstituencies] = useState([])
   const [vipIdx, setVipIdx] = useState(0)
   const [fade, setFade] = useState(true)
 
-  // Move data derivation logic ABOVE the useEffect hooks to avoid "Temporal Dead Zone" errors
-  const { fs, fm, fsm, ff } = getComponentFonts(settings, 'left')
+  const { fm, fsm, ff } = getComponentFonts(settings, 'left')
 
-  // Get VIP IDs from settings ONLY — no defaults
-  const rawVip = settings && settings.vip_constituencies ? settings.vip_constituencies : ""
-  const vipIds = rawVip
-    ? Array.from(new Set(rawVip.split(',').map(Number).filter(Boolean)))
-    : []
-
-  const vipList = vipIds
-    .map(id => allConstituencies.find(c => c.id === id))
-    .filter(Boolean)
+  // Derive VIP list from settings and all constituencies
+  const vipList = useMemo(() => {
+    const rawVip = settings?.vip_constituencies || ""
+    const ids = Array.from(new Set(rawVip.split(',').map(Number).filter(Boolean)))
+    return ids
+      .map(id => constituencies.find(c => c.id === id))
+      .filter(c => c && (c.name_tamil || c.name))
+  }, [settings, constituencies])
 
   useEffect(() => {
     fetchCandidates()
-    fetchConstituencies()
     const sub = supabase.channel('cands_' + Math.random())
       .on('postgres_changes', { event: '*', schema: 'public', table: 'candidates' }, fetchCandidates)
       .subscribe()
-    const sub2 = supabase.channel('consts_' + Math.random())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'constituencies' }, fetchConstituencies)
-      .subscribe()
-    return () => { sub.unsubscribe(); sub2.unsubscribe() }
+    return () => { sub.unsubscribe() }
   }, [])
 
   useEffect(() => {
@@ -53,20 +47,13 @@ export default function LeftPanel() {
     if (data) setCandidates(data)
   }
 
-  const fetchConstituencies = async () => {
-    const { data } = await supabase.from('constituencies').select('id, name, name_tamil, district')
-    if (data) setAllConstituencies(data)
-  }
-
-  // No VIP set yet
+  // Placeholder while data loads
   if (vipList.length === 0) {
     return (
       <div style={{ fontFamily: ff, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', background: '#fff', borderRadius: 14, gap: 12 }}>
-        <div style={{ fontSize: 36 }}>⭐</div>
-        <div style={{ fontSize: fm, fontWeight: 700, color: '#94A3B8', textAlign: 'center' }}>VIP தொகுதிகள்</div>
-        <div style={{ fontSize: fsm, color: '#CBD5E1', textAlign: 'center', padding: '0 20px' }}>
-          Admin → VIP தொகுதிகள் tab-ல் add பண்ணுங்க
-        </div>
+        <div style={{ fontSize: 36, animation: 'pulse 2s infinite' }}>⭐</div>
+        <div style={{ fontSize: fm, fontWeight: 700, color: '#94A3B8', textAlign: 'center' }}>தரவு ஏற்றப்படுகிறது...</div>
+        <style>{`@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.1); } }`}</style>
       </div>
     )
   }
