@@ -109,12 +109,11 @@ export default function RightPanel() {
       </div>
 
       {/* Constituency rows */}
-      <div style={{
+      <div className={fade ? 'flip-in' : 'flip-out'} style={{
         flex: 1, 
         overflowY: 'auto',
-        opacity: fade ? 1 : 0,
-        transform: fade ? 'translateX(0)' : 'translateX(8px)',
-        transition: 'all 0.4s ease',
+        perspective: '1000px',
+        transformStyle: 'preserve-3d',
       }}>
         {currentSlide.items.length === 0 ? (
           <div style={{ padding: 20, textAlign: 'center', color: '#9CA3AF', fontSize: fsm }}>
@@ -127,7 +126,7 @@ export default function RightPanel() {
             return (
               <div key={c.id} style={{
                 display: 'grid',
-                gridTemplateColumns: '1fr 50px',
+                gridTemplateColumns: '1fr 40px 60px',
                 padding: '8px 12px',
                 borderBottom: '1px solid #F3F4F6',
                 background: isWon ? lp?.light || '#FCD34D22' : (i % 2 === 0 ? '#fff' : '#FAFAFA'),
@@ -147,8 +146,8 @@ export default function RightPanel() {
                   </div>
                 </div>
 
-                {/* Party symbol + status */}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
+                {/* Party symbol */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {lp ? (
                     <div style={{
                       width: 32, height: 32, borderRadius: 4,
@@ -162,8 +161,12 @@ export default function RightPanel() {
                   ) : (
                     <div style={{ width: 32, height: 32, borderRadius: 4, background: '#E5E7EB' }} />
                   )}
+                </div>
+
+                {/* Status */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                   <span style={{
-                    fontSize: fsm - 3, fontWeight: 700,
+                    fontSize: fsm + 2, fontWeight: 700,
                     color: lp?.color || '#9CA3AF',
                   }}>
                     {isWon ? '🏆' : '📈'}
@@ -188,6 +191,16 @@ export default function RightPanel() {
       </div>
 
       <style>{`
+        .flip-in {
+          animation: flipInX 0.5s ease forwards;
+          backface-visibility: hidden;
+        }
+        .flip-out {
+          animation: flipOutX 0.4s ease forwards;
+          backface-visibility: hidden;
+        }
+        @keyframes flipInX { from { transform: rotateX(-90deg); opacity: 0; } to { transform: rotateX(0deg); opacity: 1; } }
+        @keyframes flipOutX { from { transform: rotateX(0deg); opacity: 1; } to { transform: rotateX(90deg); opacity: 0; } }
         @keyframes slideIn {
           from { opacity: 0; transform: translateX(8px); }
           to { opacity: 1; transform: translateX(0); }

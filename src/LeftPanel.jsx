@@ -180,13 +180,13 @@ export default function LeftPanel() {
       </div>
 
       {/* 2 VIP cards — flex equal height */}
-      <div style={{
+      <div className={fade ? 'flip-in' : 'flip-out'} style={{
         flex: 1, overflow: 'hidden',
-        opacity: fade ? 1 : 0,
-        transform: fade ? 'translateY(0)' : 'translateY(6px)',
-        transition: 'all 0.4s ease',
         display: 'flex', flexDirection: 'column',
         gap: 8,
+        perspective: '1000px',
+        transformStyle: 'preserve-3d',
+        transition: 'all 0.4s ease-in-out',
       }}>
         <VipCard vip={vip1} />
         {vip2 ? <VipCard vip={vip2} /> : <div style={{ flex: 1 }} />}
@@ -202,6 +202,19 @@ export default function LeftPanel() {
           }} onClick={() => setVipIdx(i * 2)} />
         ))}
       </div>
+
+      <style>{`
+        .flip-in {
+          animation: flipInX 0.5s ease forwards;
+          backface-visibility: hidden;
+        }
+        .flip-out {
+          animation: flipOutX 0.4s ease forwards;
+          backface-visibility: hidden;
+        }
+        @keyframes flipInX { from { transform: rotateX(-90deg); opacity: 0; } to { transform: rotateX(0deg); opacity: 1; } }
+        @keyframes flipOutX { from { transform: rotateX(0deg); opacity: 1; } to { transform: rotateX(90deg); opacity: 0; } }
+      `}</style>
     </div>
   )
 }

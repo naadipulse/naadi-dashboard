@@ -103,7 +103,7 @@ export const PARTY_DEFAULTS = {
   'DMK+':    { color: '#DC2626', light: '#FEE2E2', label: 'திமுக+',  short: 'DMK',  leader: 'மு.க.ஸ்டாலின்', photoKey: 'photo_dmk' },
   'AIADMK+': { color: '#16A34A', light: '#DCFCE7', label: 'அதிமுக+', short: 'ADMK', leader: 'எடப்பாடி',       photoKey: 'photo_aiadmk' },
   'TVK':     { color: '#D97706', light: '#FEF3C7', label: 'தவெக',    short: 'TVK',  leader: 'விஜய்',           photoKey: 'photo_tvk' },
-  'Others':  { color: '#7C3AED', light: '#EDE9FE', label: 'மற்றவை',  short: 'OTH',  leader: 'சீமான்',          photoKey: 'photo_others' },
+  'Others':  { color: '#7C3AED', light: '#EDE9FE', label: 'நாதக',  short: 'NTK',  leader: 'சீமான்',          photoKey: 'photo_others' },
 }
 
 // Per-component font helper — falls back to global settings
