@@ -126,19 +126,17 @@ export default function LeftPanel() {
                       justifyContent: 'center', fontSize: 8, color: '#fff', fontWeight: 800, flexShrink: 0,
                     }}>{cfg.short}</div>
 
-                    {/* Name */}
+                    {/* Name & Votes Stack */}
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: fm, fontWeight: 700, color: '#111827', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <div style={{ fontSize: fm, fontWeight: 700, color: '#111827', lineHeight: 1.2 }}>
                         {i === 0 && '👑 '}{cand.candidate_name_tamil || cand.candidate_name}
                       </div>
-                      <div style={{ fontSize: fsm - 2, color: cfg.color, fontWeight: 600 }}>{cfg.label}</div>
-                    </div>
-
-                    {/* Votes */}
-                    <div style={{ fontSize: fm + 2, fontWeight: 900, color: i === 0 ? cfg.color : '#374151', flexShrink: 0, textAlign: 'right' }}>
-                      <div>{cand.votes > 0 ? cand.votes.toLocaleString('en-IN') : '—'}</div>
-                      <div style={{ fontSize: fsm - 1, color: i === 0 ? cfg.color : '#9CA3AF', fontWeight: 600 }}>
-                        {cand.votes > 0 ? `${pct.toFixed(1)}%` : ''}
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginTop: 2 }}>
+                        <div style={{ fontSize: fsm - 2, color: cfg.color, fontWeight: 600 }}>{cfg.label}</div>
+                        <div style={{ fontSize: fm, fontWeight: 900, color: i === 0 ? cfg.color : '#374151' }}>
+                          {cand.votes > 0 ? cand.votes.toLocaleString('en-IN') : '—'}
+                          <span style={{ fontSize: fsm - 2, marginLeft: 4, opacity: 0.8 }}>({pct.toFixed(1)}%)</span>
+                        </div>
                       </div>
                     </div>
                   </div>

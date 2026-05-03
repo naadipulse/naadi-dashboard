@@ -90,11 +90,11 @@ export default function BottomBar() {
                   🏆 பெரும்பான்மை!
                 </div>
               )}
-              <div style={{ fontSize: fm, color: 'rgba(255,255,255,0.9)', fontWeight: 800 }}>
+              <div style={{ fontSize: fm + 4, color: 'rgba(255,255,255,0.9)', fontWeight: 800 }}>
                 {cfg.label}
               </div>
               <div style={{
-                fontSize: fs, fontWeight: 900, lineHeight: 1, color: '#fff',
+                fontSize: fs + 10, fontWeight: 900, lineHeight: 1, color: '#fff',
                 animation: 'numPop 5s ease-in-out infinite',
               }}>
                 {tot}
@@ -116,7 +116,7 @@ export default function BottomBar() {
           <img
             src={logoUrl}
             alt="நாடி"
-            style={{ height: 80, maxWidth: 120, objectFit: 'contain' }}
+            style={{ height: 95, maxWidth: 160, objectFit: 'contain' }}
             onError={e => { e.target.style.display = 'none' }}
           />
         ) : (

@@ -91,7 +91,8 @@ export default function RightPanel() {
 
       {/* Constituency rows */}
       <div style={{
-        flex: 1, overflow: 'hidden',
+        flex: 1, 
+        overflowY: 'auto',
         opacity: fade ? 1 : 0,
         transform: fade ? 'translateX(0)' : 'translateX(8px)',
         transition: 'all 0.4s ease',
