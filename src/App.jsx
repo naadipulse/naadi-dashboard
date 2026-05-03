@@ -109,6 +109,45 @@ function FullDashboard() {
           <BottomBar />
         </div>
 
+        {/* Subscribe Ticker */}
+        <div style={{
+          height: 28, background: '#1E293B',
+          display: 'flex', overflow: 'hidden', flexShrink: 0,
+        }}>
+          <div style={{ overflow: 'hidden', flex: 1 }}>
+            <div style={{
+              display: 'flex', alignItems: 'center',
+              height: '100%',
+              animation: 'ticker 20s linear infinite',
+              whiteSpace: 'nowrap',
+              gap: 60,
+              color: '#FCD34D',
+              fontSize: 13,
+              fontWeight: 600,
+            }}>
+              {[
+                '🔴 நாடி LIVE எண்ணிக்கை பார்க்கவும் 📺',
+                '📢 நாடி அப்ப் டவுன்லோড் செய்யவும் — LIVE தரவு',
+                '💬 நாடி YouTube சப்ஸ்கிரைப் செய்யவும் | தினம் வாக்கு அப்டேட்',
+                '❤️ நாடி விஷயம் பிடித்திருந்தால் शेयर செய்யவும் — மற்றவர்களுக்கு',
+                '🔔 நாடி Notification চালு செய்யவும் — வாக்கு அப்டேட்',
+                '🔴 நாடி LIVE எண்ணிக்கை பார்க்கவும் 📺',
+                '📢 நாடி அப்ப் டவுன்லோட் செய்யவும் — LIVE தரவு',
+                '💬 நாடி YouTube சப்ஸ்கிரைப் செய்யவும் | தினம் வாக்கு அப்டேட்',
+                '❤️ நாடி விஷயம் பிடித்திருந்தால் शेयर செய்யவும் — மற்றவர்களுக்கு',
+                '🔔 நாடி Notification চालு செய்யவும் — வாக்கு அப்டேட்',
+              ].map((m, i) => <span key={i}>{m}</span>)}
+            </div>
+          </div>
+
+          <style>{`
+            @keyframes ticker {
+              0% { transform: translateX(0); }
+              100% { transform: translateX(-50%); }
+            }
+          `}</style>
+        </div>
+
       </div>
     </div>
   )

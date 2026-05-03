@@ -56,8 +56,13 @@ export default function RightPanel() {
         borderRadius: '14px 14px 0 0',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
       }}>
-        <div style={{ fontSize: fm + 4, fontWeight: 900, color: '#fff' }}>
-          {currentDistrict}
+        <div>
+          <div style={{ fontSize: fm + 4, fontWeight: 900, color: '#fff' }}>
+            {currentDistrict}
+          </div>
+          <div style={{ fontSize: fsm - 1, color: 'rgba(255,255,255,0.9)', marginTop: 2 }}>
+            {distConsts.filter(c => c.status === 'declared').length}/{distConsts.length} முடிவு
+          </div>
         </div>
         {/* District dots */}
         <div style={{ display: 'flex', gap: 4 }}>
@@ -98,56 +103,51 @@ export default function RightPanel() {
         ) : (
           distConsts.map((c, i) => {
             const lp = PARTY_DEFAULTS[c.leading_party] || null
+            const isWon = c.status === 'declared'
             return (
               <div key={c.id} style={{
                 display: 'grid',
-                gridTemplateColumns: '1fr 40px 60px',
-                padding: '8px 12px',
+                gridTemplateColumns: '1fr 50px',
+                padding: '10px 12px',
                 borderBottom: '1px solid #F3F4F6',
-                background: i % 2 === 0 ? '#fff' : '#FAFAFA',
-                borderLeft: `3px solid ${lp ? lp.color : '#E5E7EB'}`,
+                background: isWon ? lp?.light || '#FCD34D22' : (i % 2 === 0 ? '#fff' : '#FAFAFA'),
+                borderLeft: `4px solid ${lp ? lp.color : '#E5E7EB'}`,
                 animation: `slideIn 0.3s ease ${i * 0.04}s both`,
               }}>
-                {/* Constituency name */}
+                {/* Constituency info */}
                 <div>
-                  <div style={{ fontSize: fsm, fontWeight: 700, color: '#111827' }}>
-                    {c.name_tamil || c.name}
+                  <div style={{ fontSize: fsm + 1, fontWeight: 800, color: '#111827' }}>
+                    {isWon && '✅ '}{c.name_tamil || c.name}
                   </div>
-                  {c.lead_margin > 0 && (
-                    <div style={{ fontSize: fsm - 3, color: '#9CA3AF' }}>+{c.lead_margin}</div>
-                  )}
+                  <div style={{ fontSize: fsm - 2, color: lp?.color || '#9CA3AF', fontWeight: 600, marginTop: 2 }}>
+                    {lp ? lp.label : '—'}
+                    {c.lead_margin > 0 && (
+                      <span style={{ marginLeft: 8, color: '#6B7280' }}>+{c.lead_margin.toLocaleString('en-IN')}</span>
+                    )}
+                  </div>
                 </div>
 
-                {/* Party symbol */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {/* Party symbol + status */}
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
                   {lp ? (
                     <div style={{
-                      width: 24, height: 24, borderRadius: '50%',
+                      width: 32, height: 32, borderRadius: '50%',
                       background: lp.color,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 9, color: '#fff', fontWeight: 800,
+                      fontSize: 10, color: '#fff', fontWeight: 800,
+                      boxShadow: isWon ? `0 0 12px ${lp.color}66` : 'none',
                     }}>
-                      {lp.short.slice(0, 3)}
+                      {lp.short.slice(0, 2)}
                     </div>
                   ) : (
-                    <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#E5E7EB' }} />
+                    <div style={{ width: 32, height: 32, borderRadius: '50%', background: '#E5E7EB' }} />
                   )}
-                </div>
-
-                {/* Status */}
-                <div style={{ textAlign: 'right', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
-                  {c.leading_party && c.leading_party !== 'pending' ? (
-                    <span style={{
-                      fontSize: fsm - 2, fontWeight: 700,
-                      color: lp?.color || '#374151',
-                      background: lp ? lp.color + '18' : '#F3F4F6',
-                      padding: '2px 6px', borderRadius: 8,
-                    }}>
-                      {c.status === 'declared' ? '✅' : '📈'} {lp?.short}
-                    </span>
-                  ) : (
-                    <span style={{ fontSize: fsm - 2, color: '#D1D5DB' }}>—</span>
-                  )}
+                  <span style={{
+                    fontSize: fsm - 3, fontWeight: 700,
+                    color: lp?.color || '#9CA3AF',
+                  }}>
+                    {isWon ? '🏆' : '📈'}
+                  </span>
                 </div>
               </div>
             )
@@ -161,14 +161,10 @@ export default function RightPanel() {
         background: '#F9FAFB',
         borderTop: '1px solid #E5E7EB',
         borderRadius: '0 0 14px 14px',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        textAlign: 'center',
+        fontSize: fsm - 2, color: '#9CA3AF',
       }}>
-        <span style={{ fontSize: fsm - 2, color: '#9CA3AF' }}>
-          {districtIdx + 1} / {DISTRICTS.length} மாவட்டம்
-        </span>
-        <span style={{ fontSize: fsm - 2, color: '#9CA3AF' }}>
-          {distConsts.filter(c => c.leading_party !== 'pending').length}/{distConsts.length} முடிவு
-        </span>
+        {districtIdx + 1} / {DISTRICTS.length} மாவட்டம்
       </div>
 
       <style>{`

@@ -88,7 +88,7 @@ export default function LeftPanel() {
           <div style={{ fontSize: fm + 2, fontWeight: 900, color: '#fff' }}>
             {vip.name_tamil || vip.name}
           </div>
-          <div style={{ fontSize: fsm - 1, color: '#94A3B8' }}>{vip.name} • {vip.district}</div>
+          <div style={{ fontSize: fsm - 1, color: '#94A3B8' }}>{vip.district}</div>
         </div>
 
         {/* Candidates */}
@@ -173,7 +173,7 @@ export default function LeftPanel() {
         padding: '5px 10px', background: '#1E293B',
         borderRadius: 8, textAlign: 'center', flexShrink: 0,
       }}>
-        ⭐ VIP தொகுதிகள் — {pairIdx * 2 + 1}-{Math.min(pairIdx * 2 + 2, vipList.length)} / {vipList.length}
+        ⭐ VIP தொகுதிகள்
       </div>
 
       {/* 2 VIP cards — flex equal height */}
