@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useSettings, useConstituencies, PARTY_DEFAULTS, getComponentFonts } from './shared.jsx'
 
 const DISTRICTS = [
@@ -17,28 +17,47 @@ const DISTRICTS = [
 export default function RightPanel() {
   const settings = useSettings()
   const constituencies = useConstituencies()
-  const [districtIdx, setDistrictIdx] = useState(0)
+  const [slideIdx, setSlideIdx] = useState(0)
   const [fade, setFade] = useState(true)
+
+  // Generate slides: max 8 constituencies per slide for YouTube visibility
+  const slides = useMemo(() => {
+    const s = []
+    DISTRICTS.forEach(d => {
+      const dConsts = constituencies.filter(c => c.district === d)
+      if (dConsts.length === 0) {
+        s.push({ district: d, items: [], page: 1, total: 1, all: [] })
+      } else {
+        const total = Math.ceil(dConsts.length / 8)
+        for (let i = 0; i < dConsts.length; i += 8) {
+          s.push({
+            district: d,
+            items: dConsts.slice(i, i + 8),
+            page: Math.floor(i / 8) + 1,
+            total: total,
+            all: dConsts
+          })
+        }
+      }
+    })
+    return s
+  }, [constituencies])
 
   useEffect(() => {
     const iv = setInterval(() => {
       setFade(false)
       setTimeout(() => {
-        setDistrictIdx(i => (i + 1) % DISTRICTS.length)
+        setSlideIdx(i => (i + 1) % (slides.length || 1))
         setFade(true)
       }, 400)
     }, 5000)
     return () => clearInterval(iv)
-  }, [])
+  }, [slides.length])
 
   const { fs, fm, fsm, ff } = getComponentFonts(settings, 'right')
 
-  const currentDistrict = DISTRICTS[districtIdx]
-
-  // Filter constituencies by district
-  const distConsts = constituencies.filter(c =>
-    c.district === currentDistrict
-  )
+  const currentSlide = slides[slideIdx] || { district: DISTRICTS[0], items: [], page: 1, total: 1, all: [] }
+  const activeDistrictIdx = DISTRICTS.indexOf(currentSlide.district)
 
   return (
     <div style={{
@@ -58,19 +77,19 @@ export default function RightPanel() {
       }}>
         <div>
           <div style={{ fontSize: fm + 4, fontWeight: 900, color: '#fff' }}>
-            {currentDistrict}
+            {currentSlide.district} {currentSlide.total > 1 ? `(${currentSlide.page}/${currentSlide.total})` : ''}
           </div>
           <div style={{ fontSize: fsm - 1, color: 'rgba(255,255,255,0.9)', marginTop: 2 }}>
-            {distConsts.filter(c => c.status === 'declared').length}/{distConsts.length} முடிவு
+            {currentSlide.all.filter(c => c.status === 'declared').length}/{currentSlide.all.length} முடிவு
           </div>
         </div>
         {/* District dots */}
         <div style={{ display: 'flex', gap: 4 }}>
           {DISTRICTS.map((_, i) => (
             <div key={i} style={{
-              width: i === districtIdx ? 12 : 4,
+              width: i === activeDistrictIdx ? 12 : 4,
               height: 4, borderRadius: 2,
-              background: i === districtIdx ? '#FCD34D' : 'rgba(255,255,255,0.4)',
+              background: i === activeDistrictIdx ? '#FCD34D' : 'rgba(255,255,255,0.4)',
               transition: 'all 0.4s',
             }} />
           ))}
@@ -97,19 +116,19 @@ export default function RightPanel() {
         transform: fade ? 'translateX(0)' : 'translateX(8px)',
         transition: 'all 0.4s ease',
       }}>
-        {distConsts.length === 0 ? (
+        {currentSlide.items.length === 0 ? (
           <div style={{ padding: 20, textAlign: 'center', color: '#9CA3AF', fontSize: fsm }}>
             ⏳ முடிவுகள் வரவில்லை
           </div>
         ) : (
-          distConsts.map((c, i) => {
+          currentSlide.items.map((c, i) => {
             const lp = PARTY_DEFAULTS[c.leading_party] || null
             const isWon = c.status === 'declared'
             return (
               <div key={c.id} style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 50px',
-                padding: '10px 12px',
+                padding: '8px 12px',
                 borderBottom: '1px solid #F3F4F6',
                 background: isWon ? lp?.light || '#FCD34D22' : (i % 2 === 0 ? '#fff' : '#FAFAFA'),
                 borderLeft: `4px solid ${lp ? lp.color : '#E5E7EB'}`,
@@ -165,7 +184,7 @@ export default function RightPanel() {
         textAlign: 'center',
         fontSize: fsm - 2, color: '#9CA3AF',
       }}>
-        {districtIdx + 1} / {DISTRICTS.length} மாவட்டம்
+        {activeDistrictIdx + 1} / {DISTRICTS.length} மாவட்டம்
       </div>
 
       <style>{`

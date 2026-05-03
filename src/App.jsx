@@ -94,8 +94,8 @@ function FullDashboard() {
         <div style={{
           flex: 1,
           display: 'grid',
-          gridTemplateColumns: '350px 1fr 360px',
-          gap: 10,
+          gridTemplateColumns: '440px 1fr 440px',
+          gap: 15,
           padding: '10px 60px',
           minHeight: 0, overflow: 'hidden',
         }}>
@@ -144,6 +144,14 @@ function FullDashboard() {
             @keyframes ticker {
               0% { transform: translateX(0); }
               100% { transform: translateX(-50%); }
+            }
+            /* Hide scrollbars globally for broadcast */
+            * {
+              scrollbar-width: none !important;
+              -ms-overflow-style: none !important;
+            }
+            *::-webkit-scrollbar {
+              display: none !important;
             }
           `}</style>
         </div>
