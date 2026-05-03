@@ -98,7 +98,7 @@ export default function RightPanel() {
 
       {/* Column headers */}
       <div style={{
-        display: 'grid', gridTemplateColumns: '1fr 40px 60px',
+        display: 'grid', gridTemplateColumns: '1fr 70px 50px',
         padding: '6px 12px',
         background: '#F3F4F6',
         borderBottom: '1px solid #E5E7EB',
@@ -126,7 +126,7 @@ export default function RightPanel() {
             return (
               <div key={c.id} style={{
                 display: 'grid',
-                gridTemplateColumns: '1fr 40px 60px',
+                gridTemplateColumns: '1fr 70px 50px',
                 padding: '8px 12px',
                 borderBottom: '1px solid #F3F4F6',
                 background: isWon ? lp?.light || '#FCD34D22' : (i % 2 === 0 ? '#fff' : '#FAFAFA'),
@@ -156,7 +156,7 @@ export default function RightPanel() {
                       fontSize: 10, color: '#fff', fontWeight: 800,
                       boxShadow: isWon ? `0 0 12px ${lp.color}66` : 'none',
                     }}>
-                      {lp.short.slice(0, 2)}
+                      {lp.short}
                     </div>
                   ) : (
                     <div style={{ width: 32, height: 32, borderRadius: 4, background: '#E5E7EB' }} />
