@@ -144,6 +144,8 @@ export default function LeftPanel() {
                         </div>
                       </div>
                     </div>
+                  </div>
+
                   {cand.votes > 0 && (
                     <div style={{ marginTop: 4, marginLeft: 58 }}>
                       <div style={{ background: '#E5E7EB', borderRadius: 999, height: 3, marginBottom: 2 }}>
