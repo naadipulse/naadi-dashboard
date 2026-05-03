@@ -115,7 +115,7 @@ export default function BottomBar() {
         overflow: 'hidden'
       }}>
         {hasLogo ? (
-          <div style={{ height: '55%', width: '100%', display: 'flex', justifyContent: 'center' }}>
+          <div style={{ height: '58%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <img
               src={logoUrl}
               alt="நாடி"

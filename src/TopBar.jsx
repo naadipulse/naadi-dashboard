@@ -5,6 +5,11 @@ export default function TopBar() {
   const settings = useSettings()
   const { fs, fm, fsm, ff } = getComponentFonts(settings, 'top')
 
+  const logoUrl = settings.naadi_logo 
+    ? settings.naadi_logo.trim().replace('https://ibb.co/', 'https://i.ibb.co/')
+    : null
+  const hasLogo = !!(logoUrl && logoUrl.length > 5)
+
   return (
     <div style={{ fontFamily: ff, width: '100%' }}>
       {/* Main top bar — title + logo */}
@@ -35,13 +40,13 @@ export default function TopBar() {
         </div>
 
         {/* Logo on right */}
-        {settings.naadi_logo && (
+        {hasLogo && (
           <img
-            src={settings.naadi_logo.trim().replace('https://ibb.co/', 'https://i.ibb.co/')}
+            src={logoUrl}
             alt="நாடி"
             style={{ 
-              maxHeight: '85px', 
-              maxWidth: '280px', 
+              maxHeight: '80px', 
+              maxWidth: '300px', 
               width: 'auto', 
               height: 'auto', 
               objectFit: 'contain', 

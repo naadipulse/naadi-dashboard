@@ -747,7 +747,7 @@ export default function Admin() {
               <div style={{ width: 100, height: 50, background: '#1E293B', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                 {photos.naadi_logo ? <img src={photos.naadi_logo} alt="Preview" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} /> : <span style={{ fontSize: 10, color: '#475569' }}>NO LOGO</span>}
               </div>
-              <input type="text" value={photos.naadi_logo} onChange={e => setPhotos({ ...photos, naadi_logo: e.target.value })} placeholder="Main Logo URL (i.ibb.co...)"
+              <input type="text" value={photos.naadi_logo} onChange={e => setPhotos({ ...photos, naadi_logo: e.target.value })} placeholder="Paste your Supabase logo URL here..."
                 style={{ flex: 1, background: '#1E293B', border: '1px solid #334155', borderRadius: 8, color: '#fff', padding: '10px 14px', fontSize: 13 }} />
             </div>
           </div>
