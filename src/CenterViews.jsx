@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSettings, useTally, PARTY_DEFAULTS, MAJORITY, TOTAL, getComponentFonts } from './shared.jsx'
+import { useSettings, useTally, useConstituencies, PARTY_DEFAULTS, Photo, MAJORITY, TOTAL, getComponentFonts } from './shared.jsx'
 
 const VIEW_LABELS = ['வீடியோ', 'சட்டமன்றம்', 'மக்களின் விருப்பம் 1', 'மக்களின் விருப்பம் 2']
 
@@ -135,13 +135,20 @@ function View2({ tally, settings }) {
 }
 
 // View 3 & 4: Dynamic Flash News
-function FlashView({ settings, viewNum }) {
+function FlashView({ settings, viewNum, constituencies }) {
   const { fs, fm, fsm, ff } = getComponentFonts(settings, 'center')
 
-  const title = settings[`flash${viewNum}_title`]
-  const subtitle = settings[`flash${viewNum}_subtitle`]
+  const constId = settings[`flash${viewNum}_const_id`]
+  const cData = constId ? constituencies?.find(c => String(c.id) === String(constId)) : null
+  
+  // If linked to a constituency, use its real-time data
+  const lp = cData ? PARTY_DEFAULTS[cData.leading_party] : null
+  const title = cData ? cData.name_tamil : settings[`flash${viewNum}_title`]
+  const subtitle = cData 
+    ? (cData.lead_margin > 0 ? `${lp?.label} +${cData.lead_margin.toLocaleString('en-IN')} முன்னிலை` : 'வாக்கு எண்ணிக்கை தொடங்கவில்லை') 
+    : settings[`flash${viewNum}_subtitle`]
   const image = settings[`flash${viewNum}_image`]
-  const bg = settings[`flash${viewNum}_bg`] || '#0F172A'
+  const bg = cData ? (lp?.color || '#0F172A') : (settings[`flash${viewNum}_bg`] || '#0F172A')
   const textColor = settings[`flash${viewNum}_textcolor`] || '#ffffff'
 
   if (!title && !image) {
@@ -172,6 +179,17 @@ function FlashView({ settings, viewNum }) {
         <img src={image} alt=""
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.4 }} />
       )}
+      {/* Hero background for linked constituencies */}
+      {cData && lp && (
+        <div style={{ position: 'absolute', top: 20, right: 20, opacity: 0.25, filter: 'grayscale(1) brightness(1.5)' }}>
+           <Photo 
+             photoUrl={settings[lp.photoKey]} 
+             fallback={lp.short} 
+             size={220} 
+             color="#fff" 
+           />
+        </div>
+      )}
       <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: '0 40px' }}>
         {title && (
           <div style={{
@@ -196,6 +214,7 @@ function FlashView({ settings, viewNum }) {
 export default function CenterViews() {
   const settings = useSettings()
   const { tally } = useTally()
+  const constituencies = useConstituencies()
   const [viewIdx, setViewIdx] = useState(0)
   const [fade, setFade] = useState(true)
   const TOTAL_VIEWS = 4
@@ -214,8 +233,8 @@ export default function CenterViews() {
   const views = [
     <View1 settings={settings} />,
     <View2 tally={tally} settings={settings} />,
-    <FlashView settings={settings} viewNum={3} />,
-    <FlashView settings={settings} viewNum={4} />,
+    <FlashView settings={settings} viewNum={3} constituencies={constituencies} />,
+    <FlashView settings={settings} viewNum={4} constituencies={constituencies} />,
   ]
 
   return (

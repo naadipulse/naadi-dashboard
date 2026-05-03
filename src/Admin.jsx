@@ -417,9 +417,12 @@ export default function Admin() {
   const [fontFamily, setFontFamily] = useState('Segoe UI')
   const [photos, setPhotos] = useState({ photo_dmk: '', photo_aiadmk: '', photo_tvk: '', photo_others: '', naadi_logo: '', view1_image: '' })
   const [flashData, setFlashData] = useState({
-    flash3_title: '', flash3_subtitle: '', flash3_image: '', flash3_bg: '#0F172A', flash3_textcolor: '#ffffff',
-    flash4_title: '', flash4_subtitle: '', flash4_image: '', flash4_bg: '#0F172A', flash4_textcolor: '#ffffff',
+    flash3_title: '', flash3_subtitle: '', flash3_image: '', flash3_bg: '#0F172A', flash3_textcolor: '#ffffff', flash3_const_id: '',
+    flash4_title: '', flash4_subtitle: '', flash4_image: '', flash4_bg: '#0F172A', flash4_textcolor: '#ffffff', flash4_const_id: '',
   })
+
+  const [flashSearch, setFlashSearch] = useState({ 3: '', 4: '' })
+  const [flashSearchResults, setFlashSearchResults] = useState({ 3: [], 4: [] })
 
   // VIP constituencies
   const [allConstituencies, setAllConstituencies] = useState([])
@@ -456,6 +459,8 @@ export default function Admin() {
         flash4_image: settings.flash4_image || '',
         flash4_bg: settings.flash4_bg || '#0F172A',
         flash4_textcolor: settings.flash4_textcolor || '#ffffff',
+        flash3_const_id: settings.flash3_const_id || '',
+        flash4_const_id: settings.flash4_const_id || '',
       })
       if (settings.vip_constituencies) {
         setVipIds(settings.vip_constituencies.split(',').map(Number).filter(Boolean))
@@ -766,6 +771,44 @@ export default function Admin() {
           {[3, 4].map(num => (
             <div key={num} style={{ marginBottom: 30, padding: 16, background: '#0F172A', borderRadius: 10, border: '1px solid #334155' }}>
               <div style={{ fontSize: 14, color: '#F59E0B', fontWeight: 700, marginBottom: 14 }}>மக்களின் விருப்பம் {num - 2}</div>
+              
+              {/* Subscriber Choice Picker */}
+              <div style={{ marginBottom: 16 }}>
+                <div style={{ fontSize: 11, color: '#94A3B8', marginBottom: 4 }}>சந்தாதாரர் கேட்ட தொகுதி (Constituency Picker)</div>
+                <div style={{ position: 'relative' }}>
+                  <input type="text" value={flashSearch[num]} 
+                    onChange={e => {
+                      const q = e.target.value;
+                      setFlashSearch({ ...flashSearch, [num]: q });
+                      if (q.length < 2) { setFlashSearchResults({ ...flashSearchResults, [num]: [] }); return; }
+                      const res = allConstituencies.filter(c => c.name?.toLowerCase().includes(q.toLowerCase()) || c.name_tamil?.includes(q)).slice(0, 5);
+                      setFlashSearchResults({ ...flashSearchResults, [num]: res });
+                    }}
+                    placeholder="தொகுதி பெயர் search... (e.g. Kolathur)"
+                    style={{ background: '#1E293B', border: '1px solid #334155', borderRadius: 8, color: '#fff', padding: '8px 12px', fontSize: 13, width: '100%' }} />
+                  
+                  {flashSearchResults[num]?.length > 0 && (
+                    <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#1E293B', border: '1px solid #334155', borderRadius: 8, zIndex: 100, marginTop: 4 }}>
+                      {flashSearchResults[num].map(c => (
+                        <div key={c.id} onClick={() => {
+                          setFlashData({ ...flashData, [`flash${num}_const_id`]: c.id, [`flash${num}_title`]: c.name_tamil });
+                          setFlashSearch({ ...flashSearch, [num]: c.name_tamil });
+                          setFlashSearchResults({ ...flashSearchResults, [num]: [] });
+                        }}
+                        style={{ padding: '8px 12px', cursor: 'pointer', borderBottom: '1px solid #334155', fontSize: 12 }}>
+                          {c.name_tamil} ({c.name})
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                {flashData[`flash${num}_const_id`] && (
+                  <div style={{ fontSize: 11, color: '#22C55E', marginTop: 4 }}>
+                    ✅ Linked to Real-time Data: {allConstituencies.find(c => String(c.id) === String(flashData[`flash${num}_const_id`]))?.name_tamil}
+                    <button onClick={() => setFlashData({...flashData, [`flash${num}_const_id`]: ''})} style={{ marginLeft: 10, background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', textDecoration: 'underline', fontSize: 10 }}>Remove Link</button>
+                  </div>
+                )}
+              </div>
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 }}>
                 <div>
