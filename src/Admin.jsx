@@ -629,7 +629,7 @@ export default function Admin() {
 
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
-        <button style={tabStyle('tally')} onClick={() => setTab('tally')}>📊 Tally</button>
+        <button style={tabStyle('tally')} onClick={() => setTab('tally')}>📊 Tally (Left & Bottom)</button>
         <button style={tabStyle('constituencies')} onClick={() => setTab('constituencies')}>🗺️ தொகுதி</button>
         <button style={tabStyle('vip')} onClick={() => setTab('vip')}>⭐ VIP தொகுதிகள்</button>
         <button style={tabStyle('flash')} onClick={() => setTab('flash')}>🎯 Special Views</button>
@@ -640,6 +640,7 @@ export default function Admin() {
       {/* TALLY TAB */}
       {tab === 'tally' && (
         <div style={{ background: '#111827', borderRadius: 12, padding: 20, border: '1px solid #1E293B' }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: '#F59E0B', marginBottom: 16 }}>📊 Overall Tally & Vote Share</div>
           <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
             <button onClick={() => setMode('manual')} style={{ ...tabStyle('x'), background: mode === 'manual' ? '#DC2626' : '#1E293B', color: '#fff' }}>✏️ Manual</button>
             <button onClick={() => setMode('llm')} style={{ ...tabStyle('x'), background: mode === 'llm' ? '#DC2626' : '#1E293B', color: '#fff' }}>🤖 LLM</button>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { useSettings, useTally, PARTY_DEFAULTS, Photo, AnimNum, getComponentFonts } from './shared.jsx'
+import { useSettings, useTally, PARTY_DEFAULTS, Photo, AnimNum, getComponentFonts, MAJORITY } from './shared.jsx'
 
 export default function LeftPanel() {
   const settings = useSettings()
-  const { gT, tally } = useTally()
+  const { gW, gP, tally } = useTally()
   const [animationTick, setAnimationTick] = useState(0)
 
   const { fs, fm, fsm, ff } = getComponentFonts(settings, 'left')
@@ -16,101 +16,107 @@ export default function LeftPanel() {
     return () => clearInterval(interval)
   }, [])
 
-  // Get parties sorted by total votes (descending), only those with won seats
-  const sortedParties = ['TVK', 'AIADMK+', 'DMK+', 'Others']
-    .filter(p => {
-      const totalVotes = gT(p)
-      return totalVotes > 0
-    })
-    .sort((a, b) => gT(b) - gT(a))
+  const parties = ['DMK+', 'AIADMK+', 'TVK', 'Others']
 
   return (
-    <div style={{ fontFamily: ff, display: 'flex', flexDirection: 'column', gap: 10, height: '100%', padding: '0' }}>
-      {/* Header */}
-      <div style={{
-        fontSize: fm - 2, fontWeight: 800, color: '#fff',
-        padding: '10px 12px', background: '#1E293B',
-        borderRadius: 8, textAlign: 'center', flexShrink: 0,
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-      }}>
-        🏆 வெற்றி
+    <div style={{ fontFamily: ff, display: 'flex', flexDirection: 'column', gap: 12, height: '100%' }}>
+      
+      {/* SECTION 1: VETTRI (WON) */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{
+          fontSize: fm - 4, fontWeight: 800, color: '#fff',
+          padding: '8px 12px', background: '#1E293B',
+          borderRadius: 8, textAlign: 'center', flexShrink: 0,
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        }}>
+          🏆 வெற்றி (Won)
+        </div>
+
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {parties.map((p) => {
+            const cfg = PARTY_DEFAULTS[p]
+            const won = gW(p)
+            const photoUrl = settings[cfg.photoKey]
+            const isMaj = won >= MAJORITY
+
+            return (
+              <div key={`won-${p}`} style={{
+                background: cfg.color, borderRadius: 10, padding: '8px 12px',
+                display: 'flex', alignItems: 'center', gap: 10, color: '#fff',
+                position: 'relative', overflow: 'hidden', flex: 1,
+                boxShadow: isMaj ? `0 0 15px ${cfg.color}` : '0 2px 6px rgba(0,0,0,0.1)',
+              }}>
+                <Photo photoUrl={photoUrl} fallback={cfg.short} color="#fff" size={45} style={{ zIndex: 1 }} />
+                <div style={{ zIndex: 1, flex: 1 }}>
+                  <div style={{ fontSize: fsm, fontWeight: 700, opacity: 0.9 }}>{cfg.short}</div>
+                  <div key={`w-${won}-${animationTick}`} style={{
+                    fontSize: fm + 4, fontWeight: 900, animation: 'numFlip 0.8s ease-out',
+                    display: 'inline-block', backfaceVisibility: 'hidden', transformStyle: 'preserve-3d'
+                  }}>
+                    <AnimNum val={won} color="#fff" size={fm + 4} font={ff} />
+                  </div>
+                </div>
+                {isMaj && <div style={{ position: 'absolute', right: 8, fontSize: 24 }}>👑</div>}
+              </div>
+            )
+          })}
+        </div>
       </div>
 
-      {/* Party Cards - Scrollable */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8, overflowY: 'auto', paddingRight: 4 }}>
-        {sortedParties.map((p, idx) => {
-          const cfg = PARTY_DEFAULTS[p]
-          const votes = gT(p)
-          const photoUrl = settings[cfg.photoKey]
+      {/* SECTION 2: VOTE SHARE (%) */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{
+          fontSize: fm - 4, fontWeight: 800, color: '#fff',
+          padding: '8px 12px', background: '#1E293B',
+          borderRadius: 8, textAlign: 'center', flexShrink: 0,
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        }}>
+          📊 வாக்கு சதவீதம் (Vote %)
+        </div>
 
-          return (
-            <div
-              key={`${p}-${idx}`}
-              style={{
-                background: cfg.color,
-                borderRadius: 10,
-                padding: '12px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-                color: '#fff',
-                position: 'relative',
-                overflow: 'hidden',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-                flexShrink: 0,
-                transition: 'transform 0.3s ease, order 0.3s ease',
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {parties.map((p) => {
+            const cfg = PARTY_DEFAULTS[p]
+            const pct = gP(p)
+            return (
+              <div key={`pct-${p}`} style={{
+                background: '#fff', borderRadius: 10, padding: '8px 15px',
+                borderLeft: `6px solid ${cfg.color}`,
+                boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+                display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: 1
               }}>
-
-              {/* Shimmer Effect */}
-              <div style={{
-                position: 'absolute',
-                inset: 0,
-                background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent)',
-                animation: 'shimmer 5s linear infinite',
-                zIndex: 0,
-              }} />
-
-              {/* Party Photo */}
-              <Photo
-                photoUrl={photoUrl}
-                fallback={cfg.short.slice(0, 2)}
-                color="#fff"
-                size={60}
-                style={{ zIndex: 1, flexShrink: 0 }}
-              />
-
-              {/* Party Info */}
-              <div style={{ zIndex: 1, flex: 1, minWidth: 0 }}>
-                <div style={{
-                  fontSize: fm - 2,
-                  fontWeight: 700,
-                  color: 'rgba(255,255,255,0.95)',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
-                }}>
-                  {cfg.label}
-                </div>
-                <div
-                  key={`${votes}-${animationTick}`}
-                  style={{
-                    fontSize: fs - 8,
-                    fontWeight: 900,
-                    color: '#fff',
-                    lineHeight: '1',
-                    animation: 'numFlip 0.8s ease-out',
-                    display: 'inline-block',
-                    backfaceVisibility: 'hidden',
-                    transformOrigin: 'center center',
-                    transformStyle: 'preserve-3d'
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ fontSize: fsm + 2, fontWeight: 900, color: cfg.color }}>{cfg.short}</div>
+                  <div key={`p-${pct}-${animationTick}`} style={{
+                    fontSize: fm + 2, fontWeight: 900, color: '#111827',
+                    animation: 'numFlip 0.8s ease-out', display: 'inline-block'
                   }}>
-                  <AnimNum val={votes} color="#fff" size={fs - 8} font={ff} />
+                    {pct}<span style={{ fontSize: fsm, marginLeft: 1, color: '#64748B' }}>%</span>
+                  </div>
+                </div>
+                <div style={{ height: 6, background: '#F1F5F9', borderRadius: 3, marginTop: 4, overflow: 'hidden' }}>
+                  <div style={{
+                    width: `${pct}%`, height: '100%', background: cfg.color,
+                    transition: 'width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                  }} />
                 </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
       </div>
+
+      <style>{`
+        @keyframes numFlip {
+          0% { transform: rotateX(-180deg); opacity: 0; }
+          100% { transform: rotateX(0deg); opacity: 1; }
+        }
+        @keyframes shimmer {
+          0% { transform: translateX(-150%); }
+          15% { transform: translateX(150%); }
+          100% { transform: translateX(150%); }
+        }
+      `}</style>
     </div>
   )
 }
