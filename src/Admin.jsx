@@ -101,6 +101,7 @@ ${eciText}`
 
   // Auto-calculate overall tally from constituency results
   const updateOverallTally = async () => {
+    const { data: currentTally } = await supabase.from('overall_tally').select('party, vote_share')
     const { data } = await supabase.from('constituencies').select('leading_party, status')
     if (!data) return
 
@@ -117,9 +118,15 @@ ${eciText}`
     })
 
     for (const [party, vals] of Object.entries(tally)) {
+      const existing = currentTally?.find(t => t.party === party)
       const { error } = await supabase.from('overall_tally')
-        .update({ won: vals.won, leadingg: vals.leadingg, updated_at: new Date().toISOString() }) // This preserves existing vote_share
-        .eq('party', party)
+        .upsert({ 
+          party, 
+          won: vals.won, 
+          leadingg: vals.leadingg, 
+          vote_share: existing?.vote_share || 0,
+          updated_at: new Date().toISOString() 
+        })
       if (error) throw error
     }
   }
@@ -534,8 +541,13 @@ export default function Admin() {
     try {
       for (const [party, vals] of Object.entries(manualData)) {
         const { error } = await supabase.from('overall_tally')
-          .update({ won: parseInt(vals.won) || 0, leadingg: parseInt(vals.leadingg) || 0, vote_share: parseFloat(vals.vote_share) || 0, updated_at: new Date().toISOString() })
-          .eq('party', party)
+          .upsert({ 
+            party, 
+            won: parseInt(vals.won) || 0, 
+            leadingg: parseInt(vals.leadingg) || 0, 
+            vote_share: parseFloat(vals.vote_share) || 0, 
+            updated_at: new Date().toISOString() 
+          })
         if (error) throw error
       }
       setMsg('✅ Tally updated!')
@@ -577,8 +589,13 @@ export default function Admin() {
       const parsed = JSON.parse(data.content[0].text.replace(/```json|```/g, '').trim())
       for (const [party, vals] of Object.entries(parsed)) {
         const { error } = await supabase.from('overall_tally')
-          .update({ won: vals.won || 0, leadingg: vals.leadingg || 0, vote_share: vals.vote_share || 0, updated_at: new Date().toISOString() })
-          .eq('party', party)
+          .upsert({ 
+            party, 
+            won: vals.won || 0, 
+            leadingg: vals.leadingg || 0, 
+            vote_share: vals.vote_share || 0, 
+            updated_at: new Date().toISOString() 
+          })
         if (error) throw error
       }
       setMsg('✅ Parsed & updated!')
