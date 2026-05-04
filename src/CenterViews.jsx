@@ -34,7 +34,7 @@ function View2({ tally, settings }) {
   const { fs, fm, fsm, ff } = getComponentFonts(settings, 'center')
 
   const get = p => { const d = tally.find(t => t.party === p); return d ? d.won + (d.leadingg || 0) : 0 }
-  const sortedParties = Object.keys(PARTY_DEFAULTS).sort((a, b) => get(b) - get(a))
+  const sortedParties = Object.keys(PARTY_DEFAULTS).filter(p => p !== 'Others').sort((a, b) => get(b) - get(a))
 
   const COLORS = {
     'DMK+': '#DC2626', 'AIADMK+': '#16A34A',
