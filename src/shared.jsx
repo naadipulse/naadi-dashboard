@@ -101,9 +101,9 @@ export function Photo({ photoUrl, fallback, color, size = 56, style = {} }) {
 }
 
 export const PARTY_DEFAULTS = {
-  'DMK+':    { color: '#DC2626', light: '#FEE2E2', label: 'திமுக+',  short: 'DMK',  leader: 'மு.க.ஸ்டாலின்', photoKey: 'photo_dmk', logo: 'https://khivotiprmornlvmraw.supabase.co/storage/v1/object/public/logo/DMK.png' },
-  'AIADMK+': { color: '#16A34A', light: '#DCFCE7', label: 'அதிமுக+', short: 'ADMK', leader: 'எடப்பாடி',       photoKey: 'photo_aiadmk', logo: 'https://khivotiprmornlvmraw.supabase.co/storage/v1/object/public/logo/ADMK.png' },
-  'TVK':     { color: '#D97706', light: '#FEF3C7', label: 'தவெக',    short: 'TVK',  leader: 'விஜய்',           photoKey: 'photo_tvk', logo: 'https://khivotiprmornlvmraw.supabase.co/storage/v1/object/public/logo/TVK.png' },
+  'DMK+':    { color: '#DC2626', light: '#FEE2E2', label: 'திமுக+',  short: 'DMK',  leader: 'மு.க.ஸ்டாலின்', photoKey: 'photo_dmk', logoKey: 'logo_dmk', logo: 'https://khivotiprmornlvmrhaw.supabase.co/storage/v1/object/public/logo/DMK.png' },
+  'AIADMK+': { color: '#16A34A', light: '#DCFCE7', label: 'அதிமுக+', short: 'ADMK', leader: 'எடப்பாடி',       photoKey: 'photo_aiadmk', logoKey: 'logo_aiadmk', logo: 'https://khivotiprmornlvmrhaw.supabase.co/storage/v1/object/public/logo/ADMK.png' },
+  'TVK':     { color: '#D97706', light: '#FEF3C7', label: 'தவெக',    short: 'TVK',  leader: 'விஜய்',           photoKey: 'photo_tvk', logoKey: 'logo_tvk', logo: 'https://khivotiprmornlvmrhaw.supabase.co/storage/v1/object/public/logo/TVK.png' },
   'Others':  { color: '#7C3AED', light: '#EDE9FE', label: 'நாதக',  short: 'NTK',  leader: 'சீமான்',          photoKey: 'photo_others' },
 }
 

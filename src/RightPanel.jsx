@@ -147,8 +147,7 @@ export default function RightPanel() {
                 {/* Party symbol */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {lp ? (
-                    lp.logo ? (
-                      <img src={lp.logo} alt={lp.short} style={{ width: 34, height: 34, objectFit: 'contain' }} />
+                        style={{ width: 34, height: 34, objectFit: 'contain' }} />
                     ) : (
                       <div style={{
                         width: 32, height: 32, borderRadius: 4,
