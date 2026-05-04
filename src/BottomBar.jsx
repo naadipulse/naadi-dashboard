@@ -65,6 +65,7 @@ export default function BottomBar() {
 
       {/* Party boxes — sorted by votes, CSS animation, no state */}
       {Object.entries(BOTTOM_PARTIES)
+        .filter(([p]) => p !== 'Others')
         .sort((a, b) => gT(b[0]) - gT(a[0]))
         .map(([p, cfg]) => {
         const tot = gT(p)

@@ -105,7 +105,7 @@ export default function RightPanel() {
       }}>
         <div style={{ fontSize: fsm - 1, color: '#6B7280', fontWeight: 700 }}>தொகுதி</div>
         <div style={{ fontSize: fsm - 1, color: '#6B7280', fontWeight: 700, textAlign: 'center' }}>கட்சி</div>
-        <div style={{ fontSize: fsm - 1, color: '#6B7280', fontWeight: 700, textAlign: 'right' }}>வித்தியாசம்</div>
+        <div style={{ fontSize: fsm - 1, color: '#6B7280', fontWeight: 700, textAlign: 'right' }}>வெற்றி</div>
       </div>
 
       {/* Constituency rows */}
@@ -166,13 +166,13 @@ export default function RightPanel() {
                   )}
                 </div>
 
-                {/* Margin Column */}
+                {/* Victory Column */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                   <span style={{
                     fontSize: fsm, fontWeight: 800,
-                    color: isWon ? lp?.color : '#4B5563',
+                    color: isWon ? lp?.color || '#111827' : '#4B5563',
                   }}>
-                    {c.lead_margin > 0 ? c.lead_margin.toLocaleString('en-IN') : '—'}
+                    {isWon ? 'வெற்றி' : '—'}
                   </span>
                 </div>
               </div>

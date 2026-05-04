@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSettings, useTally, PARTY_DEFAULTS, Photo, AnimNum, getComponentFonts, MAJORITY } from './shared.jsx'
+import { useSettings, useTally, PARTY_DEFAULTS, Photo, AnimNum, getComponentFonts, MAJORITY, TOTAL } from './shared.jsx'
 
 export default function LeftPanel() {
   const settings = useSettings()
@@ -18,6 +18,7 @@ export default function LeftPanel() {
 
   const parties = ['DMK+', 'AIADMK+', 'TVK', 'Others']
   const sortedParties = [...parties].sort((a, b) => gT(b) - gT(a))
+  const totalWon = tally.reduce((acc, t) => acc + (t.won || 0), 0)
 
   return (
     <div style={{ fontFamily: ff, display: 'flex', flexDirection: 'column', gap: 12, height: '100%' }}>
@@ -30,7 +31,10 @@ export default function LeftPanel() {
           borderRadius: 8, textAlign: 'center', flexShrink: 0,
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
-          🏆 வெற்றி (Won)
+          🏆 வெற்றி (Won): {totalWon}
+          <span style={{ fontSize: fsm, color: 'rgba(255,255,255,0.7)', marginLeft: 4 }}>
+            /{TOTAL}
+          </span>
         </div>
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
