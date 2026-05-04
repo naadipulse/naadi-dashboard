@@ -92,10 +92,10 @@ function View2({ tally, settings }) {
 
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ flex: 1 }}>
         {/* 118 line behind dots */}
-        <line x1={CX} y1={8} x2={CX} y2={H}
+        <line x1={CX} y1={2} x2={CX} y2={H}
           stroke="#374151" strokeWidth={2} strokeDasharray="7,4" opacity={0.4} />
-        <rect x={CX - 22} y={6} width={44} height={20} rx={4} fill="#F59E0B" />
-        <text x={CX} y={20} textAnchor="middle" fontSize={12} fill="#fff" fontWeight="bold">118</text>
+        <rect x={CX - 45} y={2} width={90} height={40} rx={8} fill="#F59E0B" />
+        <text x={CX} y={31} textAnchor="middle" fontSize={28} fill="#fff" fontWeight="bold">118</text>
 
         {/* Dots on top of line */}
         {dots.map((d, i) => (

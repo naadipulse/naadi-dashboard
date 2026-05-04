@@ -34,7 +34,7 @@ export default function LeftPanel() {
         </div>
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {sortedParties.map((p) => {
+          {sortedParties.filter(p => p !== 'Others').map((p) => {
             const cfg = PARTY_DEFAULTS[p]
             const won = gW(p)
             const photoUrl = settings[cfg.photoKey]
