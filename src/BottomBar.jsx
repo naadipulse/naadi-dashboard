@@ -103,7 +103,7 @@ export default function BottomBar() {
 
             {partyLogo && (
               <img src={partyLogo} alt="" 
-                style={{ height: '50%', width: 'auto', position: 'absolute', bottom: 5, right: 10, opacity: 0.6, zIndex: 1 }} />
+                style={{ height: '80%', width: 'auto', position: 'absolute', bottom: 5, right: 10, opacity: 0.6, zIndex: 1 }} />
             )}
 
             <div style={{ zIndex: 1 }}>

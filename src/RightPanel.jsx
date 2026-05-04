@@ -149,7 +149,7 @@ export default function RightPanel() {
                   {lp ? (
                     (settings[lp.logoKey] || lp.logo) ? (
                       <img src={settings[lp.logoKey] || lp.logo} alt={lp.short} 
-                        style={{ width: 34, height: 34, objectFit: 'contain' }} />
+                        style={{ width: 54, height: 54, objectFit: 'contain' }} />
                     ) : (
                       <div style={{
                         width: 32, height: 32, borderRadius: 4,
