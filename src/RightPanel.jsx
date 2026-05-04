@@ -140,7 +140,7 @@ export default function RightPanel() {
                     {isWon && '✅ '}{c.name_tamil || c.name}
                   </div>
                   <div style={{ fontSize: fsm - 2, color: lp?.color || '#9CA3AF', fontWeight: 600, marginTop: 2 }}>
-                    {lp ? lp.label : '—'}
+                    {lp ? lp.short : '—'}
                   </div>
                 </div>
 
