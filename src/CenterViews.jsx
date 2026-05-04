@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { useSettings, useTally, useConstituencies, PARTY_DEFAULTS, Photo, MAJORITY, TOTAL, getComponentFonts } from './shared.jsx'
+import React from 'react'
+import { useSettings, useTally, PARTY_DEFAULTS, MAJORITY, getComponentFonts } from './shared.jsx'
 
 const VIEW_LABELS = ['வீடியோ', 'சட்டமன்றம்', 'மக்களின் விருப்பம் 1', 'மக்களின் விருப்பம் 2']
 
@@ -214,61 +214,10 @@ function FlashView({ settings, viewNum, constituencies }) {
 export default function CenterViews() {
   const settings = useSettings()
   const { tally } = useTally()
-  const constituencies = useConstituencies()
-  const [viewIdx, setViewIdx] = useState(0)
-  const [fade, setFade] = useState(true)
-  const TOTAL_VIEWS = 4
-
-  useEffect(() => {
-    const iv = setInterval(() => {
-      setFade(false)
-      setTimeout(() => {
-        setViewIdx(v => (v + 1) % TOTAL_VIEWS)
-        setFade(true)
-      }, 400)
-    }, 5000)
-    return () => clearInterval(iv)
-  }, [])
-
-  const views = [
-    <View1 settings={settings} />,
-    <View2 tally={tally} settings={settings} />,
-    <FlashView settings={settings} viewNum={3} constituencies={constituencies} />,
-    <FlashView settings={settings} viewNum={4} constituencies={constituencies} />,
-  ]
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, height: '100%' }}>
-      {/* View dots */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: 12, alignItems: 'center', padding: '4px 0', flexShrink: 0 }}>
-        {VIEW_LABELS.map((label, i) => (
-          <div key={i}
-            onClick={() => setViewIdx(i)}
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, cursor: 'pointer' }}>
-            <div style={{
-              width: i === viewIdx ? 28 : 9, height: 9,
-              borderRadius: 5,
-              background: i === viewIdx ? '#DC2626' : '#D1D5DB',
-              transition: 'all 0.4s',
-            }} />
-            <span style={{
-              fontSize: 10,
-              color: i === viewIdx ? '#DC2626' : '#9CA3AF',
-              fontWeight: i === viewIdx ? 700 : 400,
-            }}>{label}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* Rotating view */}
-      <div style={{
-        flex: 1, overflow: 'hidden',
-        opacity: fade ? 1 : 0,
-        transform: fade ? 'translateY(0)' : 'translateY(8px)',
-        transition: 'opacity 0.4s ease, transform 0.4s ease',
-      }}>
-        {views[viewIdx]}
-      </div>
+    <div style={{ height: '100%' }}>
+      <View2 tally={tally} settings={settings} />
     </div>
   )
 }
