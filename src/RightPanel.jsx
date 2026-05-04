@@ -147,15 +147,19 @@ export default function RightPanel() {
                 {/* Party symbol */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {lp ? (
-                    <div style={{
-                      width: 32, height: 32, borderRadius: 4,
-                      background: lp.color,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: 10, color: '#fff', fontWeight: 800,
-                      boxShadow: isWon ? `0 0 12px ${lp.color}66` : 'none',
-                    }}>
-                      {lp.short}
-                    </div>
+                    lp.logo ? (
+                      <img src={lp.logo} alt={lp.short} style={{ width: 34, height: 34, objectFit: 'contain' }} />
+                    ) : (
+                      <div style={{
+                        width: 32, height: 32, borderRadius: 4,
+                        background: lp.color,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: 10, color: '#fff', fontWeight: 800,
+                        boxShadow: isWon ? `0 0 12px ${lp.color}66` : 'none',
+                      }}>
+                        {lp.short}
+                      </div>
+                    )
                   ) : (
                     <div style={{ width: 32, height: 32, borderRadius: 4, background: '#E5E7EB' }} />
                   )}

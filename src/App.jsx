@@ -71,7 +71,10 @@ function FullDashboard() {
           </div>
           <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
             {Object.entries(PARTY_DEFAULTS).sort((a, b) => gT(b[0]) - gT(a[0])).map(([p, cfg]) => (
-              <div key={p} style={{ textAlign: 'center' }}>
+              <div key={p} style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                {cfg.logo && (
+                  <img src={cfg.logo} alt="" style={{ height: 28, width: 'auto', marginBottom: 2 }} />
+                )}
                 <div style={{ fontSize: 13, color: cfg.color, fontWeight: 700 }}>{cfg.short}</div>
                 <AnimNum val={gT(p)} color={cfg.color} size={30} font={ff} />
               </div>
