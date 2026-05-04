@@ -149,7 +149,7 @@ export default function BottomBar() {
         overflow: 'hidden'
       }}>
         {hasLogo ? (
-          <div style={{ height: '75%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ height: '50%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <img
               src={logoUrl}
               alt="நாடி"

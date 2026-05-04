@@ -207,6 +207,7 @@ ${vipText}`
       allConstituencies.filter(c =>
         c.name?.toLowerCase().includes(q.toLowerCase()) ||
         c.name_tamil?.includes(q)
+        (c.constituency_number && String(c.constituency_number).includes(q)) // Search by constituency number
       ).slice(0, 6)
     )
   }
