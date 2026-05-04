@@ -126,7 +126,7 @@ ${eciText}`
           leadingg: vals.leadingg, 
           vote_share: existing?.vote_share || 0,
           updated_at: new Date().toISOString() 
-        })
+        }, { onConflict: 'party' })
       if (error) throw error
     }
   }
@@ -548,7 +548,7 @@ export default function Admin() {
             vote_share: parseFloat(vals.vote_share) || 0, 
             updated_at: new Date().toISOString() 
           })
-        if (error) throw error
+        }, { onConflict: 'party' })
       }
       setMsg('✅ Tally updated!')
     } catch (e) { setMsg('❌ Error: ' + e.message) }
@@ -596,7 +596,7 @@ export default function Admin() {
             vote_share: vals.vote_share || 0, 
             updated_at: new Date().toISOString() 
           })
-        if (error) throw error
+        }, { onConflict: 'party' })
       }
       setMsg('✅ Parsed & updated!')
       setLlmText('')
