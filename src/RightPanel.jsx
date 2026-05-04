@@ -125,9 +125,8 @@ export default function RightPanel() {
             const isWon = c.status === 'declared'
             return (
               <div key={c.id} style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 70px 50px',
                 gridTemplateColumns: '1fr 70px 80px',
+                display: 'grid',
                 padding: '8px 12px',
                 borderBottom: '1px solid #F3F4F6',
                 background: isWon ? lp?.light || '#FCD34D22' : (i % 2 === 0 ? '#fff' : '#FAFAFA'),
