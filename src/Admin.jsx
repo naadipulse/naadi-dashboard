@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from './supabaseClient.js'
-import { useSettings, PARTY_DEFAULTS } from './shared.jsx'
+import { useSettings, PARTY_DEFAULTS, useTally } from './shared.jsx'
 
 const ADMIN_PASSWORD = process.env.REACT_APP_ADMIN_PASSWORD || 'naadi2026'
 
@@ -400,13 +400,14 @@ export default function Admin() {
   const [msg, setMsg] = useState('')
   const [tab, setTab] = useState('tally')
   const settings = useSettings()
+  const { tally } = useTally()
 
   // Tally
   const [manualData, setManualData] = useState({
-    'DMK+': { won: 0, leadingg: 0 },
-    'AIADMK+': { won: 0, leadingg: 0 },
-    'TVK': { won: 0, leadingg: 0 },
-    'Others': { won: 0, leadingg: 0 },
+    'DMK+': { won: 0, leadingg: 0, vote_share: 0 },
+    'AIADMK+': { won: 0, leadingg: 0, vote_share: 0 },
+    'TVK': { won: 0, leadingg: 0, vote_share: 0 },
+    'Others': { won: 0, leadingg: 0, vote_share: 0 },
   })
   const [llmText, setLlmText] = useState('')
   const [mode, setMode] = useState('manual')
@@ -470,6 +471,16 @@ export default function Admin() {
     }
   }, [settings])
 
+  useEffect(() => {
+    if (tally && tally.length > 0) {
+      const d = { ...manualData }
+      tally.forEach(t => {
+        d[t.party] = { won: t.won, leadingg: t.leadingg, vote_share: t.vote_share || 0 }
+      })
+      setManualData(d)
+    }
+  }, [tally])
+
   const fetchAllConstituencies = async () => {
     const { data } = await supabase.from('constituencies').select('id, name, name_tamil, district').order('id')
     if (data) setAllConstituencies(data)
@@ -516,7 +527,7 @@ export default function Admin() {
     try {
       for (const [party, vals] of Object.entries(manualData)) {
         await supabase.from('overall_tally')
-          .update({ won: parseInt(vals.won) || 0, leadingg: parseInt(vals.leadingg) || 0, updated_at: new Date() })
+          .update({ won: parseInt(vals.won) || 0, leadingg: parseInt(vals.leadingg) || 0, vote_share: parseFloat(vals.vote_share) || 0, updated_at: new Date() })
           .eq('party', party)
       }
       setMsg('✅ Tally updated!')
@@ -550,7 +561,7 @@ export default function Admin() {
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
           max_tokens: 500,
-          messages: [{ role: 'user', content: `Parse election data and return ONLY JSON:\n"${llmText}"\nFormat: {"DMK+":{"won":0,"leadingg":0},"AIADMK+":{"won":0,"leadingg":0},"TVK":{"won":0,"leadingg":0},"Others":{"won":0,"leadingg":0}}` }]
+          messages: [{ role: 'user', content: `Parse election data and return ONLY JSON:\n"${llmText}"\nFormat: {"DMK+":{"won":0,"leadingg":0,"vote_share":0},"AIADMK+":{"won":0,"leadingg":0,"vote_share":0},"TVK":{"won":0,"leadingg":0,"vote_share":0},"Others":{"won":0,"leadingg":0,"vote_share":0}}` }]
         })
       })
       const data = await res.json()
@@ -558,7 +569,7 @@ export default function Admin() {
       const parsed = JSON.parse(data.content[0].text.replace(/```json|```/g, '').trim())
       for (const [party, vals] of Object.entries(parsed)) {
         await supabase.from('overall_tally')
-          .update({ won: vals.won || 0, leadingg: vals.leadingg || 0, updated_at: new Date() })
+          .update({ won: vals.won || 0, leadingg: vals.leadingg || 0, vote_share: vals.vote_share || 0, updated_at: new Date() })
           .eq('party', party)
       }
       setMsg('✅ Parsed & updated!')
@@ -634,7 +645,7 @@ export default function Admin() {
           {mode === 'manual' && (
             <>
               {Object.entries(PARTY_DEFAULTS).map(([party, cfg]) => (
-                <div key={party} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 12, alignItems: 'center' }}>
+                <div key={party} style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr 1fr', gap: 10, marginBottom: 12, alignItems: 'center' }}>
                   <div style={{ fontSize: 16, fontWeight: 700, color: cfg.color }}>{cfg.label}</div>
                   <div>
                     <div style={{ fontSize: 11, color: '#64748B', marginBottom: 4 }}>வென்றது ✅</div>
@@ -646,6 +657,12 @@ export default function Admin() {
                     <div style={{ fontSize: 11, color: '#64748B', marginBottom: 4 }}>முன்னிலை 📈</div>
                     <input type="number" min="0" value={manualData[party]?.leadingg || 0}
                       onChange={e => setManualData({ ...manualData, [party]: { ...manualData[party], leadingg: e.target.value } })}
+                      style={{ background: '#1E293B', border: `1px solid ${cfg.color}66`, borderRadius: 8, color: '#fff', padding: '8px 12px', fontSize: 18, fontWeight: 700, width: '100%', textAlign: 'center' }} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 11, color: '#64748B', marginBottom: 4 }}>வாக்கு % 📊</div>
+                    <input type="number" step="0.1" min="0" value={manualData[party]?.vote_share || 0}
+                      onChange={e => setManualData({ ...manualData, [party]: { ...manualData[party], vote_share: e.target.value } })}
                       style={{ background: '#1E293B', border: `1px solid ${cfg.color}66`, borderRadius: 8, color: '#fff', padding: '8px 12px', fontSize: 18, fontWeight: 700, width: '100%', textAlign: 'center' }} />
                   </div>
                 </div>

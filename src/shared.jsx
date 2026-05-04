@@ -50,8 +50,9 @@ export function useTally() {
   const gT = p => { const d = tally.find(t => t.party === p); return d ? d.won + (d.leadingg || 0) : 0 }
   const gW = p => tally.find(t => t.party === p)?.won || 0
   const gL = p => tally.find(t => t.party === p)?.leadingg || 0
+  const gP = p => tally.find(t => t.party === p)?.vote_share || 0
   const totalDeclared = tally.reduce((s, t) => s + t.won + (t.leadingg || 0), 0)
-  return { tally, gT, gW, gL, totalDeclared }
+  return { tally, gT, gW, gL, gP, totalDeclared }
 }
 
 export function useConstituencies() {

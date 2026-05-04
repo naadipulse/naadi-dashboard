@@ -6,15 +6,16 @@ CREATE TABLE overall_tally (
   party TEXT NOT NULL UNIQUE,
   won INT DEFAULT 0,
   leadingg INT DEFAULT 0,
+  vote_share NUMERIC DEFAULT 0,
   updated_at TIMESTAMP DEFAULT NOW()
 );
 
 -- Insert initial data
-INSERT INTO overall_tally (party, won, leadingg) VALUES
-('DMK+', 0, 0),
-('AIADMK+', 0, 0),
-('TVK', 0, 0),
-('Others', 0, 0);
+INSERT INTO overall_tally (party, won, leadingg, vote_share) VALUES
+('DMK+', 0, 0, 0),
+('AIADMK+', 0, 0, 0),
+('TVK', 0, 0, 0),
+('Others', 0, 0, 0);
 
 -- Constituencies table
 CREATE TABLE constituencies (

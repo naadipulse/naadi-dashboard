@@ -1,212 +1,57 @@
-import React, { useState, useEffect, useMemo } from 'react'
-import { supabase } from './supabaseClient.js'
-import { useSettings, useConstituencies, PARTY_DEFAULTS, getComponentFonts } from './shared.jsx'
-
-// 1. Move VipCard OUTSIDE the main component to prevent unnecessary remounts/flickering
-const VipCard = ({ vip, candidates, fm, fsm, PARTY_DEFAULTS }) => {
-  const vipCandidates = candidates
-    .filter(c => c.constituency_id === vip.id)
-    .sort((a, b) => b.votes - a.votes)
-
-  return (
-    <div style={{
-      background: '#fff', border: '1px solid #E5E7EB',
-      borderRadius: 12, overflow: 'hidden',
-      flex: 1,
-      boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-      display: 'flex', flexDirection: 'column',
-      minHeight: 0,
-    }}>
-      {/* Header */}
-      <div style={{ background: '#1E293B', padding: '4px 14px', flexShrink: 0 }}>
-        <div style={{ fontSize: fm - 2, fontWeight: 900, color: '#fff' }}>
-          {vip.name_tamil || vip.name}
-        </div>
-        <div style={{ fontSize: fsm - 1, color: '#94A3B8' }}>{vip.district}</div>
-      </div>
-
-      {/* Candidates */}
-      <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-        {vipCandidates.length === 0 ? (
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF', fontSize: fsm }}>
-            ⏳ வாக்கு எண்ணிக்கை தொடங்கவில்லை
-          </div>
-        ) : (
-          vipCandidates.slice(0, 4).map((cand, i, arr) => {
-            const cfg = PARTY_DEFAULTS[cand.party] || PARTY_DEFAULTS['Others']
-            const maxVotes = vipCandidates[0]?.votes || 1
-            const pct = (cand.votes / maxVotes) * 100
-            return (
-              <div key={cand.id || i} style={{
-                padding: '6px 14px',
-                borderBottom: i === arr.length - 1 ? 'none' : '1px solid #F3F4F6',
-                background: i === 0 ? cfg.light : '#fff',
-                flex: '1 1 0%', 
-                minHeight: 0,
-                display: 'flex', flexDirection: 'column', justifyContent: 'center',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  {/* Rank */}
-                  <div style={{
-                    width: 22, height: 22, borderRadius: 4,
-                    background: i === 0 ? cfg.color : '#E5E7EB',
-                    color: i === 0 ? '#fff' : '#6B7280',
-                    fontSize: fsm - 1, fontWeight: 800,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                  }}>{i + 1}</div>
-
-                  {/* Party circle */}
-                  <div style={{
-                    width: 28, height: 28, borderRadius: 4,
-                    background: cfg.color, display: 'flex', alignItems: 'center',
-                    justifyContent: 'center', fontSize: 8, color: '#fff', fontWeight: 800, flexShrink: 0,
-                  }}>{cfg.short}</div>
-
-                  {/* Name & Votes Stack */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: fsm + 1, fontWeight: 700, color: '#111827', lineHeight: 1.1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {i === 0 && '👑 '}{cand.candidate_name_tamil || cand.candidate_name}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginTop: 1 }}>
-                      <div style={{ fontSize: fsm - 2, color: cfg.color, fontWeight: 600 }}>{cfg.label}</div>
-                      <div style={{ fontSize: fsm + 1, fontWeight: 900, color: i === 0 ? cfg.color : '#374151' }}>
-                        {cand.votes > 0 ? cand.votes.toLocaleString('en-IN') : '—'}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {cand.votes > 0 && (
-                  <div style={{ marginTop: 4, marginLeft: 58 }}>
-                    <div style={{ background: '#E5E7EB', borderRadius: 999, height: 3, marginBottom: 2 }}>
-                      <div style={{ background: cfg.color, width: `${pct}%`, height: '100%', borderRadius: 999, transition: 'width 1s ease' }} />
-                    </div>
-                    {i === 0 && vipCandidates[1] && (
-                      <div style={{ fontSize: fsm - 2, color: '#6B7280', fontWeight: 600 }}>
-                        Lead: +{(vipCandidates[0].votes - vipCandidates[1].votes).toLocaleString('en-IN')}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )
-          })
-        )}
-      </div>
-    </div>
-  )
-}
+import React from 'react'
+import { useSettings, useTally, PARTY_DEFAULTS, getComponentFonts } from './shared.jsx'
 
 export default function LeftPanel() {
   const settings = useSettings()
-  const constituencies = useConstituencies()
-  const [candidates, setCandidates] = useState([])
-  const [vipIdx, setVipIdx] = useState(0)
-  const [fade, setFade] = useState(true)
+  const { gP } = useTally()
 
   const { fm, fsm, ff } = getComponentFonts(settings, 'left')
 
-  // Derive VIP list from settings and all constituencies
-  const vipList = useMemo(() => {
-    const rawVip = settings?.vip_constituencies || ""
-    const ids = Array.from(new Set(rawVip.split(',').map(Number).filter(Boolean)))
-    return ids
-      .map(id => constituencies.find(c => c.id === id))
-      .filter(c => c && (c.name_tamil || c.name))
-  }, [settings, constituencies])
-
-  useEffect(() => {
-    fetchCandidates()
-    const sub = supabase.channel('cands_' + Math.random())
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'candidates' }, fetchCandidates)
-      .subscribe()
-    return () => { sub.unsubscribe() }
-  }, [])
-
-  useEffect(() => {
-    const iv = setInterval(() => {
-      setFade(false)
-      setTimeout(() => {
-        setVipIdx(i => {
-          const next = i + 2
-          return next >= (vipList.length || 0) ? 0 : next
-        })
-        setFade(true)
-      }, 400)
-    }, 5000)
-    return () => clearInterval(iv)
-  }, [vipList.length])
-
-  const fetchCandidates = async () => {
-    const { data } = await supabase.from('candidates').select('*').eq('is_vip', true)
-    if (data) setCandidates(data)
-  }
-  
-  // Get current 2 VIP constituencies safely
-  const totalPairs = vipList.length > 0 ? Math.ceil(vipList.length / 2) : 0
-  const pairIdx = Math.floor(vipIdx / 2) % totalPairs
-  const vip1 = vipList[pairIdx * 2]
-  const vip2 = vipList[pairIdx * 2 + 1] || null
-
-  // Placeholder while data loads
-  if (vipList.length === 0) {
-    return (
-      <div style={{ fontFamily: ff, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', background: '#fff', borderRadius: 14, gap: 12 }}>
-        <div style={{ fontSize: 36, animation: 'pulse 2s infinite' }}>⭐</div>
-        <div style={{ fontSize: fm, fontWeight: 700, color: '#94A3B8', textAlign: 'center' }}>தரவு ஏற்றப்படுகிறது...</div>
-        <style>{`@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.1); } }`}</style>
-      </div>
-    )
-  }
+  const parties = ['TVK', 'AIADMK+', 'DMK+', 'Others']
 
   return (
-    <div style={{ fontFamily: ff, display: 'flex', flexDirection: 'column', gap: 8, height: '100%', overflow: 'hidden' }}>
-
-      {/* VIP label */}
+    <div style={{ fontFamily: ff, display: 'flex', flexDirection: 'column', gap: 12, height: '100%' }}>
       <div style={{
-        fontSize: fm - 2, fontWeight: 800, color: '#fff',
-        padding: '5px 10px', background: '#1E293B',
-        borderRadius: 8, textAlign: 'center', flexShrink: 0,
+        fontSize: fm, fontWeight: 800, color: '#fff',
+        padding: '12px', background: '#1E293B',
+        borderRadius: 10, textAlign: 'center', flexShrink: 0,
+        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
       }}>
-        ⭐ VIP தொகுதிகள்
+        📊 வாக்கு சதவீதம் (Vote %)
       </div>
 
-      {/* 2 VIP cards — flex equal height */}
-      <div className={fade ? 'flip-in' : 'flip-out'} style={{
-        flex: 1, overflow: 'hidden',
-        display: 'flex', flexDirection: 'column',
-        gap: 8,
-        perspective: '1000px',
-        transformStyle: 'preserve-3d',
-        transition: 'all 0.4s ease-in-out',
-      }}>
-        <VipCard vip={vip1} candidates={candidates} fm={fm} fsm={fsm} PARTY_DEFAULTS={PARTY_DEFAULTS} />
-        {vip2 ? <VipCard vip={vip2} candidates={candidates} fm={fm} fsm={fsm} PARTY_DEFAULTS={PARTY_DEFAULTS} /> : <div style={{ flex: 1 }} />}
-      </div>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {parties.map(p => {
+          const cfg = PARTY_DEFAULTS[p]
+          const pct = gP(p)
+          return (
+            <div key={p} style={{
+              background: '#fff', borderRadius: 14, padding: '18px 20px',
+              borderLeft: `8px solid ${cfg.color}`,
+              boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+              display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: 1
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 12 }}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ fontSize: fsm, color: '#64748B', fontWeight: 600, marginBottom: 2 }}>{cfg.short}</div>
+                  <div style={{ fontSize: fm + 2, fontWeight: 900, color: cfg.color }}>{cfg.label}</div>
+                </div>
+                <div style={{ fontSize: fm + 10, fontWeight: 950, color: '#111827', fontVariantNumeric: 'tabular-nums' }}>
+                  {pct}<span style={{ fontSize: fm, marginLeft: 2, color: '#64748B' }}>%</span>
+                </div>
+              </div>
 
-      {/* Pagination dots */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: 6, flexShrink: 0, paddingBottom: 4 }}>
-        {Array.from({ length: totalPairs }).map((_, i) => (
-          <div key={i} style={{
-            width: pairIdx === i ? 16 : 6, height: 6, borderRadius: 3,
-            background: pairIdx === i ? '#DC2626' : '#D1D5DB',
-            transition: 'all 0.4s', cursor: 'pointer',
-          }} onClick={() => setVipIdx(i * 2)} />
-        ))}
+              <div style={{ height: 12, background: '#F1F5F9', borderRadius: 6, overflow: 'hidden', border: '1px solid #E2E8F0' }}>
+                <div style={{
+                  width: `${pct}%`, height: '100%',
+                  background: `linear-gradient(90deg, ${cfg.color}, ${cfg.color}CC)`,
+                  borderRadius: 6, transition: 'width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                }} />
+              </div>
+            </div>
+          )
+        })}
       </div>
-
-      <style>{`
-        .flip-in {
-          animation: flipInY 0.5s ease forwards;
-          backface-visibility: hidden;
-        }
-        .flip-out {
-          animation: flipOutY 0.4s ease forwards;
-          backface-visibility: hidden;
-        }
-        @keyframes flipInY { from { transform: rotateY(-90deg); opacity: 0; } to { transform: rotateY(0deg); opacity: 1; } }
-        @keyframes flipOutY { from { transform: rotateY(0deg); opacity: 1; } to { transform: rotateY(90deg); opacity: 0; } }
-      `}</style>
     </div>
   )
 }
