@@ -38,7 +38,7 @@ function ConstituenciesTab({ allConstituencies, loading, setLoading, msg, setMsg
           'anthropic-dangerous-direct-browser-access': 'true',
         },
         body: JSON.stringify({
-          model: 'claude-3-5-sonnet-20241022',
+          model: 'claude-haiku-4-5-20251001',
           max_tokens: 4000,
           messages: [{
             role: 'user',
@@ -137,7 +137,7 @@ ${eciText}`
           'anthropic-dangerous-direct-browser-access': 'true',
         },
         body: JSON.stringify({
-          model: 'claude-3-5-sonnet-20241022',
+          model: 'claude-haiku-4-5-20251001',
           max_tokens: 1000,
           messages: [{
             role: 'user',
@@ -548,7 +548,7 @@ export default function Admin() {
           'anthropic-dangerous-direct-browser-access': 'true',
         },
         body: JSON.stringify({
-          model: 'claude-3-5-sonnet-20241022',
+          model: 'claude-haiku-4-5-20251001',
           max_tokens: 500,
           messages: [{ role: 'user', content: `Parse election data and return ONLY JSON:\n"${llmText}"\nFormat: {"DMK+":{"won":0,"leadingg":0},"AIADMK+":{"won":0,"leadingg":0},"TVK":{"won":0,"leadingg":0},"Others":{"won":0,"leadingg":0}}` }]
         })
