@@ -41,22 +41,22 @@ export default function LeftPanel() {
 
             return (
               <div key={`won-${p}`} style={{
-                background: cfg.color, borderRadius: 10, padding: '8px 12px',
+                background: cfg.color, borderRadius: 10, padding: '0 15px 0 0',
                 display: 'flex', alignItems: 'center', gap: 10, color: '#fff',
                 position: 'relative', overflow: 'hidden', flex: 1,
                 boxShadow: isMaj ? `0 0 15px ${cfg.color}` : '0 2px 6px rgba(0,0,0,0.1)',
               }}>
-                <Photo photoUrl={photoUrl} fallback={cfg.short} color="#fff" size={45} style={{ zIndex: 1 }} />
-                <div style={{ zIndex: 1, flex: 1 }}>
-                  <div style={{ fontSize: fsm, fontWeight: 700, opacity: 0.9 }}>{cfg.short}</div>
+                <Photo photoUrl={photoUrl} fallback={cfg.short} color="#fff" size={90} style={{ height: '100%', width: 85, zIndex: 1, objectFit: 'cover' }} />
+                <div style={{ zIndex: 1, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <div style={{ fontSize: fm + 4, fontWeight: 900 }}>{cfg.label}</div>
                   <div key={`w-${won}-${animationTick}`} style={{
-                    fontSize: fm + 4, fontWeight: 900, animation: 'numFlip 0.8s ease-out',
+                    fontSize: fs - 10, fontWeight: 950, animation: 'numFlip 0.8s ease-out',
                     display: 'inline-block', backfaceVisibility: 'hidden', transformStyle: 'preserve-3d'
                   }}>
-                    <AnimNum val={won} color="#fff" size={fm + 4} font={ff} />
+                    <AnimNum val={won} color="#fff" size={fs - 10} font={ff} />
                   </div>
                 </div>
-                {isMaj && <div style={{ position: 'absolute', right: 8, fontSize: 24 }}>👑</div>}
+                {isMaj && <div style={{ position: 'absolute', right: 5, top: 5, fontSize: 18, zIndex: 2 }}>👑</div>}
               </div>
             )
           })}
@@ -86,7 +86,7 @@ export default function LeftPanel() {
                 display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: 1
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ fontSize: fsm + 2, fontWeight: 900, color: cfg.color }}>{cfg.short}</div>
+                  <div style={{ fontSize: fm, fontWeight: 900, color: cfg.color }}>{cfg.label}</div>
                   <div key={`p-${pct}-${animationTick}`} style={{
                     fontSize: fm + 2, fontWeight: 900, color: '#111827',
                     animation: 'numFlip 0.8s ease-out', display: 'inline-block'
