@@ -77,13 +77,14 @@ ${eciText}`
           c.name.toLowerCase().includes(item.name.toLowerCase())
         )
         if (match) {
-          await supabase.from('constituencies').update({
+          const { error } = await supabase.from('constituencies').update({
             leading_party: item.leading_party,
             lead_margin: item.lead_margin || 0,
             status: item.status || 'counting',
-            updated_at: new Date(),
+            updated_at: new Date().toISOString(),
           }).eq('id', match.id)
-          updated++
+          if (error) console.error("Update error for " + item.name, error)
+          else updated++
         }
       }
 
@@ -116,9 +117,10 @@ ${eciText}`
     })
 
     for (const [party, vals] of Object.entries(tally)) {
-      await supabase.from('overall_tally')
-        .update({ won: vals.won, leadingg: vals.leadingg, updated_at: new Date() }) // This preserves existing vote_share
+      const { error } = await supabase.from('overall_tally')
+        .update({ won: vals.won, leadingg: vals.leadingg, updated_at: new Date().toISOString() }) // This preserves existing vote_share
         .eq('party', party)
+      if (error) throw error
     }
   }
 
@@ -166,12 +168,13 @@ ${vipText}`
           .single()
 
         if (existing) {
-          await supabase.from('candidates').update({
+          const { error } = await supabase.from('candidates').update({
             votes: cand.votes,
             candidate_name_tamil: cand.candidate_name_tamil || existing.candidate_name_tamil,
           }).eq('id', existing.id)
+          if (error) throw error
         } else {
-          await supabase.from('candidates').insert({
+          const { error } = await supabase.from('candidates').insert({
             constituency_id: selectedConst.id,
             constituency_name: selectedConst.name,
             candidate_name: cand.candidate_name,
@@ -180,6 +183,7 @@ ${vipText}`
             votes: cand.votes,
             is_vip: true,
           })
+          if (error) throw error
         }
       }
 
@@ -494,7 +498,8 @@ export default function Admin() {
   }
 
   const saveSetting = async (key, value) => {
-    await supabase.from('settings').upsert({ key, value: String(value) })
+    const { error } = await supabase.from('settings').upsert({ key, value: String(value) })
+    if (error) throw error
   }
 
   const saveAllSettings = async () => {
@@ -528,9 +533,10 @@ export default function Admin() {
     setMsg('💾 Saving...')
     try {
       for (const [party, vals] of Object.entries(manualData)) {
-        await supabase.from('overall_tally')
-          .update({ won: parseInt(vals.won) || 0, leadingg: parseInt(vals.leadingg) || 0, vote_share: parseFloat(vals.vote_share) || 0, updated_at: new Date() })
+        const { error } = await supabase.from('overall_tally')
+          .update({ won: parseInt(vals.won) || 0, leadingg: parseInt(vals.leadingg) || 0, vote_share: parseFloat(vals.vote_share) || 0, updated_at: new Date().toISOString() })
           .eq('party', party)
+        if (error) throw error
       }
       setMsg('✅ Tally updated!')
     } catch (e) { setMsg('❌ Error: ' + e.message) }
@@ -570,9 +576,10 @@ export default function Admin() {
       if (!data.content?.[0]) throw new Error(data.error?.message || 'Claude API error — check API key')
       const parsed = JSON.parse(data.content[0].text.replace(/```json|```/g, '').trim())
       for (const [party, vals] of Object.entries(parsed)) {
-        await supabase.from('overall_tally')
-          .update({ won: vals.won || 0, leadingg: vals.leadingg || 0, vote_share: vals.vote_share || 0, updated_at: new Date() })
+        const { error } = await supabase.from('overall_tally')
+          .update({ won: vals.won || 0, leadingg: vals.leadingg || 0, vote_share: vals.vote_share || 0, updated_at: new Date().toISOString() })
           .eq('party', party)
+        if (error) throw error
       }
       setMsg('✅ Parsed & updated!')
       setLlmText('')
