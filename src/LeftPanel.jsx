@@ -3,7 +3,7 @@ import { useSettings, useTally, PARTY_DEFAULTS, Photo, AnimNum, getComponentFont
 
 export default function LeftPanel() {
   const settings = useSettings()
-  const { gW, gP, tally } = useTally()
+  const { gW, gP, tally, gT } = useTally()
   const [animationTick, setAnimationTick] = useState(0)
 
   const { fs, fm, fsm, ff } = getComponentFonts(settings, 'left')
@@ -17,6 +17,7 @@ export default function LeftPanel() {
   }, [])
 
   const parties = ['DMK+', 'AIADMK+', 'TVK', 'Others']
+  const sortedParties = [...parties].sort((a, b) => gT(b) - gT(a))
 
   return (
     <div style={{ fontFamily: ff, display: 'flex', flexDirection: 'column', gap: 12, height: '100%' }}>
@@ -33,7 +34,7 @@ export default function LeftPanel() {
         </div>
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {parties.map((p) => {
+          {sortedParties.map((p) => {
             const cfg = PARTY_DEFAULTS[p]
             const won = gW(p)
             const photoUrl = settings[cfg.photoKey]
@@ -75,30 +76,34 @@ export default function LeftPanel() {
         </div>
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {parties.map((p) => {
+          {sortedParties.map((p) => {
             const cfg = PARTY_DEFAULTS[p]
             const pct = gP(p)
+            const photoUrl = settings[cfg.photoKey]
             return (
               <div key={`pct-${p}`} style={{
-                background: '#fff', borderRadius: 10, padding: '8px 15px',
+                background: '#fff', borderRadius: 10, padding: '0 15px 0 0',
                 borderLeft: `6px solid ${cfg.color}`,
                 boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
-                display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: 1
+                display: 'flex', alignItems: 'center', gap: 12, flex: 1, overflow: 'hidden'
               }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ fontSize: fm, fontWeight: 900, color: cfg.color }}>{cfg.label}</div>
-                  <div key={`p-${pct}-${animationTick}`} style={{
-                    fontSize: fm + 2, fontWeight: 900, color: '#111827',
-                    animation: 'numFlip 0.8s ease-out', display: 'inline-block'
-                  }}>
-                    {pct.toFixed(1)}<span style={{ fontSize: fsm, marginLeft: 1, color: '#64748B' }}>%</span>
+                <Photo photoUrl={photoUrl} fallback={cfg.short} color={cfg.color} size={70} style={{ height: '100%', width: 65, objectFit: 'cover' }} />
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '4px 0' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ fontSize: fm, fontWeight: 900, color: cfg.color }}>{cfg.label.replace('+', '')}</div>
+                    <div key={`p-${pct}-${animationTick}`} style={{
+                      fontSize: fm + 2, fontWeight: 900, color: '#111827',
+                      animation: 'numFlip 0.8s ease-out', display: 'inline-block'
+                    }}>
+                      {pct.toFixed(2)}<span style={{ fontSize: fsm, marginLeft: 1, color: '#64748B' }}>%</span>
+                    </div>
                   </div>
-                </div>
-                <div style={{ height: 6, background: '#F1F5F9', borderRadius: 3, marginTop: 4, overflow: 'hidden' }}>
-                  <div style={{
-                    width: `${pct}%`, height: '100%', background: cfg.color,
-                    transition: 'width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1)'
-                  }} />
+                  <div style={{ height: 6, background: '#F1F5F9', borderRadius: 3, marginTop: 4, overflow: 'hidden' }}>
+                    <div style={{
+                      width: `${pct}%`, height: '100%', background: cfg.color,
+                      transition: 'width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                    }} />
+                  </div>
                 </div>
               </div>
             )
