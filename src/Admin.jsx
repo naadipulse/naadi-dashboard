@@ -430,7 +430,7 @@ export default function Admin() {
   const [fontMedium, setFontMedium] = useState(22)
   const [fontSmall, setFontSmall] = useState(13)
   const [fontFamily, setFontFamily] = useState('Segoe UI')
-  const [photos, setPhotos] = useState({ photo_dmk: '', photo_aiadmk: '', photo_tvk: '', photo_others: '', naadi_logo: '', view1_image: '', logo_dmk: '', logo_aiadmk: '', logo_tvk: '' })
+  const [photos, setPhotos] = useState({ photo_dmk: '', photo_aiadmk: '', photo_tvk: '', photo_others: '', naadi_logo: '', view1_image: '', logo_dmk: '', logo_aiadmk: '', logo_tvk: '', logo_others: '' })
   const [flashData, setFlashData] = useState({
     flash3_title: '', flash3_subtitle: '', flash3_image: '', flash3_bg: '#0F172A', flash3_textcolor: '#ffffff', flash3_const_id: '',
     flash4_title: '', flash4_subtitle: '', flash4_image: '', flash4_bg: '#0F172A', flash4_textcolor: '#ffffff', flash4_const_id: '',
@@ -465,6 +465,7 @@ export default function Admin() {
         logo_dmk: settings.logo_dmk || '',
         logo_aiadmk: settings.logo_aiadmk || '',
         logo_tvk: settings.logo_tvk || '',
+        logo_others: settings.logo_others || '',
       })
       setFlashData({
         flash3_title: settings.flash3_title || '',
@@ -948,6 +949,7 @@ export default function Admin() {
               { key: 'logo_dmk', label: 'DMK Logo', color: '#DC2626' },
               { key: 'logo_aiadmk', label: 'ADMK Logo', color: '#16A34A' },
               { key: 'logo_tvk', label: 'TVK Logo', color: '#D97706' },
+              { key: 'logo_others', label: 'NTK Logo', color: '#7C3AED' },
             ].map(({ key, label, color }) => (
               <div key={key} style={{ marginBottom: 12, display: 'flex', gap: 12, alignItems: 'center' }}>
                 <div style={{ width: 40, height: 40, background: '#1E293B', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>

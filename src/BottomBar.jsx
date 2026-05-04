@@ -70,6 +70,7 @@ export default function BottomBar() {
         const tot = gT(p)
         const hasMaj = tot >= MAJORITY
         const photoUrl = settings[PARTY_DEFAULTS[p].photoKey]
+        const partyLogo = settings[PARTY_DEFAULTS[p].logoKey] || PARTY_DEFAULTS[p].logo
 
         return (
           <div
@@ -99,6 +100,11 @@ export default function BottomBar() {
               size={110}
               style={{ height: '100%', width: 'auto', minWidth: 100, zIndex: 1 }}
             />
+
+            {partyLogo && (
+              <img src={partyLogo} alt="" 
+                style={{ height: '50%', width: 'auto', position: 'absolute', bottom: 5, right: 10, opacity: 0.6, zIndex: 1 }} />
+            )}
 
             <div style={{ zIndex: 1 }}>
               {hasMaj && (
@@ -142,7 +148,7 @@ export default function BottomBar() {
         overflow: 'hidden'
       }}>
         {hasLogo ? (
-          <div style={{ height: '58%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ height: '75%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <img
               src={logoUrl}
               alt="நாடி"
