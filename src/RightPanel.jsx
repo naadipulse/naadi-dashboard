@@ -20,7 +20,7 @@ export default function RightPanel() {
   const [slideIdx, setSlideIdx] = useState(0)
   const [fade, setFade] = useState(true)
 
-  // Generate slides: max 8 constituencies per slide for YouTube visibility
+  // Generate slides: max 7 constituencies per slide for YouTube visibility
   const slides = useMemo(() => {
     const s = []
     DISTRICTS.forEach(d => {
@@ -28,12 +28,12 @@ export default function RightPanel() {
       if (dConsts.length === 0) {
         s.push({ district: d, items: [], page: 1, total: 1, all: [] })
       } else {
-        const total = Math.ceil(dConsts.length / 8)
-        for (let i = 0; i < dConsts.length; i += 8) {
+        const total = Math.ceil(dConsts.length / 7)
+        for (let i = 0; i < dConsts.length; i += 7) {
           s.push({
             district: d,
-            items: dConsts.slice(i, i + 8),
-            page: Math.floor(i / 8) + 1,
+            items: dConsts.slice(i, i + 7),
+            page: Math.floor(i / 7) + 1,
             total: total,
             all: dConsts
           })
