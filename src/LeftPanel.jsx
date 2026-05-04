@@ -1,51 +1,111 @@
-import React from 'react'
-import { useSettings, useTally, PARTY_DEFAULTS, getComponentFonts } from './shared.jsx'
+import React, { useState, useEffect } from 'react'
+import { useSettings, useTally, PARTY_DEFAULTS, Photo, AnimNum, getComponentFonts } from './shared.jsx'
 
 export default function LeftPanel() {
   const settings = useSettings()
-  const { gP } = useTally()
+  const { gT, tally } = useTally()
+  const [animationTick, setAnimationTick] = useState(0)
 
-  const { fm, fsm, ff } = getComponentFonts(settings, 'left')
+  const { fs, fm, fsm, ff } = getComponentFonts(settings, 'left')
 
-  const parties = ['TVK', 'AIADMK+', 'DMK+', 'Others']
+  // Trigger animation every 5 seconds for vote updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAnimationTick(prev => prev + 1)
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [])
+
+  // Get parties sorted by total votes (descending), only those with won seats
+  const sortedParties = ['TVK', 'AIADMK+', 'DMK+', 'Others']
+    .filter(p => {
+      const totalVotes = gT(p)
+      return totalVotes > 0
+    })
+    .sort((a, b) => gT(b) - gT(a))
 
   return (
-    <div style={{ fontFamily: ff, display: 'flex', flexDirection: 'column', gap: 12, height: '100%' }}>
+    <div style={{ fontFamily: ff, display: 'flex', flexDirection: 'column', gap: 10, height: '100%', padding: '0' }}>
+      {/* Header */}
       <div style={{
-        fontSize: fm, fontWeight: 800, color: '#fff',
-        padding: '12px', background: '#1E293B',
-        borderRadius: 10, textAlign: 'center', flexShrink: 0,
-        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+        fontSize: fm - 2, fontWeight: 800, color: '#fff',
+        padding: '10px 12px', background: '#1E293B',
+        borderRadius: 8, textAlign: 'center', flexShrink: 0,
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
       }}>
-        📊 வாக்கு சதவீதம் (Vote %)
+        🏆 வெற்றி
       </div>
 
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {parties.map(p => {
+      {/* Party Cards - Scrollable */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8, overflowY: 'auto', paddingRight: 4 }}>
+        {sortedParties.map((p, idx) => {
           const cfg = PARTY_DEFAULTS[p]
-          const pct = gP(p)
-          return (
-            <div key={p} style={{
-              background: '#fff', borderRadius: 14, padding: '18px 20px',
-              borderLeft: `8px solid ${cfg.color}`,
-              boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-              display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: 1
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 12 }}>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ fontSize: fm + 4, fontWeight: 900, color: cfg.color }}>{cfg.label}</div>
-                </div>
-                <div style={{ fontSize: fm + 10, fontWeight: 950, color: '#111827', fontVariantNumeric: 'tabular-nums' }}>
-                  {pct}<span style={{ fontSize: fm, marginLeft: 2, color: '#64748B' }}>%</span>
-                </div>
-              </div>
+          const votes = gT(p)
+          const photoUrl = settings[cfg.photoKey]
 
-              <div style={{ height: 12, background: '#F1F5F9', borderRadius: 6, overflow: 'hidden', border: '1px solid #E2E8F0' }}>
+          return (
+            <div
+              key={`${p}-${idx}`}
+              style={{
+                background: cfg.color,
+                borderRadius: 10,
+                padding: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                color: '#fff',
+                position: 'relative',
+                overflow: 'hidden',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+                flexShrink: 0,
+                transition: 'transform 0.3s ease, order 0.3s ease',
+              }}>
+
+              {/* Shimmer Effect */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent)',
+                animation: 'shimmer 5s linear infinite',
+                zIndex: 0,
+              }} />
+
+              {/* Party Photo */}
+              <Photo
+                photoUrl={photoUrl}
+                fallback={cfg.short.slice(0, 2)}
+                color="#fff"
+                size={60}
+                style={{ zIndex: 1, flexShrink: 0 }}
+              />
+
+              {/* Party Info */}
+              <div style={{ zIndex: 1, flex: 1, minWidth: 0 }}>
                 <div style={{
-                  width: `${pct}%`, height: '100%',
-                  background: `linear-gradient(90deg, ${cfg.color}, ${cfg.color}CC)`,
-                  borderRadius: 6, transition: 'width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1)'
-                }} />
+                  fontSize: fm - 2,
+                  fontWeight: 700,
+                  color: 'rgba(255,255,255,0.95)',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis'
+                }}>
+                  {cfg.label}
+                </div>
+                <div
+                  key={`${votes}-${animationTick}`}
+                  style={{
+                    fontSize: fs - 8,
+                    fontWeight: 900,
+                    color: '#fff',
+                    lineHeight: '1',
+                    animation: 'numFlip 0.8s ease-out',
+                    display: 'inline-block',
+                    backfaceVisibility: 'hidden',
+                    transformOrigin: 'center center',
+                    transformStyle: 'preserve-3d'
+                  }}>
+                  <AnimNum val={votes} color="#fff" size={fs - 8} font={ff} />
+                </div>
               </div>
             </div>
           )

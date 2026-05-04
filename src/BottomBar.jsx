@@ -63,8 +63,10 @@ export default function BottomBar() {
         <div style={{ fontSize: fm, color: '#94A3B8', fontWeight: 700, marginTop: 3 }}>{TOTAL}</div>
       </div>
 
-      {/* Party boxes — CSS animation, no state */}
-      {Object.entries(BOTTOM_PARTIES).map(([p, cfg]) => {
+      {/* Party boxes — sorted by votes, CSS animation, no state */}
+      {Object.entries(BOTTOM_PARTIES)
+        .sort((a, b) => gT(b[0]) - gT(a[0]))
+        .map(([p, cfg]) => {
         const tot = gT(p)
         const hasMaj = tot >= MAJORITY
         const photoUrl = settings[PARTY_DEFAULTS[p].photoKey]
