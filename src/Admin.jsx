@@ -412,6 +412,7 @@ export default function Admin() {
   const [llmText, setLlmText] = useState('')
   const [mode, setMode] = useState('manual')
   const [loading, setLoading] = useState(false)
+  const [hasSynced, setHasSynced] = useState(false)
 
   // Font/Photo settings
   const [fontLarge, setFontLarge] = useState(52)
@@ -472,14 +473,15 @@ export default function Admin() {
   }, [settings])
 
   useEffect(() => {
-    if (tally && tally.length > 0) {
+    if (tally && tally.length > 0 && !hasSynced) {
       const d = { ...manualData }
       tally.forEach(t => {
         d[t.party] = { won: t.won, leadingg: t.leadingg, vote_share: t.vote_share || 0 }
       })
       setManualData(d)
+      setHasSynced(true)
     }
-  }, [tally])
+  }, [tally, hasSynced])
 
   const fetchAllConstituencies = async () => {
     const { data } = await supabase.from('constituencies').select('id, name, name_tamil, district').order('id')
@@ -661,7 +663,7 @@ export default function Admin() {
                   </div>
                   <div>
                     <div style={{ fontSize: 11, color: '#64748B', marginBottom: 4 }}>வாக்கு % 📊</div>
-                    <input type="number" step="0.1" min="0" value={manualData[party]?.vote_share || 0}
+                    <input type="number" step="any" min="0" value={manualData[party]?.vote_share || 0}
                       onChange={e => setManualData({ ...manualData, [party]: { ...manualData[party], vote_share: e.target.value } })}
                       style={{ background: '#1E293B', border: `1px solid ${cfg.color}66`, borderRadius: 8, color: '#fff', padding: '8px 12px', fontSize: 18, fontWeight: 700, width: '100%', textAlign: 'center' }} />
                   </div>

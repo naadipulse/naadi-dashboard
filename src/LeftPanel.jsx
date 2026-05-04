@@ -33,8 +33,7 @@ export default function LeftPanel() {
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 12 }}>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ fontSize: fsm, color: '#64748B', fontWeight: 600, marginBottom: 2 }}>{cfg.short}</div>
-                  <div style={{ fontSize: fm + 2, fontWeight: 900, color: cfg.color }}>{cfg.label}</div>
+                  <div style={{ fontSize: fm + 4, fontWeight: 900, color: cfg.color }}>{cfg.label}</div>
                 </div>
                 <div style={{ fontSize: fm + 10, fontWeight: 950, color: '#111827', fontVariantNumeric: 'tabular-nums' }}>
                   {pct}<span style={{ fontSize: fm, marginLeft: 2, color: '#64748B' }}>%</span>
