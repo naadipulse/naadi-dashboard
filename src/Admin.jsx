@@ -547,8 +547,8 @@ export default function Admin() {
             leadingg: parseInt(vals.leadingg) || 0, 
             vote_share: parseFloat(vals.vote_share) || 0, 
             updated_at: new Date().toISOString() 
-          })
-        }, { onConflict: 'party' })
+          }, { onConflict: 'party' })
+        if (error) throw error
       }
       setMsg('✅ Tally updated!')
     } catch (e) { setMsg('❌ Error: ' + e.message) }
@@ -595,8 +595,8 @@ export default function Admin() {
             leadingg: vals.leadingg || 0, 
             vote_share: vals.vote_share || 0, 
             updated_at: new Date().toISOString() 
-          })
-        }, { onConflict: 'party' })
+          }, { onConflict: 'party' })
+        if (error) throw error
       }
       setMsg('✅ Parsed & updated!')
       setLlmText('')
