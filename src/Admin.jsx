@@ -61,6 +61,7 @@ ${eciText}`
         })
       })
       const data = await res.json()
+      if (!data.content?.[0]) throw new Error(data.error?.message || 'Claude API error — check API key')
       const text = data.content[0].text.replace(/```json|```/g, '').trim()
       const parsed = JSON.parse(text)
 
@@ -153,6 +154,7 @@ ${vipText}`
         })
       })
       const data = await res.json()
+      if (!data.content?.[0]) throw new Error(data.error?.message || 'Claude API error — check API key')
       const text = data.content[0].text.replace(/```json|```/g, '').trim()
       const candidates = JSON.parse(text)
 
@@ -552,6 +554,7 @@ export default function Admin() {
         })
       })
       const data = await res.json()
+      if (!data.content?.[0]) throw new Error(data.error?.message || 'Claude API error — check API key')
       const parsed = JSON.parse(data.content[0].text.replace(/```json|```/g, '').trim())
       for (const [party, vals] of Object.entries(parsed)) {
         await supabase.from('overall_tally')
