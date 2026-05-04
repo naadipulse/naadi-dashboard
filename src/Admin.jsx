@@ -117,7 +117,7 @@ ${eciText}`
 
     for (const [party, vals] of Object.entries(tally)) {
       await supabase.from('overall_tally')
-        .update({ won: vals.won, leadingg: vals.leadingg, updated_at: new Date() })
+        .update({ won: vals.won, leadingg: vals.leadingg, updated_at: new Date() }) // This preserves existing vote_share
         .eq('party', party)
     }
   }

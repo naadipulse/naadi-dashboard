@@ -91,7 +91,7 @@ export default function LeftPanel() {
                     fontSize: fm + 2, fontWeight: 900, color: '#111827',
                     animation: 'numFlip 0.8s ease-out', display: 'inline-block'
                   }}>
-                    {pct}<span style={{ fontSize: fsm, marginLeft: 1, color: '#64748B' }}>%</span>
+                    {pct.toFixed(1)}<span style={{ fontSize: fsm, marginLeft: 1, color: '#64748B' }}>%</span>
                   </div>
                 </div>
                 <div style={{ height: 6, background: '#F1F5F9', borderRadius: 3, marginTop: 4, overflow: 'hidden' }}>
