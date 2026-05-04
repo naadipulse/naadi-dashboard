@@ -94,9 +94,9 @@ function FullDashboard() {
         <div style={{
           flex: 1,
           display: 'grid',
-          gridTemplateColumns: '440px 1fr 440px',
+          gridTemplateColumns: '420px 860px 1fr',
           gap: 15,
-          padding: '10px 60px',
+          padding: '10px 50px 10px 20px',
           minHeight: 0, overflow: 'hidden',
         }}>
           <LeftPanel />
