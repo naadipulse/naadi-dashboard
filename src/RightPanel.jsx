@@ -105,7 +105,7 @@ export default function RightPanel() {
       }}>
         <div style={{ fontSize: fsm - 1, color: '#6B7280', fontWeight: 700 }}>தொகுதி</div>
         <div style={{ fontSize: fsm - 1, color: '#6B7280', fontWeight: 700, textAlign: 'center' }}>கட்சி</div>
-        <div style={{ fontSize: fsm - 1, color: '#6B7280', fontWeight: 700, textAlign: 'right' }}>நிலை</div>
+        <div style={{ fontSize: fsm - 1, color: '#6B7280', fontWeight: 700, textAlign: 'right' }}>வித்தியாசம்</div>
       </div>
 
       {/* Constituency rows */}
@@ -141,9 +141,6 @@ export default function RightPanel() {
                   </div>
                   <div style={{ fontSize: fsm - 2, color: lp?.color || '#9CA3AF', fontWeight: 600, marginTop: 2 }}>
                     {lp ? lp.label : '—'}
-                    {c.lead_margin > 0 && (
-                      <span style={{ marginLeft: 8, color: '#6B7280' }}>+{c.lead_margin.toLocaleString('en-IN')}</span>
-                    )}
                   </div>
                 </div>
 
@@ -164,13 +161,13 @@ export default function RightPanel() {
                   )}
                 </div>
 
-                {/* Status */}
+                {/* Margin Column */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
                   <span style={{
-                    fontSize: fsm + 2, fontWeight: 700,
-                    color: lp?.color || '#9CA3AF',
+                    fontSize: fsm, fontWeight: 800,
+                    color: isWon ? lp?.color : '#4B5563',
                   }}>
-                    {isWon ? '🏆' : '📈'}
+                    {c.lead_margin > 0 ? c.lead_margin.toLocaleString('en-IN') : '—'}
                   </span>
                 </div>
               </div>
