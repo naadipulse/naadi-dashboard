@@ -48,7 +48,7 @@ function View2({ tally, settings, mode = 'alliance' }) {
 
   const W = 1000, H = 480
   const CX = W / 2, CY = H - 15
-  const DOT_R = 11
+  const DOT_R = 9
 
   // Rows: innermost first, proportional count per row
   const ROWS = [
@@ -85,7 +85,7 @@ function View2({ tally, settings, mode = 'alliance' }) {
   }))
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', fontFamily: ff, background: '#fff', borderRadius: 14, padding: '10px 16px', overflow: 'hidden', textAlign: 'center' }}>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: ff, background: '#fff', borderRadius: 14, padding: '10px 16px', overflow: 'hidden', textAlign: 'center' }}>
       <div style={{ fontSize: fm + 6, fontWeight: 900, color: '#374151', flexShrink: 0, lineHeight: 1.2, width: '100%', textAlign: 'center' }}>
         🏛️ சட்டமன்றம் — 234 இடங்கள்
         <div style={{ fontSize: fm + 10, fontWeight: 800, color: '#6B7280', marginTop: 4 }}>
@@ -93,7 +93,7 @@ function View2({ tally, settings, mode = 'alliance' }) {
         </div>
       </div>
 
-      <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ flex: 1, minHeight: 0 }} preserveAspectRatio="xMidYMax meet">
+      <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ flex: 1, minHeight: 0 }} preserveAspectRatio="xMidYMid meet">
         {/* Dashed line starts below the badge */}
         <line x1={CX} y1={46} x2={CX} y2={H}
           stroke="#374151" strokeWidth={3} strokeDasharray="8,4" opacity={0.5} />
