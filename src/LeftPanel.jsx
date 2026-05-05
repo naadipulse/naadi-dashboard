@@ -16,10 +16,9 @@ export default function LeftPanel() {
     return () => clearInterval(interval)
   }, [])
 
-  const allParties = Object.keys(PARTY_DEFAULTS)
-  const sortedParties = allParties.filter(p => gT(p) > 0).sort((a, b) => gT(b) - gT(a))
+  const parties = ['DMK+', 'AIADMK+', 'TVK', 'Others']
+  const sortedParties = [...parties].sort((a, b) => gT(b) - gT(a))
   const totalWon = tally.reduce((acc, t) => acc + (t.won || 0), 0)
-  const mainParties = sortedParties.slice(0, 4) // Keep Left Panel clean with top 4
 
   return (
     <div style={{ fontFamily: ff, display: 'flex', flexDirection: 'column', gap: 12, height: '100%' }}>
@@ -39,7 +38,7 @@ export default function LeftPanel() {
         </div>
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {mainParties.map((p) => {
+          {sortedParties.filter(p => p !== 'Others').map((p) => {
             const cfg = PARTY_DEFAULTS[p]
             const won = gW(p)
             const photoUrl = settings[cfg.photoKey]

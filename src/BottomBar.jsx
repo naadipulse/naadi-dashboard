@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSettings, useTally, PARTY_DEFAULTS, AnimNum, Photo, MAJORITY, TOTAL, getComponentFonts } from './shared.jsx'
 
-const BOTTOM_PARTIES = {
-  ...PARTY_DEFAULTS,
-  'Others': { ...PARTY_DEFAULTS['Others'], label: 'நாதக', short: 'NTK', color: '#4B5563' }
-}
+const BOTTOM_PARTIES = PARTY_DEFAULTS
 
 export default function BottomBar() {
   const settings = useSettings()
@@ -64,10 +61,9 @@ export default function BottomBar() {
       </div>
 
       {/* Party boxes — sorted by votes, CSS animation, no state */}
-      {Object.entries(PARTY_DEFAULTS)
-        .filter(([p]) => gT(p) > 0)
+      {Object.entries(BOTTOM_PARTIES)
+        .filter(([p]) => p !== 'Others')
         .sort((a, b) => gT(b[0]) - gT(a[0]))
-        .slice(0, 6) // Show top 6 to prevent layout break
         .map(([p, cfg]) => {
         const tot = gT(p)
         const hasMaj = tot >= MAJORITY
