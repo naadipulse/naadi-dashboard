@@ -93,24 +93,26 @@ function View2({ tally, settings, mode = 'alliance' }) {
         </div>
       </div>
 
-      <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ flex: 1, minHeight: 0 }} preserveAspectRatio="xMidYMid meet">
-        {/* Dashed line starts below the badge */}
-        <line x1={CX} y1={46} x2={CX} y2={H}
-          stroke="#374151" strokeWidth={3} strokeDasharray="8,4" opacity={0.5} />
+      <div style={{ flex: 1, minHeight: 0, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <svg width="100%" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet">
+          {/* Dashed line starts below the badge */}
+          <line x1={CX} y1={46} x2={CX} y2={H}
+            stroke="#374151" strokeWidth={3} strokeDasharray="8,4" opacity={0.5} />
 
-        {/* Dots */}
-        {dots.map((d, i) => (
-          <circle key={i}
-            cx={d.x} cy={d.y} r={DOT_R}
-            fill={d.color}
-            style={{ transition: `fill 0.4s ease ${i * 0.001}s` }}
-          />
-        ))}
+          {/* Dots */}
+          {dots.map((d, i) => (
+            <circle key={i}
+              cx={d.x} cy={d.y} r={DOT_R}
+              fill={d.color}
+              style={{ transition: `fill 0.4s ease ${i * 0.001}s` }}
+            />
+          ))}
 
-        {/* 118 badge rendered after dots so it sits on top */}
-        <rect x={CX - 44} y={5} width={88} height={38} rx={8} fill="#F59E0B" />
-        <text x={CX} y={32} textAnchor="middle" fontSize={26} fill="#fff" fontWeight="bold">118</text>
-      </svg>
+          {/* 118 badge rendered after dots so it sits on top */}
+          <rect x={CX - 44} y={5} width={88} height={38} rx={8} fill="#F59E0B" />
+          <text x={CX} y={32} textAnchor="middle" fontSize={26} fill="#fff" fontWeight="bold">118</text>
+        </svg>
+      </div>
 
       {/* Party totals */}
       <div style={{ display: 'flex', gap: '8px 12px', justifyContent: 'center', flexWrap: 'wrap', paddingBottom: 10, flexShrink: 0 }}>
