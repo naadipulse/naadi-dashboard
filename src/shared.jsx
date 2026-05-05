@@ -107,6 +107,21 @@ export const PARTY_DEFAULTS = {
   'Others':  { color: '#7C3AED', light: '#EDE9FE', label: 'நாதக',  short: 'NTK',  leader: 'சீமான்',          photoKey: 'photo_others', logoKey: 'logo_others', logo: 'https://khivotiprmornlvmrhaw.supabase.co/storage/v1/object/public/logo/NTK.png' },
 }
 
+export const INDIVIDUAL_PARTIES = {
+  'TVK':     { color: '#D97706', label: 'தவெக',    short: 'TVK' },
+  'DMK':     { color: '#DC2626', label: 'திமுக',   short: 'DMK' },
+  'ADMK':    { color: '#16A34A', label: 'அதிமுக',  short: 'ADMK' },
+  'INC':     { color: '#3B82F6', label: 'காங்கிரஸ்', short: 'INC' },
+  'PMK':     { color: '#FACC15', label: 'பாமக',   short: 'PMK' },
+  'IUML':    { color: '#059669', label: 'முஸ்லிம் லீக்', short: 'IUML' },
+  'CPI':     { color: '#B91C1C', label: 'சிபிஐ',   short: 'CPI' },
+  'VCK':     { color: '#4F46E5', label: 'விசிக',   short: 'VCK' },
+  'CPI(M)':  { color: '#EF4444', label: 'சிபிஎம்',  short: 'CPM' },
+  'BJP':     { color: '#EA580C', label: 'பாஜக',   short: 'BJP' },
+  'DMDK':    { color: '#9D174D', label: 'தேமுதிக', short: 'DMDK' },
+  'AMMK':    { color: '#BE185D', label: 'அம்மக',   short: 'AMMK' },
+}
+
 // Per-component font helper — falls back to global settings
 export function getComponentFonts(settings, prefix) {
   return {
