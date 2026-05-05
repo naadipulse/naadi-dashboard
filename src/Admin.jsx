@@ -466,11 +466,11 @@ export default function Admin() {
       setFontMedium(parseInt(settings.font_medium) || 22)
       setFontSmall(parseInt(settings.font_small) || 13)
       setFontFamily(settings.font_family || 'Segoe UI')
-      const p = { ...photos };
-      Object.keys(settings).forEach(key => {
-        if (p.hasOwnProperty(key)) p[key] = settings[key];
-      });
-      setPhotos(p);
+      setPhotos(prev => {
+        const next = { ...prev }
+        Object.keys(settings).forEach(k => { if (next.hasOwnProperty(k)) next[k] = settings[k] })
+        return next
+      })
       setFlashData({
         flash3_title: settings.flash3_title || '',
         flash3_subtitle: settings.flash3_subtitle || '',
@@ -972,47 +972,49 @@ export default function Admin() {
             </div>
           </div>
 
-          {/* Party Logos */}
+          {/* Alliance Configuration */}
           <div style={{ marginBottom: 24, padding: 16, background: '#0F172A', borderRadius: 10, border: '1px solid #334155' }}>
-            <div style={{ fontSize: 14, color: '#F59E0B', fontWeight: 700, marginBottom: 14 }}>Party Symbols (Logos)</div>
-            {[
-              { key: 'logo_dmk', label: 'DMK Logo', color: '#DC2626' },
-              { key: 'logo_aiadmk', label: 'ADMK Logo', color: '#16A34A' },
-              { key: 'logo_tvk', label: 'TVK Logo', color: '#D97706' },
-            ].map(({ key, label, color }) => (
-              <div key={key} style={{ marginBottom: 12, display: 'flex', gap: 12, alignItems: 'center' }}>
-                <div style={{ width: 40, height: 40, background: '#1E293B', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-                  {photos[key] ? (
-                    <img src={photos[key]} alt="Preview" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
-                  ) : (
-                    <span style={{ fontSize: 8, color: '#475569' }}>EMPTY</span>
-                  )}
+            <div style={{ fontSize: 14, color: '#F59E0B', fontWeight: 700, marginBottom: 14 }}>Alliance Config (Logo & Leader)</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 20 }}>
+              {Object.entries(PARTY_DEFAULTS).filter(([p]) => p !== 'Others').map(([p, cfg]) => (
+                <div key={p} style={{ borderBottom: '1px solid #1E293B', paddingBottom: 15 }}>
+                  <div style={{ fontSize: 12, color: cfg.color, fontWeight: 900, marginBottom: 8 }}>{cfg.label} ({cfg.leader})</div>
+                  <div style={{ marginBottom: 8 }}>
+                    <div style={{ fontSize: 9, color: '#64748B', marginBottom: 2 }}>Leader Photo URL</div>
+                    <input type="text" value={photos[cfg.photoKey] || ''} onChange={e => setPhotos({ ...photos, [cfg.photoKey]: e.target.value })}
+                      style={{ background: '#1E293B', border: '1px solid #334155', borderRadius: 4, color: '#fff', padding: '4px 8px', fontSize: 11, width: '100%' }} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 9, color: '#64748B', marginBottom: 2 }}>Party Logo URL</div>
+                    <input type="text" value={photos[cfg.logoKey] || ''} onChange={e => setPhotos({ ...photos, [cfg.logoKey]: e.target.value })}
+                      style={{ background: '#1E293B', border: '1px solid #334155', borderRadius: 4, color: '#fff', padding: '4px 8px', fontSize: 11, width: '100%' }} />
+                  </div>
                 </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 11, color, fontWeight: 700, marginBottom: 2 }}>{label}</div>
-                  <input type="text" value={photos[key]} onChange={e => setPhotos({ ...photos, [key]: e.target.value })} placeholder="Logo URL..."
-                    style={{ background: '#1E293B', border: `1px solid ${color}44`, borderRadius: 6, color: '#fff', padding: '6px 10px', fontSize: 12, width: '100%' }} />
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
-          {[
-            { key: 'photo_dmk', label: 'திமுக+ (Stalin)', color: '#DC2626' },
-            { key: 'photo_aiadmk', label: 'அதிமுக+ (Edappadi)', color: '#16A34A' },
-            { key: 'photo_tvk', label: 'தவெக (Vijay)', color: '#D97706' },
-          ].map(({ key, label, color }) => (
-            <div key={key} style={{ marginBottom: 16, display: 'flex', gap: 12, alignItems: 'center' }}>
-              <div style={{ width: 52, height: 52, borderRadius: '50%', overflow: 'hidden', border: `2px solid ${color}`, flexShrink: 0, background: color + '22', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {photos[key] ? <img src={photos[key]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 10, color, fontWeight: 700 }}>NO</span>}
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13, color, fontWeight: 700, marginBottom: 6 }}>{label}</div>
-                <input type="text" value={photos[key]} onChange={e => setPhotos({ ...photos, [key]: e.target.value })} placeholder="https://i.ibb.co/..."
-                  style={{ background: '#1E293B', border: `1px solid ${color}44`, borderRadius: 8, color: '#fff', padding: '8px 12px', fontSize: 13, width: '100%' }} />
-              </div>
+          {/* Individual Parties Configuration */}
+          <div style={{ marginBottom: 24, padding: 16, background: '#0F172A', borderRadius: 10, border: '1px solid #334155' }}>
+            <div style={{ fontSize: 14, color: '#F59E0B', fontWeight: 700, marginBottom: 14 }}>Individual Party Winners Config</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 20 }}>
+              {Object.entries(INDIVIDUAL_PARTIES).map(([p, cfg]) => (
+                <div key={p} style={{ borderBottom: '1px solid #1E293B', paddingBottom: 15 }}>
+                  <div style={{ fontSize: 12, color: cfg.color, fontWeight: 900, marginBottom: 8 }}>{cfg.label}</div>
+                  <div style={{ marginBottom: 8 }}>
+                    <div style={{ fontSize: 9, color: '#64748B', marginBottom: 2 }}>Leader Photo URL</div>
+                    <input type="text" value={photos[cfg.photoKey] || ''} onChange={e => setPhotos({ ...photos, [cfg.photoKey]: e.target.value })}
+                      style={{ background: '#1E293B', border: '1px solid #334155', borderRadius: 4, color: '#fff', padding: '4px 8px', fontSize: 11, width: '100%' }} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 9, color: '#64748B', marginBottom: 2 }}>Party Logo URL</div>
+                    <input type="text" value={photos[cfg.logoKey] || ''} onChange={e => setPhotos({ ...photos, [cfg.logoKey]: e.target.value })}
+                      style={{ background: '#1E293B', border: '1px solid #334155', borderRadius: 4, color: '#fff', padding: '4px 8px', fontSize: 11, width: '100%' }} />
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
           <button onClick={saveAllSettings} disabled={loading} style={{ background: '#16A34A', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 0', width: '100%', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
             {loading ? '⏳...' : '✅ Save Photos'}
           </button>
