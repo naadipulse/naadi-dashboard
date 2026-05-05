@@ -33,10 +33,7 @@ export default function LeftPanel({ mode = 'alliance' }) {
           borderRadius: 8, textAlign: 'center', flexShrink: 0,
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
-          🏆 வெற்றி (Won): {totalWon}
-          <span style={{ fontSize: fsm, color: 'rgba(255,255,255,0.7)', marginLeft: 4 }}>
-            /{TOTAL}
-          </span>
+          🏆 வெற்றி : {totalWon}/{TOTAL}
         </div>
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>

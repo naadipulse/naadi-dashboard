@@ -86,7 +86,7 @@ function View2({ tally, settings, mode = 'alliance' }) {
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', fontFamily: ff, background: '#fff', borderRadius: 14, padding: '10px 16px', overflow: 'hidden', textAlign: 'center' }}>
-      <div style={{ fontSize: fm, fontWeight: 800, color: '#374151', flexShrink: 0, lineHeight: 1.2, width: '100%', textAlign: 'left', paddingLeft: 10 }}>
+      <div style={{ fontSize: fm, fontWeight: 800, color: '#374151', flexShrink: 0, lineHeight: 1.2, width: '100%', textAlign: 'center' }}>
         🏛️ சட்டமன்றம் — 234 இடங்கள்
         <div style={{ fontSize: fm + 4, fontWeight: 700, color: '#6B7280', marginTop: 4 }}>
           கட்சி வாரியாக
@@ -127,9 +127,6 @@ function View2({ tally, settings, mode = 'alliance' }) {
             }}>
               <div style={{ fontSize: fsm, color: hasMaj ? '#fff' : COLORS[p], fontWeight: 700 }}>{cfg.label}</div>
               <div style={{ fontSize: fm + 8, fontWeight: 900, color: hasMaj ? '#fff' : COLORS[p], lineHeight: 1 }}>{tot}</div>
-              <div style={{ fontSize: fsm - 1, color: hasMaj ? 'rgba(255,255,255,0.8)' : '#9CA3AF' }}>
-                {((tot / 234) * 100).toFixed(1)}%
-              </div>
             </div>
           )
         })}
