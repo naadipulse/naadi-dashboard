@@ -426,12 +426,6 @@ export default function Admin() {
   const [loading, setLoading] = useState(false)
   const [hasSynced, setHasSynced] = useState(false)
 
-  // Font/Photo settings
-  const [fontLarge, setFontLarge] = useState(52)
-  const [fontMedium, setFontMedium] = useState(22)
-  const [fontSmall, setFontSmall] = useState(13)
-  const [fontFamily, setFontFamily] = useState('Segoe UI')
-
   // Initialize photos state with all potential keys from shared.jsx
   const [photos, setPhotos] = useState(() => {
     const p = { naadi_logo: '', view1_image: '' };
