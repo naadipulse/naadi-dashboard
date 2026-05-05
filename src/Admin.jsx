@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from './supabaseClient.js'
-import { useSettings, PARTY_DEFAULTS, useTally } from './shared.jsx'
+import { useSettings, PARTY_DEFAULTS, useTally, INDIVIDUAL_PARTIES } from './shared.jsx'
 
 const ADMIN_PASSWORD = process.env.REACT_APP_ADMIN_PASSWORD || 'naadi2026'
 
@@ -431,7 +431,25 @@ export default function Admin() {
   const [fontMedium, setFontMedium] = useState(22)
   const [fontSmall, setFontSmall] = useState(13)
   const [fontFamily, setFontFamily] = useState('Segoe UI')
-  const [photos, setPhotos] = useState({ photo_dmk: '', photo_aiadmk: '', photo_tvk: '', photo_others: '', naadi_logo: '', view1_image: '', logo_dmk: '', logo_aiadmk: '', logo_tvk: '', logo_others: '' })
+
+  // Initialize photos state with all potential keys from shared.jsx
+  const [photos, setPhotos] = useState(() => {
+    const p = { naadi_logo: '', view1_image: '' };
+    [...Object.values(PARTY_DEFAULTS), ...Object.values(INDIVIDUAL_PARTIES)].forEach(cfg => {
+      if (cfg.photoKey) p[cfg.photoKey] = '';
+      if (cfg.logoKey) p[cfg.logoKey] = '';
+    });
+    return p;
+  })
+
+  const [manualData, setManualData] = useState(() => {
+    const d = {};
+    [...Object.keys(PARTY_DEFAULTS), ...Object.keys(INDIVIDUAL_PARTIES)].forEach(p => {
+      d[p] = { won: 0, leadingg: 0, vote_share: 0 };
+    });
+    return d;
+  })
+
   const [flashData, setFlashData] = useState({
     flash3_title: '', flash3_subtitle: '', flash3_image: '', flash3_bg: '#0F172A', flash3_textcolor: '#ffffff', flash3_const_id: '',
     flash4_title: '', flash4_subtitle: '', flash4_image: '', flash4_bg: '#0F172A', flash4_textcolor: '#ffffff', flash4_const_id: '',
@@ -456,18 +474,11 @@ export default function Admin() {
       setFontMedium(parseInt(settings.font_medium) || 22)
       setFontSmall(parseInt(settings.font_small) || 13)
       setFontFamily(settings.font_family || 'Segoe UI')
-      setPhotos({
-        photo_dmk: settings.photo_dmk || '',
-        photo_aiadmk: settings.photo_aiadmk || '',
-        photo_tvk: settings.photo_tvk || '',
-        photo_others: settings.photo_others || '',
-        naadi_logo: settings.naadi_logo || '',
-        view1_image: settings.view1_image || '',
-        logo_dmk: settings.logo_dmk || '',
-        logo_aiadmk: settings.logo_aiadmk || '',
-        logo_tvk: settings.logo_tvk || '',
-        logo_others: settings.logo_others || '',
-      })
+      const p = { ...photos };
+      Object.keys(settings).forEach(key => {
+        if (p.hasOwnProperty(key)) p[key] = settings[key];
+      });
+      setPhotos(p);
       setFlashData({
         flash3_title: settings.flash3_title || '',
         flash3_subtitle: settings.flash3_subtitle || '',
@@ -676,6 +687,7 @@ export default function Admin() {
           </div>
           {mode === 'manual' && (
             <>
+              <div style={{ fontSize: 13, color: '#F59E0B', fontWeight: 800, marginBottom: 10, borderBottom: '1px solid #334155', paddingBottom: 5 }}>Alliance Tally</div>
               {Object.entries(PARTY_DEFAULTS).map(([party, cfg]) => (
                 <div key={party} style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr 1fr', gap: 10, marginBottom: 12, alignItems: 'center' }}>
                   <div style={{ fontSize: 16, fontWeight: 700, color: cfg.color }}>{cfg.label}</div>
@@ -699,6 +711,31 @@ export default function Admin() {
                   </div>
                 </div>
               ))}
+
+              <div style={{ fontSize: 13, color: '#F59E0B', fontWeight: 800, margin: '20px 0 10px', borderBottom: '1px solid #334155', paddingBottom: 5 }}>Individual Party Winners</div>
+              <div style={{ maxHeight: 400, overflowY: 'auto', paddingRight: 10 }}>
+                {Object.entries(INDIVIDUAL_PARTIES).map(([party, cfg]) => (
+                  <div key={party} style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr 1fr', gap: 10, marginBottom: 12, alignItems: 'center' }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: cfg.color }}>{cfg.label}</div>
+                    <div>
+                      <input type="number" min="0" value={manualData[party]?.won || 0}
+                        onChange={e => setManualData({ ...manualData, [party]: { ...manualData[party], won: e.target.value } })}
+                        style={{ background: '#0F172A', border: `1px solid ${cfg.color}44`, borderRadius: 6, color: '#fff', padding: '6px', fontSize: 14, width: '100%', textAlign: 'center' }} />
+                    </div>
+                    <div>
+                      <input type="number" min="0" value={manualData[party]?.leadingg || 0}
+                        onChange={e => setManualData({ ...manualData, [party]: { ...manualData[party], leadingg: e.target.value } })}
+                        style={{ background: '#0F172A', border: `1px solid ${cfg.color}44`, borderRadius: 6, color: '#fff', padding: '6px', fontSize: 14, width: '100%', textAlign: 'center' }} />
+                    </div>
+                    <div>
+                      <input type="number" step="any" min="0" value={manualData[party]?.vote_share || 0}
+                        onChange={e => setManualData({ ...manualData, [party]: { ...manualData[party], vote_share: e.target.value } })}
+                        style={{ background: '#0F172A', border: `1px solid ${cfg.color}44`, borderRadius: 6, color: '#fff', padding: '6px', fontSize: 14, width: '100%', textAlign: 'center' }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
               <button onClick={saveTally} disabled={loading} style={{ background: '#16A34A', color: '#fff', border: 'none', borderRadius: 8, padding: '12px 0', width: '100%', fontSize: 16, fontWeight: 700, cursor: 'pointer' }}>
                 {loading ? '⏳...' : '✅ Save & Update Dashboard'}
               </button>

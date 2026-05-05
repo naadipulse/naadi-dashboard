@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useSettings, useTally, PARTY_DEFAULTS, AnimNum, Photo, MAJORITY, TOTAL, getComponentFonts } from './shared.jsx'
+import { useSettings, useTally, PARTY_DEFAULTS, INDIVIDUAL_PARTIES, AnimNum, Photo, MAJORITY, TOTAL, getComponentFonts } from './shared.jsx'
 
 export default function BottomBar({ mode = 'alliance' }) {
   const settings = useSettings()

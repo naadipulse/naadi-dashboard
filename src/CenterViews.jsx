@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSettings, useTally, PARTY_DEFAULTS, MAJORITY, getComponentFonts } from './shared.jsx'
+import { useSettings, useTally, PARTY_DEFAULTS, INDIVIDUAL_PARTIES, MAJORITY, getComponentFonts } from './shared.jsx'
 
 const VIEW_LABELS = ['வீடியோ', 'சட்டமன்றம்', 'மக்களின் விருப்பம் 1', 'மக்களின் விருப்பம் 2']
 
