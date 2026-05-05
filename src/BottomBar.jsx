@@ -3,8 +3,14 @@ import { useSettings, useTally, PARTY_DEFAULTS, INDIVIDUAL_PARTIES, AnimNum, Pho
 
 export default function BottomBar({ mode = 'alliance' }) {
   const settings = useSettings()
-  const { gT, totalDeclared } = useTally()
+  const { gT, tally } = useTally()
   const partiesCfg = mode === 'individual' ? INDIVIDUAL_PARTIES : PARTY_DEFAULTS
+
+  // Calculate total declared based on parties in the current mode to avoid double-counting
+  const totalInMode = tally
+    .filter(t => Object.keys(partiesCfg).includes(t.party))
+    .reduce((acc, t) => acc + (t.won || 0) + (t.leadingg || 0), 0)
+
   const [time, setTime] = useState(new Date())
   const [animationTick, setAnimationTick] = useState(0); // New state for animation trigger
 
@@ -43,7 +49,7 @@ export default function BottomBar({ mode = 'alliance' }) {
         borderRight: '2px solid #334155', padding: '0 12px',
       }}>
         <div style={{ fontSize: fsm, color: '#94A3B8', fontWeight: 700 }}>முன்னிலை</div>
-        <div key={`${totalDeclared}-${animationTick}`} style={{ 
+        <div key={`${totalInMode}-${animationTick}`} style={{
           animation: 'numFlip 0.8s ease-out', 
           perspective: '1200px',
           display: 'inline-block',
@@ -51,10 +57,10 @@ export default function BottomBar({ mode = 'alliance' }) {
           transformOrigin: 'center center',
           transformStyle: 'preserve-3d'
         }}>
-          <AnimNum val={totalDeclared} color="#F59E0B" size={fs * 0.85} font={ff} />
+          <AnimNum val={totalInMode} color="#F59E0B" size={fs * 0.85} font={ff} />
         </div>
         <div style={{ width: '85%', height: 4, background: '#334155', borderRadius: 999, marginTop: 4 }}>
-          <div style={{ height: '100%', background: '#F59E0B', borderRadius: 999, width: `${(totalDeclared / TOTAL) * 100}%`, transition: 'width 1s ease' }} />
+          <div style={{ height: '100%', background: '#F59E0B', borderRadius: 999, width: `${(totalInMode / TOTAL) * 100}%`, transition: 'width 1s ease' }} />
         </div>
         <div style={{ fontSize: fm, color: '#94A3B8', fontWeight: 700, marginTop: 3 }}>{TOTAL}</div>
       </div>

@@ -218,24 +218,5 @@ function FlashView({ settings, viewNum, constituencies }) {
 export default function CenterViews({ mode = 'alliance' }) {
   const settings = useSettings()
   const { tally } = useTally()
-  const [vIdx, setVIdx] = React.useState(1)
-
-  React.useEffect(() => {
-    if (mode === 'individual') return;
-    const iv = setInterval(() => {
-      setVIdx(prev => (prev + 1) % 2)
-    }, 10000)
-    return () => clearInterval(iv)
-  }, [mode])
-
-  if (mode === 'individual') {
-    return <View2 tally={tally} settings={settings} mode={mode} />
-  }
-
-  return (
-    <div style={{ height: '100%' }}>
-      {vIdx === 1 && <View2 tally={tally} settings={settings} />}
-      {vIdx === 0 && <View1 settings={settings} />}
-    </div>
-  )
+  return <View2 tally={tally} settings={settings} mode={mode} />
 }

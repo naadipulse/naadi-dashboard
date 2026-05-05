@@ -9,8 +9,14 @@ import { useSettings, useTally, AnimNum, PARTY_DEFAULTS, INDIVIDUAL_PARTIES, MAJ
 
 function FullDashboard({ mode = 'alliance' }) {
   const settings = useSettings()
-  const { gT, totalDeclared } = useTally()
+  const { tally, gT } = useTally()
   const partiesCfg = mode === 'individual' ? INDIVIDUAL_PARTIES : PARTY_DEFAULTS
+
+  // Calculate total declared based on parties in the current mode to avoid double-counting
+  const totalInMode = tally
+    .filter(t => Object.keys(partiesCfg).includes(t.party))
+    .reduce((acc, t) => acc + (t.won || 0) + (t.leadingg || 0), 0)
+
   const ff = settings.font_family || 'Segoe UI'
   const fm = parseInt(settings.font_medium) || 22
   const [scale, setScale] = useState(1)
@@ -87,7 +93,7 @@ function FullDashboard({ mode = 'alliance' }) {
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: 13, color: '#6B7280' }}>முடிவு</div>
                 <div style={{ fontSize: 26, fontWeight: 900, color: '#F59E0B' }}>
-                  {totalDeclared}<span style={{ fontSize: 14, color: '#9CA3AF' }}>/234</span>
+                  {totalInMode}<span style={{ fontSize: 14, color: '#9CA3AF' }}>/234</span>
                 </div>
               </div>
               <div style={{ textAlign: 'center' }}>
