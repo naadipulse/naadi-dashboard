@@ -46,19 +46,19 @@ function View2({ tally, settings, mode = 'alliance' }) {
   sortedParties.forEach(p => { for (let i = 0; i < get(p); i++) seatColors.push(COLORS[p]) })
   while (seatColors.length < 234) seatColors.push(COLORS['pending'])
 
-  const W = 920, H = 380
-  const CX = W / 2, CY = H - 5
-  const DOT_R = 9
+  const W = 1000, H = 480
+  const CX = W / 2, CY = H - 15
+  const DOT_R = 11
 
   // Rows: innermost first, proportional count per row
   const ROWS = [
-    { r: 105, count: 17 },
-    { r: 140, count: 24 },
-    { r: 175, count: 31 },
-    { r: 210, count: 38 },
-    { r: 245, count: 44 },
-    { r: 280, count: 50 },
-    { r: 315, count: 30 },
+    { r: 120, count: 17 },
+    { r: 160, count: 24 },
+    { r: 200, count: 31 },
+    { r: 240, count: 38 },
+    { r: 285, count: 44 },
+    { r: 330, count: 50 },
+    { r: 375, count: 30 },
   ]
   // Total = 17+24+31+38+44+50+30 = 234 ✅
 
@@ -93,15 +93,12 @@ function View2({ tally, settings, mode = 'alliance' }) {
         </div>
       </div>
 
-      {/* Ensure SVG takes available space, but allows content below it */}
-      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ flexShrink: 0 }}>
-        {/* 118 line behind dots */}
-        <line x1={CX} y1={0} x2={CX} y2={H}
+      <svg width="100%" viewBox={`0 0 ${W} ${H}`} style={{ flex: 1, minHeight: 0 }} preserveAspectRatio="xMidYMax meet">
+        {/* Dashed line starts below the badge */}
+        <line x1={CX} y1={46} x2={CX} y2={H}
           stroke="#374151" strokeWidth={3} strokeDasharray="8,4" opacity={0.5} />
-        <rect x={CX - 40} y={0} width={80} height={34} rx={8} fill="#F59E0B" />
-        <text x={CX} y={26} textAnchor="middle" fontSize={24} fill="#fff" fontWeight="bold">118</text>
 
-        {/* Dots on top of line */}
+        {/* Dots */}
         {dots.map((d, i) => (
           <circle key={i}
             cx={d.x} cy={d.y} r={DOT_R}
@@ -109,10 +106,14 @@ function View2({ tally, settings, mode = 'alliance' }) {
             style={{ transition: `fill 0.4s ease ${i * 0.001}s` }}
           />
         ))}
+
+        {/* 118 badge rendered after dots so it sits on top */}
+        <rect x={CX - 44} y={5} width={88} height={38} rx={8} fill="#F59E0B" />
+        <text x={CX} y={32} textAnchor="middle" fontSize={26} fill="#fff" fontWeight="bold">118</text>
       </svg>
 
       {/* Party totals */}
-      <div style={{ display: 'flex', gap: '8px 12px', justifyContent: 'center', flexWrap: 'wrap', paddingBottom: 10 }}>
+      <div style={{ display: 'flex', gap: '8px 12px', justifyContent: 'center', flexWrap: 'wrap', paddingBottom: 10, flexShrink: 0 }}>
         {sortedParties.map(p => {
           const cfg = partiesCfg[p]
           const tot = get(p)
