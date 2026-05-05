@@ -414,13 +414,12 @@ export default function Admin() {
   const settings = useSettings()
   const { tally } = useTally()
 
-  // Tally
-  const [manualData, setManualData] = useState({
-    'DMK+': { won: 0, leadingg: 0, vote_share: 0 },
-    'AIADMK+': { won: 0, leadingg: 0, vote_share: 0 },
-    'TVK': { won: 0, leadingg: 0, vote_share: 0 },
-    'Others': { won: 0, leadingg: 0, vote_share: 0 },
-  })
+  // Font settings
+  const [fontLarge, setFontLarge] = useState(52)
+  const [fontMedium, setFontMedium] = useState(22)
+  const [fontSmall, setFontSmall] = useState(13)
+  const [fontFamily, setFontFamily] = useState('Segoe UI')
+
   const [llmText, setLlmText] = useState('')
   const [mode, setMode] = useState('manual')
   const [loading, setLoading] = useState(false)
