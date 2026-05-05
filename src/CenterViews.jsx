@@ -30,16 +30,16 @@ function View1({ settings }) {
 }
 
 // View 2: Parliament chart - proper spacing + correct left-right coloring
-function View2({ tally, settings }) {
+function View2({ tally, settings, mode = 'alliance' }) {
   const { fs, fm, fsm, ff } = getComponentFonts(settings, 'center')
+  const partiesCfg = mode === 'individual' ? INDIVIDUAL_PARTIES : PARTY_DEFAULTS
 
   const get = p => { const d = tally.find(t => t.party === p); return d ? d.won + (d.leadingg || 0) : 0 }
-  const sortedParties = Object.keys(PARTY_DEFAULTS).filter(p => p !== 'Others').sort((a, b) => get(b) - get(a))
+  const sortedParties = Object.keys(partiesCfg).filter(p => mode === 'individual' || p !== 'Others').sort((a, b) => get(b) - get(a))
 
-  const COLORS = {
-    'DMK+': '#DC2626', 'AIADMK+': '#16A34A',
-    'TVK': '#D97706', 'Others': '#4B5563', 'pending': '#D1D5DB',
-  }
+  const COLORS = { 'pending': '#D1D5DB' }
+  Object.entries(partiesCfg).forEach(([p, cfg]) => { COLORS[p] = cfg.color })
+  if (mode === 'alliance') COLORS['Others'] = '#4B5563'
 
   // Build color list - highest party first (leftmost)
   const seatColors = []
@@ -110,7 +110,7 @@ function View2({ tally, settings }) {
       {/* Party totals */}
       <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
         {sortedParties.map(p => {
-          const cfg = PARTY_DEFAULTS[p]
+          const cfg = partiesCfg[p]
           const tot = get(p)
           const hasMaj = tot >= MAJORITY
           return (
@@ -211,17 +211,22 @@ function FlashView({ settings, viewNum, constituencies }) {
   )
 }
 
-export default function CenterViews() {
+export default function CenterViews({ mode = 'alliance' }) {
   const settings = useSettings()
   const { tally } = useTally()
   const [vIdx, setVIdx] = React.useState(1)
 
   React.useEffect(() => {
+    if (mode === 'individual') return;
     const iv = setInterval(() => {
       setVIdx(prev => (prev + 1) % 2)
     }, 10000)
     return () => clearInterval(iv)
-  }, [])
+  }, [mode])
+
+  if (mode === 'individual') {
+    return <View2 tally={tally} settings={settings} mode={mode} />
+  }
 
   return (
     <div style={{ height: '100%' }}>

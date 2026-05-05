@@ -108,18 +108,18 @@ export const PARTY_DEFAULTS = {
 }
 
 export const INDIVIDUAL_PARTIES = {
-  'TVK':     { color: '#D97706', label: 'தவெக',    short: 'TVK' },
-  'DMK':     { color: '#DC2626', label: 'திமுக',   short: 'DMK' },
-  'ADMK':    { color: '#16A34A', label: 'அதிமுக',  short: 'ADMK' },
-  'INC':     { color: '#3B82F6', label: 'காங்கிரஸ்', short: 'INC' },
-  'PMK':     { color: '#FACC15', label: 'பாமக',   short: 'PMK' },
-  'IUML':    { color: '#059669', label: 'முஸ்லிம் லீக்', short: 'IUML' },
-  'CPI':     { color: '#B91C1C', label: 'சிபிஐ',   short: 'CPI' },
-  'VCK':     { color: '#4F46E5', label: 'விசிக',   short: 'VCK' },
-  'CPI(M)':  { color: '#EF4444', label: 'சிபிஎம்',  short: 'CPM' },
-  'BJP':     { color: '#EA580C', label: 'பாஜக',   short: 'BJP' },
-  'DMDK':    { color: '#9D174D', label: 'தேமுதிக', short: 'DMDK' },
-  'AMMK':    { color: '#BE185D', label: 'அம்மக',   short: 'AMMK' },
+  'TVK':     { color: '#D97706', light: '#FEF3C7', label: 'தவெக',    short: 'TVK', photoKey: 'photo_tvk_ind', logoKey: 'logo_tvk_ind', logo: 'https://khivotiprmornlvmrhaw.supabase.co/storage/v1/object/public/logo/TVK.png' },
+  'DMK':     { color: '#DC2626', light: '#FEE2E2', label: 'திமுக',   short: 'DMK', photoKey: 'photo_dmk_ind', logoKey: 'logo_dmk_ind', logo: 'https://khivotiprmornlvmrhaw.supabase.co/storage/v1/object/public/logo/DMK.png' },
+  'ADMK':    { color: '#16A34A', light: '#DCFCE7', label: 'அதிமுக',  short: 'ADMK', photoKey: 'photo_admk_ind', logoKey: 'logo_admk_ind', logo: 'https://khivotiprmornlvmrhaw.supabase.co/storage/v1/object/public/logo/ADMK.png' },
+  'INC':     { color: '#3B82F6', light: '#DBEAFE', label: 'காங்கிரஸ்', short: 'INC', photoKey: 'photo_inc_ind', logoKey: 'logo_inc_ind' },
+  'PMK':     { color: '#FACC15', light: '#FEF9C3', label: 'பாமக',   short: 'PMK', photoKey: 'photo_pmk_ind', logoKey: 'logo_pmk_ind' },
+  'IUML':    { color: '#059669', light: '#D1FAE5', label: 'முஸ்லிம் லீக்', short: 'IUML', photoKey: 'photo_iuml_ind', logoKey: 'logo_iuml_ind' },
+  'CPI':     { color: '#B91C1C', light: '#FEE2E2', label: 'சிபிஐ',   short: 'CPI', photoKey: 'photo_cpi_ind', logoKey: 'logo_cpi_ind' },
+  'VCK':     { color: '#4F46E5', light: '#EEF2FF', label: 'விசிக',   short: 'VCK', photoKey: 'photo_vck_ind', logoKey: 'logo_vck_ind' },
+  'CPI(M)':  { color: '#EF4444', light: '#FEE2E2', label: 'சிபிஎம்',  short: 'CPM', photoKey: 'photo_cpm_ind', logoKey: 'logo_cpm_ind' },
+  'BJP':     { color: '#EA580C', light: '#FFEDD5', label: 'பாஜக',   short: 'BJP', photoKey: 'photo_bjp_ind', logoKey: 'logo_bjp_ind' },
+  'DMDK':    { color: '#9D174D', light: '#FCE7F3', label: 'தேமுதிக', short: 'DMDK', photoKey: 'photo_dmdk_ind', logoKey: 'logo_dmdk_ind' },
+  'AMMK':    { color: '#BE185D', light: '#FDF2F8', label: 'அம்மக',   short: 'AMMK', photoKey: 'photo_ammk_ind', logoKey: 'logo_ammk_ind' },
 }
 
 // Per-component font helper — falls back to global settings

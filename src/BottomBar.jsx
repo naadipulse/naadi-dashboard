@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useSettings, useTally, PARTY_DEFAULTS, AnimNum, Photo, MAJORITY, TOTAL, getComponentFonts } from './shared.jsx'
 
-const BOTTOM_PARTIES = PARTY_DEFAULTS
-
-export default function BottomBar() {
+export default function BottomBar({ mode = 'alliance' }) {
   const settings = useSettings()
   const { gT, totalDeclared } = useTally()
+  const partiesCfg = mode === 'individual' ? INDIVIDUAL_PARTIES : PARTY_DEFAULTS
   const [time, setTime] = useState(new Date())
   const [animationTick, setAnimationTick] = useState(0); // New state for animation trigger
 
@@ -61,14 +60,15 @@ export default function BottomBar() {
       </div>
 
       {/* Party boxes — sorted by votes, CSS animation, no state */}
-      {Object.entries(BOTTOM_PARTIES)
-        .filter(([p]) => p !== 'Others')
+      {Object.entries(partiesCfg)
+        .filter(([p]) => mode === 'individual' || p !== 'Others')
         .sort((a, b) => gT(b[0]) - gT(a[0]))
+        .slice(0, mode === 'individual' ? 6 : 3)
         .map(([p, cfg]) => {
         const tot = gT(p)
         const hasMaj = tot >= MAJORITY
-        const photoUrl = settings[PARTY_DEFAULTS[p].photoKey]
-        const partyLogo = settings[PARTY_DEFAULTS[p].logoKey] || PARTY_DEFAULTS[p].logo
+        const photoUrl = settings[cfg.photoKey]
+        const partyLogo = settings[cfg.logoKey] || cfg.logo
 
         return (
           <div

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { useSettings, useConstituencies, PARTY_DEFAULTS, getComponentFonts } from './shared.jsx'
+import { useSettings, useConstituencies, PARTY_DEFAULTS, INDIVIDUAL_PARTIES, getComponentFonts } from './shared.jsx'
 
 const DISTRICTS = [
   'சென்னை', 'திருவள்ளூர்', 'காஞ்சிபுரம்', 'செங்கல்பட்டு',
@@ -14,7 +14,7 @@ const DISTRICTS = [
   'கன்னியாகுமரி', 'திருவண்ணாமலை'
 ]
 
-export default function RightPanel() {
+export default function RightPanel({ mode = 'alliance' }) {
   const settings = useSettings()
   const constituencies = useConstituencies()
   const [slideIdx, setSlideIdx] = useState(0)
@@ -121,7 +121,7 @@ export default function RightPanel() {
           </div>
         ) : (
           currentSlide.items.map((c, i) => {
-            const lp = PARTY_DEFAULTS[c.leading_party] || null
+            const lp = PARTY_DEFAULTS[c.leading_party] || INDIVIDUAL_PARTIES[c.leading_party] || null
             const isWon = c.status === 'declared'
             return (
               <div key={c.id} style={{

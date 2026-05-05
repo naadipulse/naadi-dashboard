@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { useSettings, useTally, PARTY_DEFAULTS, Photo, AnimNum, getComponentFonts, MAJORITY, TOTAL } from './shared.jsx'
+import { useSettings, useTally, PARTY_DEFAULTS, INDIVIDUAL_PARTIES, Photo, AnimNum, getComponentFonts, MAJORITY, TOTAL } from './shared.jsx'
 
-export default function LeftPanel() {
+export default function LeftPanel({ mode = 'alliance' }) {
   const settings = useSettings()
   const { gW, gP, tally, gT } = useTally()
   const [animationTick, setAnimationTick] = useState(0)
@@ -16,8 +16,10 @@ export default function LeftPanel() {
     return () => clearInterval(interval)
   }, [])
 
-  const parties = ['DMK+', 'AIADMK+', 'TVK', 'Others']
-  const sortedParties = [...parties].sort((a, b) => gT(b) - gT(a))
+  const partiesCfg = mode === 'individual' ? INDIVIDUAL_PARTIES : PARTY_DEFAULTS
+  const parties = Object.keys(partiesCfg)
+  const sortedParties = [...parties].filter(p => gT(p) > 0).sort((a, b) => gT(b) - gT(a))
+  const topParties = mode === 'individual' ? sortedParties.slice(0, 5) : sortedParties.filter(p => p !== 'Others')
   const totalWon = tally.reduce((acc, t) => acc + (t.won || 0), 0)
 
   return (
@@ -38,8 +40,8 @@ export default function LeftPanel() {
         </div>
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {sortedParties.filter(p => p !== 'Others').map((p) => {
-            const cfg = PARTY_DEFAULTS[p]
+          {topParties.map((p) => {
+            const cfg = partiesCfg[p]
             const won = gW(p)
             const photoUrl = settings[cfg.photoKey]
             const isMaj = won >= MAJORITY
@@ -80,8 +82,8 @@ export default function LeftPanel() {
         </div>
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {sortedParties.map((p) => {
-            const cfg = PARTY_DEFAULTS[p]
+          {sortedParties.slice(0, 6).map((p) => {
+            const cfg = partiesCfg[p]
             const pct = gP(p)
             const photoUrl = settings[cfg.photoKey]
             return (

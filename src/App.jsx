@@ -7,64 +7,10 @@ import Admin from './Admin.jsx'
 import RightPanel from './RightPanel.jsx'
 import { useSettings, useTally, AnimNum, PARTY_DEFAULTS, INDIVIDUAL_PARTIES, MAJORITY } from './shared.jsx'
 
-function WinnersDashboard() {
-  const settings = useSettings()
-  const { tally } = useTally()
-  const ff = settings.font_family || 'Segoe UI'
-  
-  // Map tally data to individual party config, sort by total seats
-  const displayData = tally
-    .map(t => {
-      const cfg = INDIVIDUAL_PARTIES[t.party] || { color: '#4B5563', label: t.party, short: t.party };
-      return { ...t, ...cfg, total: t.won + (t.leadingg || 0) };
-    })
-    .filter(t => t.total > 0)
-    .sort((a, b) => b.total - a.total);
-
-  return (
-    <div style={{ 
-      width: '100vw', height: '100vh', background: '#0F172A', 
-      color: '#fff', display: 'flex', flexDirection: 'column', 
-      padding: '40px 60px', fontFamily: ff, overflow: 'hidden' 
-    }}>
-      <div style={{ textAlign: 'center', marginBottom: 50 }}>
-        <div style={{ fontSize: 16, color: '#38BDF8', fontWeight: 800, letterSpacing: 4, marginBottom: 8 }}>TAMIL NADU 2026</div>
-        <div style={{ fontSize: 56, fontWeight: 950, color: '#fff', marginBottom: 10 }}>கட்சி வாரியான தேர்தல் முடிவுகள்</div>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 20, alignItems: 'center' }}>
-          <div style={{ height: 2, width: 100, background: 'linear-gradient(90deg, transparent, #F59E0B)' }} />
-          <div style={{ fontSize: 20, color: '#94A3B8', fontWeight: 600 }}>மொத்த இடங்கள்: 234 | பெரும்பான்மை: {MAJORITY}</div>
-          <div style={{ height: 2, width: 100, background: 'linear-gradient(90deg, #F59E0B, transparent)' }} />
-        </div>
-      </div>
-
-      <div style={{ 
-        flex: 1, display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', 
-        gap: 25, overflowY: 'auto', paddingBottom: 40 
-      }}>
-        {displayData.map((p) => (
-          <div key={p.party} style={{ 
-            background: 'rgba(30, 41, 59, 0.7)', border: `4px solid ${p.color}`, 
-            borderRadius: 24, padding: '30px', display: 'flex', 
-            flexDirection: 'column', alignItems: 'center',
-            boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
-            backdropFilter: 'blur(10px)'
-          }}>
-            <div style={{ fontSize: 24, color: p.color, fontWeight: 900, marginBottom: 15 }}>{p.label}</div>
-            <div style={{ fontSize: 110, fontWeight: 950, color: '#fff', lineHeight: 0.9 }}>
-              <AnimNum val={p.total} color="#fff" size={110} font={ff} />
-            </div>
-            <div style={{ fontSize: 18, color: '#64748B', marginTop: 15, fontWeight: 800, textTransform: 'uppercase', letterSpacing: 2 }}>SEATS</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function FullDashboard() {
+function FullDashboard({ mode = 'alliance' }) {
   const settings = useSettings()
   const { gT, totalDeclared } = useTally()
+  const partiesCfg = mode === 'individual' ? INDIVIDUAL_PARTIES : PARTY_DEFAULTS
   const ff = settings.font_family || 'Segoe UI'
   const fm = parseInt(settings.font_medium) || 22
   const [scale, setScale] = useState(1)
@@ -125,7 +71,7 @@ function FullDashboard() {
             <div style={{ fontSize: 13, color: '#9CA3AF' }}>@naadipulse • தரவு மட்டுமே பேசுகிறது</div>
           </div>
           <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
-            {Object.entries(PARTY_DEFAULTS).filter(([p]) => p !== 'Others').sort((a, b) => gT(b[0]) - gT(a[0])).map(([p, cfg]) => (
+            {Object.entries(partiesCfg).filter(([p]) => mode === 'individual' || p !== 'Others').sort((a, b) => gT(b[0]) - gT(a[0])).slice(0, mode === 'individual' ? 6 : 3).map(([p, cfg]) => (
               <div key={p} style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 {(settings[cfg.logoKey] || cfg.logo) && (
                   <img src={settings[cfg.logoKey] || cfg.logo} alt="" style={{ height: 48, width: 'auto', marginBottom: 2 }} />
@@ -157,14 +103,14 @@ function FullDashboard() {
           padding: '10px 50px 10px 20px',
           minHeight: 0, overflow: 'hidden',
         }}>
-          <LeftPanel />
-          <CenterViews />
-          <RightPanel />
+          <LeftPanel mode={mode} />
+          <CenterViews mode={mode} />
+          <RightPanel mode={mode} />
         </div>
 
         {/* Bottom Bar */}
         <div style={{ height: 120, flexShrink: 0, padding: '0 60px 10px' }}>
-          <BottomBar />
+          <BottomBar mode={mode} />
         </div>
 
         {/* Subscribe Ticker */}
@@ -226,6 +172,6 @@ export default function App() {
   if (path === '/center') return <div style={{ background: 'transparent', height: '100vh', padding: 8 }}><CenterViews /></div>
   if (path === '/bottom') return <div style={{ background: 'transparent', height: 120 }}><BottomBar /></div>
   if (path === '/admin') return <Admin />
-  if (path === '/winners') return <WinnersDashboard />
-  return <FullDashboard />
+  if (path === '/winners') return <FullDashboard mode="individual" />
+  return <FullDashboard mode="alliance" />
 }
