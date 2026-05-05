@@ -113,9 +113,11 @@ function FullDashboard({ mode = 'alliance' }) {
         </div>
 
         {/* Bottom Bar */}
-        <div style={{ height: 120, flexShrink: 0, padding: '0 60px 10px' }}>
-          <BottomBar mode={mode} />
-        </div>
+        {mode === 'alliance' && (
+          <div style={{ height: 120, flexShrink: 0, padding: '0 60px 10px' }}>
+            <BottomBar mode={mode} />
+          </div>
+        )}
 
         {/* Subscribe Ticker */}
         <div style={{
