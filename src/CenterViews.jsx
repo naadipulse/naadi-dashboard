@@ -85,12 +85,18 @@ function View2({ tally, settings, mode = 'alliance' }) {
   }))
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', fontFamily: ff, background: '#fff', borderRadius: 14, padding: '10px 16px' }}>
-      <div style={{ fontSize: fm, fontWeight: 800, color: '#374151' }}>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', fontFamily: ff, background: '#fff', borderRadius: 14, padding: '10px 16px', overflow: 'hidden' }}>
+      <div style={{ fontSize: fm, fontWeight: 800, color: '#374151', flexShrink: 0 }}>
         🏛️ சட்டமன்றம் — 234 இடங்கள்
+        {mode === 'individual' && (
+          <div style={{ fontSize: fsm, fontWeight: 600, color: '#6B7280', marginTop: 4 }}>
+            கட்சி வாரியாக
+          </div>
+        )}
       </div>
 
-      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ flex: 1 }}>
+      {/* Ensure SVG takes available space, but allows content below it */}
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H
         {/* 118 line behind dots */}
         <line x1={CX} y1={2} x2={CX} y2={H}
           stroke="#374151" strokeWidth={2} strokeDasharray="7,4" opacity={0.4} />

@@ -82,13 +82,13 @@ export default function RightPanel({ mode = 'alliance' }) {
             const logoUrl = settings[cfg.logoKey] || cfg.logo
             return (
               <div key={`pct-${p}`} style={{
-                background: '#fff', borderRadius: 10, padding: '0 15px 0 0',
+                background: '#fff', borderRadius: 10, padding: '0 10px 0 0',
                 borderLeft: `6px solid ${cfg.color}`,
                 boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
-                display: 'flex', alignItems: 'center', gap: 12, flex: '0 0 85px', overflow: 'hidden'
+                display: 'flex', alignItems: 'center', gap: 10, flex: 1, overflow: 'hidden'
               }}>
-                <div style={{ width: 85, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F8FAFC' }}>
-                   <img src={logoUrl} alt={cfg.short} style={{ maxHeight: '80%', maxWidth: '80%', objectFit: 'contain' }} />
+                <div style={{ width: 60, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F8FAFC' }}>
+                   <img src={logoUrl} alt={cfg.short} style={{ maxHeight: '70%', maxWidth: '70%', objectFit: 'contain' }} />
                 </div>
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '4px 0' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
