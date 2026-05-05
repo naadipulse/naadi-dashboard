@@ -181,7 +181,7 @@ export default function RightPanel({ mode = 'alliance' }) {
             const isWon = c.status === 'declared'
             return (
               <div key={c.id} style={{
-                gridTemplateColumns: '1fr 70px 80px',
+                gridTemplateColumns: '1fr 70px 80px', // This line is duplicated and can be removed.
                 display: 'grid',
                 padding: '8px 12px',
                 borderBottom: '1px solid #F3F4F6',

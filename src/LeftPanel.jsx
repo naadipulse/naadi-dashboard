@@ -19,7 +19,7 @@ export default function LeftPanel({ mode = 'alliance' }) {
   const partiesCfg = mode === 'individual' ? INDIVIDUAL_PARTIES : PARTY_DEFAULTS
   const parties = Object.keys(partiesCfg)
   const sortedParties = [...parties].filter(p => gT(p) > 0).sort((a, b) => gT(b) - gT(a))
-  const topParties = mode === 'individual' ? sortedParties : sortedParties.filter(p => p !== 'Others')
+  const topParties = mode === 'individual' ? sortedParties : sortedParties.filter(p => p !== 'Others').slice(0, 4) // Limit to top 4 for alliance mode
   const totalWon = tally.reduce((acc, t) => acc + (t.won || 0), 0)
 
   return (
@@ -33,7 +33,7 @@ export default function LeftPanel({ mode = 'alliance' }) {
           borderRadius: 8, textAlign: 'center', flexShrink: 0,
           boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
         }}>
-          🏆 வெற்றி : {totalWon}/{TOTAL}
+          🏆 வெற்றி : {totalDeclared}/{TOTAL}
         </div>
 
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
