@@ -101,10 +101,18 @@ export function Photo({ photoUrl, fallback, color, size = 56, style = {} }) {
 }
 
 export const PARTY_DEFAULTS = {
-  'DMK+':    { color: '#DC2626', light: '#FEE2E2', label: 'திமுக+',  short: 'DMK',  leader: 'மு.க.ஸ்டாலின்', photoKey: 'photo_dmk', logoKey: 'logo_dmk', logo: 'https://khivotiprmornlvmrhaw.supabase.co/storage/v1/object/public/logo/DMK.png' },
-  'AIADMK+': { color: '#16A34A', light: '#DCFCE7', label: 'அதிமுக+', short: 'ADMK', leader: 'எடப்பாடி',       photoKey: 'photo_aiadmk', logoKey: 'logo_aiadmk', logo: 'https://khivotiprmornlvmrhaw.supabase.co/storage/v1/object/public/logo/ADMK.png' },
   'TVK':     { color: '#D97706', light: '#FEF3C7', label: 'தவெக',    short: 'TVK',  leader: 'விஜய்',           photoKey: 'photo_tvk', logoKey: 'logo_tvk', logo: 'https://khivotiprmornlvmrhaw.supabase.co/storage/v1/object/public/logo/TVK.png' },
-  'Others':  { color: '#7C3AED', light: '#EDE9FE', label: 'நாதக',  short: 'NTK',  leader: 'சீமான்',          photoKey: 'photo_others', logoKey: 'logo_others', logo: 'https://khivotiprmornlvmrhaw.supabase.co/storage/v1/object/public/logo/NTK.png' },
+  'DMK':     { color: '#DC2626', light: '#FEE2E2', label: 'திமுக',   short: 'DMK',  leader: 'மு.க.ஸ்டாலின்', photoKey: 'photo_dmk', logoKey: 'logo_dmk', logo: 'https://khivotiprmornlvmrhaw.supabase.co/storage/v1/object/public/logo/DMK.png' },
+  'ADMK':    { color: '#16A34A', light: '#DCFCE7', label: 'அதிமுக',  short: 'ADMK', leader: 'எடப்பாடி',       photoKey: 'photo_aiadmk', logoKey: 'logo_aiadmk', logo: 'https://khivotiprmornlvmrhaw.supabase.co/storage/v1/object/public/logo/ADMK.png' },
+  'INC':     { color: '#3B82F6', light: '#DBEAFE', label: 'காங்கிரஸ்', short: 'INC',  photoKey: 'photo_others' },
+  'PMK':     { color: '#FACC15', light: '#FEF9C3', label: 'பாமக',   short: 'PMK',  photoKey: 'photo_others' },
+  'IUML':    { color: '#059669', light: '#D1FAE5', label: 'முஸ்லிம் லீக்', short: 'IUML', photoKey: 'photo_others' },
+  'CPI':     { color: '#B91C1C', light: '#FEE2E2', label: 'சிபிஐ',   short: 'CPI',  photoKey: 'photo_others' },
+  'VCK':     { color: '#4F46E5', light: '#EEF2FF', label: 'விசிக',   short: 'VCK',  photoKey: 'photo_others' },
+  'CPI(M)':  { color: '#EF4444', light: '#FEE2E2', label: 'சிபிஎம்',  short: 'CPM',  photoKey: 'photo_others' },
+  'BJP':     { color: '#EA580C', light: '#FFEDD5', label: 'பாஜக',   short: 'BJP',  photoKey: 'photo_others' },
+  'DMDK':    { color: '#9D174D', light: '#FCE7F3', label: 'தேமுதிக', short: 'DMDK', photoKey: 'photo_others' },
+  'AMMK':    { color: '#BE185D', light: '#FDF2F8', label: 'அம்மக',   short: 'AMMK', photoKey: 'photo_others' },
 }
 
 // Per-component font helper — falls back to global settings

@@ -7,6 +7,31 @@ import Admin from './Admin.jsx'
 import RightPanel from './RightPanel.jsx'
 import { useSettings, useTally, AnimNum, PARTY_DEFAULTS } from './shared.jsx'
 
+function WinnersDashboard() {
+  const settings = useSettings()
+  const { gT } = useTally()
+  const ff = settings.font_family || 'Segoe UI'
+  const winners = Object.entries(PARTY_DEFAULTS).filter(([p]) => gT(p) > 0).sort((a, b) => gT(b[0]) - gT(a[0]))
+
+  return (
+    <div style={{ width: '100vw', height: '100vh', background: '#0F172A', color: '#fff', display: 'flex', flexDirection: 'column', padding: 40, fontFamily: ff }}>
+      <div style={{ textAlign: 'center', marginBottom: 40 }}>
+        <div style={{ fontSize: 48, fontWeight: 900, color: '#F59E0B' }}>2026 தமிழ்நாடு தேர்தல் முடிவுகள்</div>
+        <div style={{ fontSize: 24, color: '#94A3B8' }}>தனிநபர் கட்சி பலம் (மொத்த இடங்கள்: 234 | பெரும்பான்மை: 118)</div>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20, flex: 1, overflowY: 'auto' }}>
+        {winners.map(([p, cfg]) => (
+          <div key={p} style={{ background: '#1E293B', border: `3px solid ${cfg.color}`, borderRadius: 20, padding: 30, display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: '0 10px 30px rgba(0,0,0,0.4)' }}>
+            <div style={{ fontSize: 24, color: cfg.color, fontWeight: 800, marginBottom: 10 }}>{cfg.label}</div>
+            <div style={{ fontSize: 100, fontWeight: 950, color: '#fff', lineHeight: 1 }}>{gT(p)}</div>
+            <div style={{ fontSize: 18, color: '#64748B', marginTop: 15, fontWeight: 700 }}>இடங்கள்</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function FullDashboard() {
   const settings = useSettings()
   const { gT, totalDeclared } = useTally()
@@ -171,5 +196,6 @@ export default function App() {
   if (path === '/center') return <div style={{ background: 'transparent', height: '100vh', padding: 8 }}><CenterViews /></div>
   if (path === '/bottom') return <div style={{ background: 'transparent', height: 120 }}><BottomBar /></div>
   if (path === '/admin') return <Admin />
+  if (path === '/winners') return <WinnersDashboard />
   return <FullDashboard />
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSettings, useTally, PARTY_DEFAULTS, MAJORITY, getComponentFonts } from './shared.jsx'
 
-const VIEW_LABELS = ['வீடியோ', 'சட்டமன்றம்', 'மக்களின் விருப்பம் 1', 'மக்களின் விருப்பம் 2']
+const VIEW_LABELS = ['வீடியோ', 'சட்டமன்றம்', 'கட்சி வாரியாக', 'மக்களின் விருப்பம் 1', 'மக்களின் விருப்பம் 2']
 
 // View 1: மும்முனை போட்டி image
 function View1({ settings }) {
@@ -211,13 +211,46 @@ function FlashView({ settings, viewNum, constituencies }) {
   )
 }
 
+// View 5: Full individual party-wise breakdown
+function View5({ tally, settings }) {
+  const { fm, fsm, ff } = getComponentFonts(settings, 'center')
+  const get = p => { const d = tally.find(t => t.party === p); return d ? d.won + (d.leadingg || 0) : 0 }
+  const winners = Object.entries(PARTY_DEFAULTS).filter(([p]) => get(p) > 0).sort((a, b) => get(b[0]) - get(a[0]))
+
+  return (
+    <div style={{ height: '100%', background: '#fff', borderRadius: 14, padding: 20, fontFamily: ff, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ fontSize: fm, fontWeight: 800, color: '#374151', textAlign: 'center', marginBottom: 20 }}>
+        📊 தனிநபர் கட்சி வாரியான முடிவுகள் (Individual Party Strength)
+      </div>
+      <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, overflowY: 'auto' }}>
+        {winners.map(([p, cfg]) => (
+          <div key={p} style={{ border: `2px solid ${cfg.color}`, borderRadius: 10, padding: '12px 10px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: cfg.light || '#f9fafb' }}>
+            <div style={{ fontSize: fsm, color: cfg.color, fontWeight: 800, textAlign: 'center' }}>{cfg.label}</div>
+            <div style={{ fontSize: 36, fontWeight: 950, color: cfg.color, lineHeight: 1 }}>{get(p)}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function CenterViews() {
   const settings = useSettings()
   const { tally } = useTally()
+  const [vIdx, setVIdx] = React.useState(1)
+
+  React.useEffect(() => {
+    const iv = setInterval(() => {
+      setVIdx(prev => (prev + 1) % 3) // Rotate through View1, View2, View5
+    }, 10000)
+    return () => clearInterval(iv)
+  }, [])
 
   return (
     <div style={{ height: '100%' }}>
-      <View2 tally={tally} settings={settings} />
+      {vIdx === 1 && <View2 tally={tally} settings={settings} />}
+      {vIdx === 2 && <View5 tally={tally} settings={settings} />}
+      {vIdx === 0 && <View1 settings={settings} />}
     </div>
   )
 }

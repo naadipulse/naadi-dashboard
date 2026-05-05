@@ -64,9 +64,10 @@ export default function BottomBar() {
       </div>
 
       {/* Party boxes — sorted by votes, CSS animation, no state */}
-      {Object.entries(BOTTOM_PARTIES)
-        .filter(([p]) => p !== 'Others')
+      {Object.entries(PARTY_DEFAULTS)
+        .filter(([p]) => gT(p) > 0)
         .sort((a, b) => gT(b[0]) - gT(a[0]))
+        .slice(0, 6) // Show top 6 to prevent layout break
         .map(([p, cfg]) => {
         const tot = gT(p)
         const hasMaj = tot >= MAJORITY
