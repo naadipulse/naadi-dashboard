@@ -46,9 +46,9 @@ function View2({ tally, settings, mode = 'alliance' }) {
   sortedParties.forEach(p => { for (let i = 0; i < get(p); i++) seatColors.push(COLORS[p]) })
   while (seatColors.length < 234) seatColors.push(COLORS['pending'])
 
-  const W = 920, H = 460
-  const CX = W / 2, CY = H - 5
-  const DOT_R = 8
+  const W = 920, H = 380
+  const CX = W / 2, CY = H - 10
+  const DOT_R = 7
 
   // Rows: innermost first, proportional count per row
   const ROWS = [
@@ -96,25 +96,25 @@ function View2({ tally, settings, mode = 'alliance' }) {
       </div>
 
       {/* Ensure SVG takes available space, but allows content below it */}
-      <svg width={W} height={H} viewBox={`0 0 ${W} ${H
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ flexShrink: 0 }}>
         {/* 118 line behind dots */}
-        <line x1={CX} y1={2} x2={CX} y2={H}
+        <line x1={CX} y1={10} x2={CX} y2={H}
           stroke="#374151" strokeWidth={2} strokeDasharray="7,4" opacity={0.4} />
-        <rect x={CX - 45} y={2} width={90} height={40} rx={8} fill="#F59E0B" />
-        <text x={CX} y={31} textAnchor="middle" fontSize={28} fill="#fff" fontWeight="bold">118</text>
+        <rect x={CX - 35} y={10} width={70} height={30} rx={6} fill="#F59E0B" />
+        <text x={CX} y={32} textAnchor="middle" fontSize={22} fill="#fff" fontWeight="bold">118</text>
 
         {/* Dots on top of line */}
         {dots.map((d, i) => (
           <circle key={i}
             cx={d.x} cy={d.y} r={DOT_R}
             fill={d.color}
-            style={{ transition: `fill 0.6s ease ${i * 0.002}s` }}
+            style={{ transition: `fill 0.4s ease ${i * 0.001}s` }}
           />
         ))}
       </svg>
 
       {/* Party totals */}
-      <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: '8px 12px', justifyContent: 'center', flexWrap: 'wrap', paddingBottom: 10 }}>
         {sortedParties.map(p => {
           const cfg = partiesCfg[p]
           const tot = get(p)

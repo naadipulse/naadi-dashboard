@@ -39,7 +39,7 @@ export default function LeftPanel({ mode = 'alliance' }) {
           </span>
         </div>
 
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6, overflowY: 'auto' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
           {topParties.map((p) => {
             const cfg = partiesCfg[p]
             const won = gW(p)
@@ -51,10 +51,10 @@ export default function LeftPanel({ mode = 'alliance' }) {
                 background: cfg.color, borderRadius: 10, padding: '0 15px 0 0',
                 display: 'flex', alignItems: 'center', gap: 10, color: '#fff',
                 position: 'relative', overflow: 'hidden', flex: 1,
-                position: 'relative', overflow: 'hidden', flex: mode === 'individual' ? '0 0 90px' : 1,
                 boxShadow: isMaj ? `0 0 15px ${cfg.color}` : '0 2px 6px rgba(0,0,0,0.1)',
               }}>
-                <Photo photoUrl={photoUrl} fallback={cfg.short} color="#fff" size={90} style={{ height: '100%', width: 85, zIndex: 1, objectFit: 'cover' }} />
+                <Photo photoUrl={photoUrl} fallback={cfg.short} color="#fff" size={mode === 'individual' ? 70 : 90} 
+                  style={{ height: '100%', width: mode === 'individual' ? 70 : 85, zIndex: 1, objectFit: 'cover' }} />
                 <div style={{ zIndex: 1, flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <div style={{ fontSize: fm + 4, fontWeight: 900 }}>{cfg.label}</div>
                   <div key={`w-${won}-${animationTick}`} style={{

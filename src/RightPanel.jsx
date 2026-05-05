@@ -75,19 +75,19 @@ export default function RightPanel({ mode = 'alliance' }) {
         }}>
           📊 வாக்கு சதவீதம் (Vote %)
         </div>
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8, padding: 12, overflowY: 'auto' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6, padding: '8px 12px' }}>
           {sortedParties.map((p) => {
             const cfg = partiesCfg[p]
             const pct = gP(p)
             const logoUrl = settings[cfg.logoKey] || cfg.logo
             return (
               <div key={`pct-${p}`} style={{
-                background: '#fff', borderRadius: 10, padding: '0 10px 0 0',
+                background: '#fff', borderRadius: 8, padding: '0 10px 0 0',
                 borderLeft: `6px solid ${cfg.color}`,
                 boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
-                display: 'flex', alignItems: 'center', gap: 10, flex: 1, overflow: 'hidden'
+                display: 'flex', alignItems: 'center', gap: 10, flex: 1, overflow: 'hidden', minHeight: 0
               }}>
-                <div style={{ width: 60, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F8FAFC' }}>
+                <div style={{ width: 50, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F8FAFC', flexShrink: 0 }}>
                    <img src={logoUrl} alt={cfg.short} style={{ maxHeight: '70%', maxWidth: '70%', objectFit: 'contain' }} />
                 </div>
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '4px 0' }}>

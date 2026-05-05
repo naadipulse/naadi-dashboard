@@ -19,7 +19,6 @@ function ConstituenciesTab({ allConstituencies, loading, setLoading, msg, setMsg
     'DMK': 'DMK+', 'திமுக': 'DMK+', 'DMK+': 'DMK+',
     'AIADMK': 'AIADMK+', 'அதிமுக': 'AIADMK+', 'AIADMK+': 'AIADMK+', 'ADMK': 'AIADMK+',
     'TVK': 'TVK', 'தவெக': 'TVK',
-    'NTK': 'Others', 'நாதக': 'Others', 'Others': 'Others',
   }
 
   // Parse constituency-wise ECI data
@@ -681,7 +680,7 @@ export default function Admin() {
           {mode === 'manual' && (
             <>
               <div style={{ fontSize: 13, color: '#F59E0B', fontWeight: 800, marginBottom: 10, borderBottom: '1px solid #334155', paddingBottom: 5 }}>Alliance Tally</div>
-              {Object.entries(PARTY_DEFAULTS).map(([party, cfg]) => (
+              {Object.entries(PARTY_DEFAULTS).filter(([p]) => p !== 'Others').map(([party, cfg]) => (
                 <div key={party} style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 1fr 1fr', gap: 10, marginBottom: 12, alignItems: 'center' }}>
                   <div style={{ fontSize: 16, fontWeight: 700, color: cfg.color }}>{cfg.label}</div>
                   <div>
@@ -980,7 +979,6 @@ export default function Admin() {
               { key: 'logo_dmk', label: 'DMK Logo', color: '#DC2626' },
               { key: 'logo_aiadmk', label: 'ADMK Logo', color: '#16A34A' },
               { key: 'logo_tvk', label: 'TVK Logo', color: '#D97706' },
-              { key: 'logo_others', label: 'NTK Logo', color: '#7C3AED' },
             ].map(({ key, label, color }) => (
               <div key={key} style={{ marginBottom: 12, display: 'flex', gap: 12, alignItems: 'center' }}>
                 <div style={{ width: 40, height: 40, background: '#1E293B', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
@@ -1003,7 +1001,6 @@ export default function Admin() {
             { key: 'photo_dmk', label: 'திமுக+ (Stalin)', color: '#DC2626' },
             { key: 'photo_aiadmk', label: 'அதிமுக+ (Edappadi)', color: '#16A34A' },
             { key: 'photo_tvk', label: 'தவெக (Vijay)', color: '#D97706' },
-            { key: 'photo_others', label: 'நாதக (Seeman)', color: '#7C3AED' },
           ].map(({ key, label, color }) => (
             <div key={key} style={{ marginBottom: 16, display: 'flex', gap: 12, alignItems: 'center' }}>
               <div style={{ width: 52, height: 52, borderRadius: '50%', overflow: 'hidden', border: `2px solid ${color}`, flexShrink: 0, background: color + '22', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
