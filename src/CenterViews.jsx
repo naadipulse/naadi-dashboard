@@ -52,13 +52,13 @@ function View2({ tally, settings, mode = 'alliance' }) {
 
   // Rows: innermost first, proportional count per row
   const ROWS = [
-    { r: 80,  count: 17 },
-    { r: 120, count: 24 },
-    { r: 160, count: 31 },
-    { r: 200, count: 38 },
-    { r: 240, count: 44 },
-    { r: 280, count: 50 },
-    { r: 320, count: 30 },
+    { r: 75,  count: 17 },
+    { r: 110, count: 24 },
+    { r: 145, count: 31 },
+    { r: 180, count: 38 },
+    { r: 215, count: 44 },
+    { r: 255, count: 50 },
+    { r: 295, count: 30 },
   ]
   // Total = 17+24+31+38+44+50+30 = 234 ✅
 
