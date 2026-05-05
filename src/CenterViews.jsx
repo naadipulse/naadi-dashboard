@@ -47,18 +47,18 @@ function View2({ tally, settings, mode = 'alliance' }) {
   while (seatColors.length < 234) seatColors.push(COLORS['pending'])
 
   const W = 920, H = 380
-  const CX = W / 2, CY = H - 10
+  const CX = W / 2, CY = H - 15
   const DOT_R = 7
 
   // Rows: innermost first, proportional count per row
   const ROWS = [
-    { r: 80,  count: 17 },
-    { r: 128, count: 24 },
-    { r: 176, count: 31 },
-    { r: 224, count: 38 },
-    { r: 272, count: 44 },
-    { r: 324, count: 50 },
-    { r: 372, count: 30 },
+    { r: 70,  count: 17 },
+    { r: 110, count: 24 },
+    { r: 150, count: 31 },
+    { r: 190, count: 38 },
+    { r: 230, count: 44 },
+    { r: 275, count: 50 },
+    { r: 320, count: 30 },
   ]
   // Total = 17+24+31+38+44+50+30 = 234 ✅
 
@@ -85,23 +85,21 @@ function View2({ tally, settings, mode = 'alliance' }) {
   }))
 
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', fontFamily: ff, background: '#fff', borderRadius: 14, padding: '10px 16px', overflow: 'hidden' }}>
-      <div style={{ fontSize: fm, fontWeight: 800, color: '#374151', flexShrink: 0 }}>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', fontFamily: ff, background: '#fff', borderRadius: 14, padding: '10px 16px', overflow: 'hidden', textAlign: 'center' }}>
+      <div style={{ fontSize: fm, fontWeight: 800, color: '#374151', flexShrink: 0, lineHeight: 1.2, width: '100%', textAlign: 'left', paddingLeft: 10 }}>
         🏛️ சட்டமன்றம் — 234 இடங்கள்
-        {mode === 'individual' && (
-          <div style={{ fontSize: fsm, fontWeight: 600, color: '#6B7280', marginTop: 4 }}>
-            கட்சி வாரியாக
-          </div>
-        )}
+        <div style={{ fontSize: fm + 4, fontWeight: 700, color: '#6B7280', marginTop: 4 }}>
+          கட்சி வாரியாக
+        </div>
       </div>
 
       {/* Ensure SVG takes available space, but allows content below it */}
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{ flexShrink: 0 }}>
         {/* 118 line behind dots */}
-        <line x1={CX} y1={10} x2={CX} y2={H}
+        <line x1={CX} y1={2} x2={CX} y2={H}
           stroke="#374151" strokeWidth={2} strokeDasharray="7,4" opacity={0.4} />
-        <rect x={CX - 35} y={10} width={70} height={30} rx={6} fill="#F59E0B" />
-        <text x={CX} y={32} textAnchor="middle" fontSize={22} fill="#fff" fontWeight="bold">118</text>
+        <rect x={CX - 35} y={2} width={70} height={30} rx={6} fill="#F59E0B" />
+        <text x={CX} y={24} textAnchor="middle" fontSize={22} fill="#fff" fontWeight="bold">118</text>
 
         {/* Dots on top of line */}
         {dots.map((d, i) => (
