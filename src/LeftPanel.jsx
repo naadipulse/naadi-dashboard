@@ -71,6 +71,7 @@ export default function LeftPanel({ mode = 'alliance' }) {
       </div>
 
       {/* SECTION 2: VOTE SHARE (%) */}
+      {mode === 'alliance' && (
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
         <div style={{
           fontSize: fm - 4, fontWeight: 800, color: '#fff',
@@ -116,6 +117,7 @@ export default function LeftPanel({ mode = 'alliance' }) {
           })}
         </div>
       </div>
+      )}
 
       <style>{`
         @keyframes numFlip {

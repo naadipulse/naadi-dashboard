@@ -52,47 +52,51 @@ function FullDashboard({ mode = 'alliance' }) {
       }}>
 
         {/* Top Bar */}
-        <div style={{ flexShrink: 0 }}>
+        {mode === 'alliance' && (
+          <div style={{ flexShrink: 0 }}>
           <TopBar />
         </div>
+        )}
 
         {/* Naadi Header */}
-        <div style={{
-          background: 'rgba(255,255,255,0.95)',
-          padding: '8px 60px',
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
-          borderBottom: '2px solid #E5E7EB', flexShrink: 0,
-        }}>
-          <div>
-            <div style={{ fontSize: 26, fontWeight: 900, background: 'linear-gradient(90deg,#F59E0B,#DC2626)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              நாடி | NAADI
-            </div>
-            <div style={{ fontSize: 13, color: '#9CA3AF' }}>@naadipulse • தரவு மட்டுமே பேசுகிறது</div>
-          </div>
-          <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
-            {Object.entries(partiesCfg).filter(([p]) => mode === 'individual' || p !== 'Others').sort((a, b) => gT(b[0]) - gT(a[0])).slice(0, mode === 'individual' ? 6 : 3).map(([p, cfg]) => (
-              <div key={p} style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                {(settings[cfg.logoKey] || cfg.logo) && (
-                  <img src={settings[cfg.logoKey] || cfg.logo} alt="" style={{ height: 48, width: 'auto', marginBottom: 2 }} />
-                )}
-                <div style={{ fontSize: 13, color: cfg.color, fontWeight: 700 }}>{cfg.short}</div>
-                <AnimNum val={gT(p)} color={cfg.color} size={30} font={ff} />
+        {mode === 'alliance' && (
+          <div style={{
+            background: 'rgba(255,255,255,0.95)',
+            padding: '8px 60px',
+            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
+            borderBottom: '2px solid #E5E7EB', flexShrink: 0,
+          }}>
+            <div>
+              <div style={{ fontSize: 26, fontWeight: 900, background: 'linear-gradient(90deg,#F59E0B,#DC2626)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                நாடி | NAADI
               </div>
-            ))}
-            <div style={{ width: 1, height: 36, background: '#E5E7EB' }} />
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 13, color: '#6B7280' }}>முடிவு</div>
-              <div style={{ fontSize: 26, fontWeight: 900, color: '#F59E0B' }}>
-                {totalDeclared}<span style={{ fontSize: 14, color: '#9CA3AF' }}>/234</span>
+              <div style={{ fontSize: 13, color: '#9CA3AF' }}>@naadipulse • தரவு மட்டுமே பேசுகிறது</div>
+            </div>
+            <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+              {Object.entries(partiesCfg).filter(([p]) => mode === 'individual' || p !== 'Others').sort((a, b) => gT(b[0]) - gT(a[0])).slice(0, mode === 'individual' ? 6 : 3).map(([p, cfg]) => (
+                <div key={p} style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  {(settings[cfg.logoKey] || cfg.logo) && (
+                    <img src={settings[cfg.logoKey] || cfg.logo} alt="" style={{ height: 48, width: 'auto', marginBottom: 2 }} />
+                  )}
+                  <div style={{ fontSize: 13, color: cfg.color, fontWeight: 700 }}>{cfg.short}</div>
+                  <AnimNum val={gT(p)} color={cfg.color} size={30} font={ff} />
+                </div>
+              ))}
+              <div style={{ width: 1, height: 36, background: '#E5E7EB' }} />
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 13, color: '#6B7280' }}>முடிவு</div>
+                <div style={{ fontSize: 26, fontWeight: 900, color: '#F59E0B' }}>
+                  {totalDeclared}<span style={{ fontSize: 14, color: '#9CA3AF' }}>/234</span>
+                </div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 13, color: '#6B7280' }}>பெரும்பான்மை</div>
+                <div style={{ fontSize: 26, fontWeight: 900, color: '#DC2626' }}>118</div>
               </div>
             </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 13, color: '#6B7280' }}>பெரும்பான்மை</div>
-              <div style={{ fontSize: 26, fontWeight: 900, color: '#DC2626' }}>118</div>
-            </div>
           </div>
-        </div>
+        )}
 
         {/* Main 3-col content */}
         <div style={{

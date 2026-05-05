@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { useSettings, useConstituencies, PARTY_DEFAULTS, INDIVIDUAL_PARTIES, getComponentFonts } from './shared.jsx'
+import { useSettings, useConstituencies, useTally, PARTY_DEFAULTS, INDIVIDUAL_PARTIES, Photo, getComponentFonts } from './shared.jsx'
 
 const DISTRICTS = [
   'சென்னை', 'திருவள்ளூர்', 'காஞ்சிபுரம்', 'செங்கல்பட்டு',
@@ -17,6 +17,7 @@ const DISTRICTS = [
 export default function RightPanel({ mode = 'alliance' }) {
   const settings = useSettings()
   const constituencies = useConstituencies()
+  const { gP, gT } = useTally()
   const [slideIdx, setSlideIdx] = useState(0)
   const [fade, setFade] = useState(true)
 
@@ -55,6 +56,61 @@ export default function RightPanel({ mode = 'alliance' }) {
   }, [slides.length])
 
   const { fs, fm, fsm, ff } = getComponentFonts(settings, 'right')
+
+  if (mode === 'individual') {
+    const partiesCfg = INDIVIDUAL_PARTIES
+    const sortedParties = Object.keys(partiesCfg).filter(p => gT(p) > 0).sort((a, b) => gT(b) - gT(a))
+
+    return (
+      <div style={{
+        fontFamily: ff, display: 'flex', flexDirection: 'column',
+        height: '100%', overflow: 'hidden',
+        background: 'rgba(255,255,255,0.95)', borderRadius: 14,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+      }}>
+        <div style={{
+          fontSize: fm, fontWeight: 800, color: '#fff',
+          padding: '12px', background: '#1E293B',
+          borderRadius: '14px 14px 0 0', textAlign: 'center',
+        }}>
+          📊 வாக்கு சதவீதம் (Vote %)
+        </div>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8, padding: 12 }}>
+          {sortedParties.map((p) => {
+            const cfg = partiesCfg[p]
+            const pct = gP(p)
+            const logoUrl = settings[cfg.logoKey] || cfg.logo
+            return (
+              <div key={`pct-${p}`} style={{
+                background: '#fff', borderRadius: 10, padding: '0 15px 0 0',
+                borderLeft: `6px solid ${cfg.color}`,
+                boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+                display: 'flex', alignItems: 'center', gap: 12, flex: 1, overflow: 'hidden'
+              }}>
+                <div style={{ width: 85, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F8FAFC' }}>
+                   <img src={logoUrl} alt={cfg.short} style={{ maxHeight: '80%', maxWidth: '80%', objectFit: 'contain' }} />
+                </div>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '4px 0' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ fontSize: fm, fontWeight: 900, color: cfg.color }}>{cfg.label}</div>
+                    <div style={{ fontSize: fm + 2, fontWeight: 900, color: '#111827' }}>
+                      {pct.toFixed(2)}<span style={{ fontSize: fsm, marginLeft: 1, color: '#64748B' }}>%</span>
+                    </div>
+                  </div>
+                  <div style={{ height: 8, background: '#F1F5F9', borderRadius: 4, marginTop: 4, overflow: 'hidden' }}>
+                    <div style={{
+                      width: `${pct}%`, height: '100%', background: cfg.color,
+                      transition: 'width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                    }} />
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    )
+  }
 
   const currentSlide = slides[slideIdx] || { district: DISTRICTS[0], items: [], page: 1, total: 1, all: [] }
   const activeDistrictIdx = DISTRICTS.indexOf(currentSlide.district)
