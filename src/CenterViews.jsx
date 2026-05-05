@@ -47,18 +47,18 @@ function View2({ tally, settings, mode = 'alliance' }) {
   while (seatColors.length < 234) seatColors.push(COLORS['pending'])
 
   const W = 920, H = 380
-  const CX = W / 2, CY = H - 10
+  const CX = W / 2, CY = H - 5
   const DOT_R = 9
 
   // Rows: innermost first, proportional count per row
   const ROWS = [
-    { r: 75,  count: 17 },
-    { r: 110, count: 24 },
-    { r: 145, count: 31 },
-    { r: 180, count: 38 },
-    { r: 215, count: 44 },
-    { r: 255, count: 50 },
-    { r: 295, count: 30 },
+    { r: 105, count: 17 },
+    { r: 140, count: 24 },
+    { r: 175, count: 31 },
+    { r: 210, count: 38 },
+    { r: 245, count: 44 },
+    { r: 280, count: 50 },
+    { r: 315, count: 30 },
   ]
   // Total = 17+24+31+38+44+50+30 = 234 ✅
 
