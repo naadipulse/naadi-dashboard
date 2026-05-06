@@ -306,6 +306,7 @@ function PartyWisePage() {
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'center',
+                      alignItems: isRightColumn ? 'flex-start' : 'flex-end',
                     }}>
                       <div style={{
                         fontSize: 42,
@@ -314,6 +315,8 @@ function PartyWisePage() {
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
+                        textAlign: isRightColumn ? 'left' : 'right',
+                        maxWidth: '100%',
                       }}>
                         {p}
                       </div>
