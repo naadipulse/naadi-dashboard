@@ -272,11 +272,12 @@ function PartyWisePage() {
                     style={{
                       background: cfg.color,
                       borderRadius: 14,
-                      padding: 0,
+                      padding: '0 18px 14px 0',
                       display: 'grid',
-                      gridTemplateColumns: '118px minmax(0, 1fr) 128px',
+                      gridTemplateColumns: '118px minmax(0, 1fr)',
+                      gridTemplateRows: '1fr auto',
                       alignItems: 'center',
-                      gap: 14,
+                      columnGap: 14,
                       color: '#fff',
                       position: 'relative',
                       overflow: 'hidden',
@@ -288,7 +289,7 @@ function PartyWisePage() {
                       fallback={cfg.short}
                       color="#fff"
                       size={150}
-                      style={{ height: '100%', width: 118, zIndex: 1, objectFit: 'cover' }}
+                      style={{ gridRow: '1 / -1', height: '100%', width: 118, zIndex: 1, objectFit: 'cover' }}
                     />
                     <div style={{
                       zIndex: 1,
@@ -312,9 +313,7 @@ function PartyWisePage() {
                       key={`${p}-${pct}-${animationTick}`}
                       style={{
                         zIndex: 1,
-                        width: 128,
-                        paddingRight: 12,
-                        boxSizing: 'border-box',
+                        justifySelf: 'end',
                         textAlign: 'right',
                         animation: 'numFlip 0.8s ease-out',
                         display: 'inline-block',
@@ -324,7 +323,7 @@ function PartyWisePage() {
                     >
                       <span style={{
                         color: '#fff',
-                        fontSize: 50,
+                        fontSize: 52,
                         fontWeight: 950,
                         lineHeight: 1,
                         fontFamily: ff,
@@ -333,7 +332,7 @@ function PartyWisePage() {
                       </span>
                       <span style={{
                         color: 'rgba(255,255,255,0.82)',
-                        fontSize: 26,
+                        fontSize: 28,
                         fontWeight: 900,
                         marginLeft: 3,
                         fontFamily: ff,
