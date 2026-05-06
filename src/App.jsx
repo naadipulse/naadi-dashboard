@@ -177,13 +177,13 @@ function FullDashboard({ mode = 'alliance' }) {
 
 function PartyWisePage() {
   const settings = useSettings()
-  const { gW, gT } = useTally()
+  const { gP, gT } = useTally()
   const ff = settings.font_family || 'Segoe UI'
   const [scale, setScale] = useState(1)
   const [animationTick, setAnimationTick] = useState(0)
 
   const parties = Object.keys(INDIVIDUAL_PARTIES)
-    .sort((a, b) => gT(b) - gT(a))
+    .sort((a, b) => gP(b) - gP(a) || gT(b) - gT(a))
     .slice(0, 12)
 
   useEffect(() => {
@@ -251,7 +251,7 @@ function PartyWisePage() {
             textAlign: 'center',
             textShadow: '0 2px 8px rgba(255,255,255,0.75)',
           }}>
-            கட்சி வாரி வெற்றி இடங்கள்
+            கட்சி வாரி வாக்கு சதவீதம்
           </div>
           <div style={{
             display: 'grid',
@@ -263,9 +263,8 @@ function PartyWisePage() {
           }}>
           {parties.map((p) => {
                 const cfg = INDIVIDUAL_PARTIES[p]
-                const won = gW(p)
+                const pct = gP(p)
                 const photoUrl = settings[cfg.photoKey]
-                const isMaj = won >= MAJORITY
 
                 return (
                   <div
@@ -280,7 +279,7 @@ function PartyWisePage() {
                       color: '#fff',
                       position: 'relative',
                       overflow: 'hidden',
-                      boxShadow: isMaj ? `0 0 28px ${cfg.color}` : '0 8px 18px rgba(15,23,42,0.18)',
+                      boxShadow: '0 8px 18px rgba(15,23,42,0.18)',
                     }}
                   >
                     <Photo
@@ -310,10 +309,10 @@ function PartyWisePage() {
                       </div>
                     </div>
                     <div
-                      key={`${p}-${won}-${animationTick}`}
+                      key={`${p}-${pct}-${animationTick}`}
                       style={{
                         zIndex: 1,
-                        minWidth: 100,
+                        minWidth: 150,
                         textAlign: 'right',
                         animation: 'numFlip 0.8s ease-out',
                         display: 'inline-block',
@@ -321,24 +320,25 @@ function PartyWisePage() {
                         transformStyle: 'preserve-3d',
                       }}
                     >
-                      <AnimNum val={won} color="#fff" size={76} font={ff} />
-                    </div>
-                    {isMaj && (
-                      <div style={{
-                        position: 'absolute',
-                        right: 12,
-                        top: 10,
-                        fontSize: 22,
-                        fontWeight: 950,
+                      <span style={{
                         color: '#fff',
-                        background: 'rgba(0,0,0,0.22)',
-                        borderRadius: 6,
-                        padding: '3px 8px',
-                        zIndex: 2,
+                        fontSize: 64,
+                        fontWeight: 950,
+                        lineHeight: 1,
+                        fontFamily: ff,
                       }}>
-                        118+
-                      </div>
-                    )}
+                        {pct.toFixed(2)}
+                      </span>
+                      <span style={{
+                        color: 'rgba(255,255,255,0.82)',
+                        fontSize: 34,
+                        fontWeight: 900,
+                        marginLeft: 3,
+                        fontFamily: ff,
+                      }}>
+                        %
+                      </span>
+                    </div>
                   </div>
                 )
               })}
