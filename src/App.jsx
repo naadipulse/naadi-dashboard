@@ -185,7 +185,6 @@ function PartyWisePage() {
   const parties = Object.keys(INDIVIDUAL_PARTIES)
     .sort((a, b) => gT(b) - gT(a))
     .slice(0, 12)
-  const columns = [parties.slice(0, 6), parties.slice(6, 12)]
 
   useEffect(() => {
     const update = () => {
@@ -232,21 +231,12 @@ function PartyWisePage() {
           height: 1536,
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
+          gridTemplateRows: 'repeat(6, 1fr)',
           gap: 24,
           padding: '0 40px',
           boxSizing: 'border-box',
         }}>
-          {columns.map((columnParties, columnIndex) => (
-            <div
-              key={columnIndex}
-              style={{
-                display: 'grid',
-                gridTemplateRows: 'repeat(6, 1fr)',
-                gap: 18,
-                minHeight: 0,
-              }}
-            >
-              {columnParties.map((p) => {
+          {parties.map((p) => {
                 const cfg = INDIVIDUAL_PARTIES[p]
                 const won = gW(p)
                 const photoUrl = settings[cfg.photoKey]
@@ -291,15 +281,7 @@ function PartyWisePage() {
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                       }}>
-                        {cfg.label}
-                      </div>
-                      <div style={{
-                        fontSize: 24,
-                        fontWeight: 800,
-                        color: 'rgba(255,255,255,0.78)',
-                        marginTop: 4,
-                      }}>
-                        {cfg.short}
+                        {p}
                       </div>
                     </div>
                     <div
@@ -335,8 +317,6 @@ function PartyWisePage() {
                   </div>
                 )
               })}
-            </div>
-          ))}
         </div>
         <div style={{ height: 192 }} />
         <style>{`
