@@ -5,7 +5,7 @@ import CenterViews from './CenterViews.jsx'
 import BottomBar from './BottomBar.jsx'
 import Admin from './Admin.jsx'
 import RightPanel from './RightPanel.jsx'
-import { useSettings, useTally, AnimNum, PARTY_DEFAULTS, INDIVIDUAL_PARTIES, MAJORITY } from './shared.jsx'
+import { useSettings, useTally, AnimNum, Photo, PARTY_DEFAULTS, INDIVIDUAL_PARTIES, MAJORITY } from './shared.jsx'
 
 function FullDashboard({ mode = 'alliance' }) {
   const settings = useSettings()
@@ -177,8 +177,15 @@ function FullDashboard({ mode = 'alliance' }) {
 
 function PartyWisePage() {
   const settings = useSettings()
+  const { gW, gT } = useTally()
   const ff = settings.font_family || 'Segoe UI'
   const [scale, setScale] = useState(1)
+  const [animationTick, setAnimationTick] = useState(0)
+
+  const parties = Object.keys(INDIVIDUAL_PARTIES)
+    .sort((a, b) => gT(b) - gT(a))
+    .slice(0, 12)
+  const columns = [parties.slice(0, 6), parties.slice(6, 12)]
 
   useEffect(() => {
     const update = () => {
@@ -189,6 +196,11 @@ function PartyWisePage() {
     update()
     window.addEventListener('resize', update)
     return () => window.removeEventListener('resize', update)
+  }, [])
+
+  useEffect(() => {
+    const interval = setInterval(() => setAnimationTick(prev => prev + 1), 5000)
+    return () => clearInterval(interval)
   }, [])
 
   return (
@@ -213,10 +225,126 @@ function PartyWisePage() {
         fontFamily: ff,
         overflow: 'hidden',
         flexShrink: 0,
-        padding: 28,
         boxSizing: 'border-box',
       }}>
-        <LeftPanel mode="individual" />
+        <div style={{ height: 192 }} />
+        <div style={{
+          height: 1536,
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 24,
+          padding: '0 40px',
+          boxSizing: 'border-box',
+        }}>
+          {columns.map((columnParties, columnIndex) => (
+            <div
+              key={columnIndex}
+              style={{
+                display: 'grid',
+                gridTemplateRows: 'repeat(6, 1fr)',
+                gap: 18,
+                minHeight: 0,
+              }}
+            >
+              {columnParties.map((p) => {
+                const cfg = INDIVIDUAL_PARTIES[p]
+                const won = gW(p)
+                const photoUrl = settings[cfg.photoKey]
+                const isMaj = won >= MAJORITY
+
+                return (
+                  <div
+                    key={p}
+                    style={{
+                      background: cfg.color,
+                      borderRadius: 14,
+                      padding: '0 22px 0 0',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 14,
+                      color: '#fff',
+                      position: 'relative',
+                      overflow: 'hidden',
+                      boxShadow: isMaj ? `0 0 28px ${cfg.color}` : '0 8px 18px rgba(15,23,42,0.18)',
+                    }}
+                  >
+                    <Photo
+                      photoUrl={photoUrl}
+                      fallback={cfg.short}
+                      color="#fff"
+                      size={150}
+                      style={{ height: '100%', width: 145, zIndex: 1, objectFit: 'cover' }}
+                    />
+                    <div style={{
+                      zIndex: 1,
+                      flex: 1,
+                      minWidth: 0,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                    }}>
+                      <div style={{
+                        fontSize: 44,
+                        fontWeight: 950,
+                        lineHeight: 1.05,
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}>
+                        {cfg.label}
+                      </div>
+                      <div style={{
+                        fontSize: 24,
+                        fontWeight: 800,
+                        color: 'rgba(255,255,255,0.78)',
+                        marginTop: 4,
+                      }}>
+                        {cfg.short}
+                      </div>
+                    </div>
+                    <div
+                      key={`${p}-${won}-${animationTick}`}
+                      style={{
+                        zIndex: 1,
+                        minWidth: 100,
+                        textAlign: 'right',
+                        animation: 'numFlip 0.8s ease-out',
+                        display: 'inline-block',
+                        backfaceVisibility: 'hidden',
+                        transformStyle: 'preserve-3d',
+                      }}
+                    >
+                      <AnimNum val={won} color="#fff" size={76} font={ff} />
+                    </div>
+                    {isMaj && (
+                      <div style={{
+                        position: 'absolute',
+                        right: 12,
+                        top: 10,
+                        fontSize: 22,
+                        fontWeight: 950,
+                        color: '#fff',
+                        background: 'rgba(0,0,0,0.22)',
+                        borderRadius: 6,
+                        padding: '3px 8px',
+                        zIndex: 2,
+                      }}>
+                        118+
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          ))}
+        </div>
+        <div style={{ height: 192 }} />
+        <style>{`
+          @keyframes numFlip {
+            0% { transform: rotateX(-180deg); opacity: 0; }
+            100% { transform: rotateX(0deg); opacity: 1; }
+          }
+        `}</style>
       </div>
     </div>
   )
