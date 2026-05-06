@@ -226,16 +226,41 @@ function PartyWisePage() {
         flexShrink: 0,
         boxSizing: 'border-box',
       }}>
-        <div style={{ height: 192 }} />
+        <div style={{
+          height: 192,
+        }} />
         <div style={{
           height: 1536,
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gridTemplateRows: 'repeat(6, 1fr)',
-          gap: 24,
+          gridTemplateColumns: '1fr',
+          gridTemplateRows: '120px repeat(6, 1fr)',
+          columnGap: 24,
+          rowGap: 18,
           padding: '0 40px',
           boxSizing: 'border-box',
         }}>
+          <div style={{
+            gridColumn: '1 / -1',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#0F172A',
+            fontSize: 64,
+            fontWeight: 950,
+            lineHeight: 1,
+            textAlign: 'center',
+            textShadow: '0 2px 8px rgba(255,255,255,0.75)',
+          }}>
+            கட்சி வாரி வெற்றி இடங்கள்
+          </div>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gridTemplateRows: 'repeat(6, 1fr)',
+            gap: 24,
+            minHeight: 0,
+            gridRow: '2 / -1',
+          }}>
           {parties.map((p) => {
                 const cfg = INDIVIDUAL_PARTIES[p]
                 const won = gW(p)
@@ -317,6 +342,7 @@ function PartyWisePage() {
                   </div>
                 )
               })}
+          </div>
         </div>
         <div style={{ height: 192 }} />
         <style>{`
