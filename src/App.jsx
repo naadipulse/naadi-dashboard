@@ -261,10 +261,11 @@ function PartyWisePage() {
             minHeight: 0,
             gridRow: '2 / -1',
           }}>
-          {parties.map((p) => {
+          {parties.map((p, index) => {
                 const cfg = INDIVIDUAL_PARTIES[p]
                 const pct = gP(p)
                 const photoUrl = settings[cfg.photoKey]
+                const isRightColumn = index % 2 === 1
 
                 return (
                   <div
@@ -272,9 +273,9 @@ function PartyWisePage() {
                     style={{
                       background: cfg.color,
                       borderRadius: 14,
-                      padding: '0 18px 14px 0',
+                      padding: isRightColumn ? '0 0 14px 18px' : '0 18px 14px 0',
                       display: 'grid',
-                      gridTemplateColumns: '118px minmax(0, 1fr)',
+                      gridTemplateColumns: isRightColumn ? 'minmax(0, 1fr) 118px' : '118px minmax(0, 1fr)',
                       gridTemplateRows: '1fr auto',
                       alignItems: 'center',
                       columnGap: 14,
@@ -289,9 +290,17 @@ function PartyWisePage() {
                       fallback={cfg.short}
                       color="#fff"
                       size={150}
-                      style={{ gridRow: '1 / -1', height: '100%', width: 118, zIndex: 1, objectFit: 'cover' }}
+                      style={{
+                        gridColumn: isRightColumn ? 2 : 1,
+                        gridRow: '1 / -1',
+                        height: '100%',
+                        width: 118,
+                        zIndex: 1,
+                        objectFit: 'cover',
+                      }}
                     />
                     <div style={{
+                      gridColumn: isRightColumn ? 1 : 2,
                       zIndex: 1,
                       minWidth: 0,
                       display: 'flex',
@@ -312,9 +321,10 @@ function PartyWisePage() {
                     <div
                       key={`${p}-${pct}-${animationTick}`}
                       style={{
+                        gridColumn: isRightColumn ? 1 : 2,
                         zIndex: 1,
-                        justifySelf: 'end',
-                        textAlign: 'right',
+                        justifySelf: isRightColumn ? 'start' : 'end',
+                        textAlign: isRightColumn ? 'left' : 'right',
                         animation: 'numFlip 0.8s ease-out',
                         display: 'inline-block',
                         backfaceVisibility: 'hidden',
