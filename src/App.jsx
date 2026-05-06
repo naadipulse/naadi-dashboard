@@ -175,6 +175,53 @@ function FullDashboard({ mode = 'alliance' }) {
   )
 }
 
+function PartyWisePage() {
+  const settings = useSettings()
+  const ff = settings.font_family || 'Segoe UI'
+  const [scale, setScale] = useState(1)
+
+  useEffect(() => {
+    const update = () => {
+      const sw = window.innerWidth / 1080
+      const sh = window.innerHeight / 1920
+      setScale(Math.min(sw, sh))
+    }
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
+  return (
+    <div style={{
+      width: '100vw', height: '100vh',
+      overflow: 'hidden', position: 'relative',
+      background: '#000',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }}>
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 0,
+        backgroundImage: `url('https://i.ibb.co/LDQsbQRN/thalamai.jpg')`,
+        backgroundSize: 'cover', backgroundPosition: 'center',
+      }} />
+      <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'rgba(241,245,249,0.87)' }} />
+
+      <div style={{
+        position: 'relative', zIndex: 2,
+        width: 1080, height: 1920,
+        transform: `scale(${scale})`,
+        transformOrigin: 'center center',
+        fontFamily: ff,
+        overflow: 'hidden',
+        flexShrink: 0,
+        padding: 28,
+        boxSizing: 'border-box',
+      }}>
+        <LeftPanel mode="individual" />
+      </div>
+    </div>
+  )
+}
+
 export default function App() {
   // Normalize path by removing trailing slash for robust matching
   const path = window.location.pathname.replace(/\/$/, '') || '/'
@@ -185,5 +232,6 @@ export default function App() {
   if (path === '/bottom') return <div style={{ background: 'transparent', height: 120 }}><BottomBar /></div>
   if (path === '/admin') return <Admin />
   if (path === '/winners') return <FullDashboard mode="individual" />
+  if (path === '/partywise') return <PartyWisePage />
   return <FullDashboard mode="alliance" />
 }
