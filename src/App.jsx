@@ -522,10 +522,10 @@ function AlliancePage({ showWhatIf = false }) {
                             borderRadius: 12,
                             minHeight: 98,
                             display: 'grid',
-                            gridTemplateColumns: '50px minmax(0, 1fr) 66px',
+                            gridTemplateColumns: showWhatIf ? '50px minmax(0, 1fr)' : '50px minmax(0, 1fr) 66px',
                             alignItems: 'center',
                             gap: 14,
-                            padding: '0 14px 0 0',
+                            padding: '0 18px 0 0',
                             color: '#fff',
                             overflow: 'hidden',
                             boxShadow: '0 5px 12px rgba(15,23,42,0.12)',
@@ -540,7 +540,7 @@ function AlliancePage({ showWhatIf = false }) {
                           />
                           <div style={{
                             minWidth: 0,
-                            fontSize: 30,
+                            fontSize: showWhatIf ? 44 : 30,
                             fontWeight: 950,
                             lineHeight: 1,
                             whiteSpace: 'nowrap',
@@ -549,12 +549,14 @@ function AlliancePage({ showWhatIf = false }) {
                           }}>
                             {party}
                           </div>
-                          <div
-                            key={`${party}-${won}-${animationTick}`}
-                            style={{ textAlign: 'right', animation: 'numFlip 0.8s ease-out' }}
-                          >
-                            <AnimNum val={won} color="#fff" size={38} font={ff} />
-                          </div>
+                          {!showWhatIf && (
+                            <div
+                              key={`${party}-${won}-${animationTick}`}
+                              style={{ textAlign: 'right', animation: 'numFlip 0.8s ease-out' }}
+                            >
+                              <AnimNum val={won} color="#fff" size={38} font={ff} />
+                            </div>
+                          )}
                         </div>
                       )
                     })
