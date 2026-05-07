@@ -236,7 +236,7 @@ function PartyWisePage() {
           gridTemplateRows: '120px repeat(6, 1fr)',
           columnGap: 24,
           rowGap: 18,
-          padding: '0 54px',
+          padding: '0 90px',
           boxSizing: 'border-box',
         }}>
           <div style={{
@@ -370,6 +370,151 @@ function PartyWisePage() {
   )
 }
 
+function AlliancePage() {
+  const settings = useSettings()
+  const { gW } = useTally()
+  const ff = settings.font_family || 'Segoe UI'
+  const [scale, setScale] = useState(1)
+  const [animationTick, setAnimationTick] = useState(0)
+  const alliances = [
+    { key: 'TVK', display: 'TVK+', members: ['TVK', 'INC'] },
+    { key: 'DMK+', display: 'DMK+', members: ['DMK+'] },
+    { key: 'AIADMK+', display: 'ADMK+', members: ['AIADMK+'] },
+  ]
+
+  useEffect(() => {
+    const update = () => {
+      const sw = window.innerWidth / 1080
+      const sh = window.innerHeight / 1920
+      setScale(Math.min(sw, sh))
+    }
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
+  useEffect(() => {
+    const interval = setInterval(() => setAnimationTick(prev => prev + 1), 5000)
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <div style={{
+      width: '100vw', height: '100vh',
+      overflow: 'hidden', position: 'relative',
+      background: '#000',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }}>
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 0,
+        backgroundImage: `url('https://i.ibb.co/LDQsbQRN/thalamai.jpg')`,
+        backgroundSize: 'cover', backgroundPosition: 'center',
+      }} />
+      <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'rgba(241,245,249,0.87)' }} />
+
+      <div style={{
+        position: 'relative', zIndex: 2,
+        width: 1080, height: 1920,
+        transform: `scale(${scale})`,
+        transformOrigin: 'center center',
+        fontFamily: ff,
+        overflow: 'hidden',
+        flexShrink: 0,
+        boxSizing: 'border-box',
+      }}>
+        <div style={{ height: 192 }} />
+        <div style={{
+          height: 1536,
+          display: 'grid',
+          gridTemplateRows: '140px repeat(3, 1fr)',
+          gap: 28,
+          padding: '0 54px',
+          boxSizing: 'border-box',
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#0F172A',
+            fontSize: 68,
+            fontWeight: 950,
+            lineHeight: 1,
+            textAlign: 'center',
+            textShadow: '0 2px 8px rgba(255,255,255,0.75)',
+          }}>
+            கூட்டணி வாரி வெற்றி இடங்கள்
+          </div>
+
+          {alliances.map(({ key, display, members }) => {
+            const cfg = PARTY_DEFAULTS[key]
+            const won = members.reduce((sum, party) => sum + gW(party), 0)
+            const photoUrl = settings[cfg.photoKey]
+
+            return (
+              <div
+                key={key}
+                style={{
+                  background: cfg.color,
+                  borderRadius: 18,
+                  display: 'grid',
+                  gridTemplateColumns: '260px minmax(0, 1fr) 250px',
+                  alignItems: 'center',
+                  gap: 30,
+                  padding: '0 42px 0 0',
+                  color: '#fff',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  boxShadow: '0 10px 26px rgba(15,23,42,0.2)',
+                }}
+              >
+                <Photo
+                  photoUrl={photoUrl}
+                  fallback={cfg.short}
+                  color="#fff"
+                  size={280}
+                  style={{ height: '100%', width: 260, zIndex: 1, objectFit: 'cover' }}
+                />
+                <div style={{
+                  zIndex: 1,
+                  minWidth: 0,
+                  fontSize: 92,
+                  fontWeight: 950,
+                  lineHeight: 1,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}>
+                  {display}
+                </div>
+                <div
+                  key={`${key}-${won}-${animationTick}`}
+                  style={{
+                    zIndex: 1,
+                    textAlign: 'right',
+                    animation: 'numFlip 0.8s ease-out',
+                    display: 'inline-block',
+                    backfaceVisibility: 'hidden',
+                    transformStyle: 'preserve-3d',
+                  }}
+                >
+                  <AnimNum val={won} color="#fff" size={118} font={ff} />
+                </div>
+              </div>
+            )
+          })}
+        </div>
+        <div style={{ height: 192 }} />
+        <style>{`
+          @keyframes numFlip {
+            0% { transform: rotateX(-180deg); opacity: 0; }
+            100% { transform: rotateX(0deg); opacity: 1; }
+          }
+        `}</style>
+      </div>
+    </div>
+  )
+}
+
 export default function App() {
   // Normalize path by removing trailing slash for robust matching
   const path = window.location.pathname.replace(/\/$/, '') || '/'
@@ -381,5 +526,6 @@ export default function App() {
   if (path === '/admin') return <Admin />
   if (path === '/winners') return <FullDashboard mode="individual" />
   if (path === '/partywise') return <PartyWisePage />
+  if (path === '/alliance') return <AlliancePage />
   return <FullDashboard mode="alliance" />
 }
