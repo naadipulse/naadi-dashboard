@@ -514,7 +514,7 @@ function AlliancePage() {
                           fallback={cfg.short}
                           color="#fff"
                           size={98}
-                          style={{ height: '100%', width: 72, objectFit: 'contain', objectPosition: 'center' }}
+                          style={{ height: '100%', width: 72, objectFit: 'cover', objectPosition: 'top' }}
                         />
                         <div style={{
                           minWidth: 0,
