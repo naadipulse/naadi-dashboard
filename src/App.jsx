@@ -504,10 +504,10 @@ function AlliancePage() {
                           borderRadius: 12,
                           minHeight: 98,
                           display: 'grid',
-                          gridTemplateColumns: '72px minmax(0, 1fr) 70px',
+                          gridTemplateColumns: '58px minmax(0, 1fr) 54px',
                           alignItems: 'center',
-                          gap: 10,
-                          padding: '0 22px 0 0',
+                          gap: 8,
+                          padding: '0 14px 0 0',
                           color: '#fff',
                           overflow: 'hidden',
                           boxShadow: '0 5px 12px rgba(15,23,42,0.12)',
@@ -518,11 +518,11 @@ function AlliancePage() {
                           fallback={cfg.short}
                           color="#fff"
                           size={98}
-                          style={{ height: '100%', width: 72, objectFit: 'cover', objectPosition: 'top' }}
+                          style={{ height: '100%', width: 58, objectFit: 'cover', objectPosition: 'top' }}
                         />
                         <div style={{
                           minWidth: 0,
-                          fontSize: 32,
+                          fontSize: 30,
                           fontWeight: 950,
                           lineHeight: 1,
                           whiteSpace: 'nowrap',
@@ -538,7 +538,7 @@ function AlliancePage() {
                             animation: 'numFlip 0.8s ease-out',
                           }}
                         >
-                          <AnimNum val={won} color="#fff" size={38} font={ff} />
+                          <AnimNum val={won} color="#fff" size={34} font={ff} />
                         </div>
                       </div>
                     )
