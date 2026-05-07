@@ -523,7 +523,7 @@ function AlliancePage() {
                         />
                         <div style={{
                           minWidth: 0,
-                          fontSize: 37,
+                          fontSize: 38,
                           fontWeight: 950,
                           lineHeight: 1,
                           whiteSpace: 'nowrap',
@@ -539,7 +539,7 @@ function AlliancePage() {
                             animation: 'numFlip 0.8s ease-out',
                           }}
                         >
-                          <AnimNum val={won} color="#fff" size={41} font={ff} />
+                          <AnimNum val={won} color="#fff" size={42} font={ff} />
                         </div>
                       </div>
                     )
