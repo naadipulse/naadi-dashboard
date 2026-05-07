@@ -540,7 +540,7 @@ function AlliancePage({ showWhatIf = false }) {
                           />
                           <div style={{
                             minWidth: 0,
-                            fontSize: showWhatIf ? 44 : 30,
+                            fontSize: showWhatIf ? 40 : 30,
                             fontWeight: 950,
                             lineHeight: 1,
                             whiteSpace: 'nowrap',
@@ -608,7 +608,7 @@ function AlliancePage({ showWhatIf = false }) {
                               />
                               <div style={{
                                 minWidth: 0,
-                                fontSize: 44,
+                                fontSize: 40,
                                 fontWeight: 950,
                                 lineHeight: 1,
                                 whiteSpace: 'nowrap',
