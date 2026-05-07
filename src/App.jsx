@@ -422,9 +422,9 @@ function AlliancePage() {
         flexShrink: 0,
         boxSizing: 'border-box',
       }}>
-        <div style={{ height: 192 }} />
+        <div style={{ height: 96 }} />
         <div style={{
-          height: 1536,
+          height: 1632,
           display: 'grid',
           gridTemplateRows: '140px 1fr',
           gap: 26,
