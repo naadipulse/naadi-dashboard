@@ -377,8 +377,8 @@ function AlliancePage() {
   const [scale, setScale] = useState(1)
   const [animationTick, setAnimationTick] = useState(0)
   const alliances = [
-    { key: 'TVK', display: 'TVK+', color: PARTY_DEFAULTS.TVK.color, members: ['TVK', 'INC'] },
-    { key: 'DMK+', display: 'DMK+', color: PARTY_DEFAULTS['DMK+'].color, members: ['DMK', 'DMDK', 'IUML', 'CPI', 'VCK', 'CPI(M)'] },
+    { key: 'TVK', display: 'TVK+', color: PARTY_DEFAULTS.TVK.color, members: ['TVK', 'INC'], whatIfMembers: ['CPI', 'CPI(M)', 'VCK'], whatIfTotal: 119 },
+    { key: 'DMK+', display: 'DMK+', color: PARTY_DEFAULTS['DMK+'].color, members: ['DMK', 'DMDK', 'IUML', 'CPI', 'VCK', 'CPI(M)'], fadedMembers: ['CPI', 'CPI(M)', 'VCK'] },
     { key: 'AIADMK+', display: 'ADMK+', color: PARTY_DEFAULTS['AIADMK+'].color, members: ['ADMK', 'PMK', 'BJP', 'AMMK'] },
   ]
 
@@ -452,7 +452,7 @@ function AlliancePage() {
             gap: 22,
             minHeight: 0,
           }}>
-            {alliances.map(({ key, display, color, members }) => (
+            {alliances.map(({ key, display, color, members, whatIfMembers = [], whatIfTotal, fadedMembers = [] }) => (
               <div
                 key={key}
                 style={{
@@ -496,6 +496,7 @@ function AlliancePage() {
                     if (!cfg) return null
                     const photoUrl = settings[cfg.photoKey]
                     const won = gW(party)
+                    const isFaded = fadedMembers.includes(party)
 
                     return (
                       <div
@@ -511,6 +512,7 @@ function AlliancePage() {
                           padding: '0 14px 0 0',
                           color: '#fff',
                           overflow: 'hidden',
+                          opacity: isFaded ? 0.5 : 1,
                           boxShadow: '0 5px 12px rgba(15,23,42,0.12)',
                         }}
                       >
@@ -544,6 +546,69 @@ function AlliancePage() {
                       </div>
                     )
                   })}
+
+                  {whatIfMembers.length > 0 && (
+                    <div style={{
+                      margin: '2px 0 -2px',
+                      textAlign: 'center',
+                      fontSize: 24,
+                      fontWeight: 950,
+                      letterSpacing: 0,
+                      color,
+                      opacity: 0.65,
+                    }}>
+                      WHAT IF
+                    </div>
+                  )}
+
+                  {whatIfMembers.map((party) => {
+                    const cfg = INDIVIDUAL_PARTIES[party]
+                    if (!cfg) return null
+                    const photoUrl = settings[cfg.photoKey]
+                    const won = gW(party)
+
+                    return (
+                      <div
+                        key={`what-if-${party}`}
+                        style={{
+                          background: cfg.color,
+                          borderRadius: 12,
+                          minHeight: 98,
+                          display: 'grid',
+                          gridTemplateColumns: '50px minmax(0, 1fr) 66px',
+                          alignItems: 'center',
+                          gap: 14,
+                          padding: '0 14px 0 0',
+                          color: '#fff',
+                          overflow: 'hidden',
+                          opacity: 0.5,
+                          boxShadow: '0 5px 12px rgba(15,23,42,0.12)',
+                        }}
+                      >
+                        <Photo
+                          photoUrl={photoUrl}
+                          fallback={cfg.short}
+                          color="#fff"
+                          size={98}
+                          style={{ height: '100%', width: 50, objectFit: 'cover', objectPosition: 'top' }}
+                        />
+                        <div style={{
+                          minWidth: 0,
+                          fontSize: 38,
+                          fontWeight: 950,
+                          lineHeight: 1,
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}>
+                          {party}
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                          <AnimNum val={won} color="#fff" size={42} font={ff} />
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
 
                 <div
@@ -552,11 +617,24 @@ function AlliancePage() {
                     background: color,
                     color: '#fff',
                     display: 'flex',
+                    flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
                     animation: 'numFlip 0.8s ease-out',
                   }}
                 >
+                  {(whatIfTotal || fadedMembers.length > 0) && (
+                    <div style={{ opacity: 0.5, lineHeight: 0.9 }}>
+                      <AnimNum
+                        val={whatIfTotal || members.reduce((sum, party) => (
+                          fadedMembers.includes(party) ? sum : sum + gW(party)
+                        ), 0)}
+                        color="#fff"
+                        size={48}
+                        font={ff}
+                      />
+                    </div>
+                  )}
                   <AnimNum val={members.reduce((sum, party) => sum + gW(party), 0)} color="#fff" size={72} font={ff} />
                 </div>
               </div>
