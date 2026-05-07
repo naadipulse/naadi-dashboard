@@ -236,7 +236,7 @@ function PartyWisePage() {
           gridTemplateRows: '120px repeat(6, 1fr)',
           columnGap: 24,
           rowGap: 18,
-          padding: '0 22px',
+          padding: '0 54px',
           boxSizing: 'border-box',
         }}>
           <div style={{
