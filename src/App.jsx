@@ -309,7 +309,7 @@ function PartyWisePage() {
                       alignItems: isRightColumn ? 'flex-start' : 'flex-end',
                     }}>
                       <div style={{
-                        fontSize: 42,
+                        fontSize: 50,
                         fontWeight: 950,
                         lineHeight: 1.05,
                         whiteSpace: 'nowrap',
