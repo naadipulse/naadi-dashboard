@@ -441,7 +441,7 @@ function AlliancePage({ showWhatIf = false }) {
           display: 'grid',
           gridTemplateRows: '140px 1fr',
           gap: 26,
-          padding: '0 40px',
+          padding: '0 80px',
           boxSizing: 'border-box',
         }}>
           <div style={{
@@ -575,6 +575,23 @@ function AlliancePage({ showWhatIf = false }) {
                       }}
                     >
                       <span style={{ fontSize: 22, fontWeight: 950 }}>ACTUAL</span>
+                      {fadedMembers.length > 0 && (
+                        <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
+                          {fadedMembers.map(p => {
+                            const pcfg = INDIVIDUAL_PARTIES[p]
+                            return (
+                              <Photo
+                                key={p}
+                                photoUrl={settings[pcfg?.photoKey]}
+                                fallback={pcfg?.short}
+                                color="#fff"
+                                size={40}
+                                style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', objectPosition: 'top', border: '2px solid rgba(255,255,255,0.6)' }}
+                              />
+                            )
+                          })}
+                        </div>
+                      )}
                       <AnimNum val={members.reduce((sum, p) => sum + gW(p), 0)} color="#fff" size={40} font={ff} />
                     </div>
                   )}
@@ -634,8 +651,11 @@ function AlliancePage({ showWhatIf = false }) {
                               }}>
                                 {party}
                               </div>
-                              <div style={{ textAlign: 'right' }}>
-                                <AnimNum val={won} color="#fff" size={42} font={ff} />
+                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
+                                <span style={{ fontSize: 26, fontWeight: 900, lineHeight: 1, color: fadedMembers.length > 0 ? '#FF4444' : '#22C55E' }}>
+                                  {fadedMembers.length > 0 ? '↓' : '↑'}
+                                </span>
+                                <AnimNum val={won} color="#fff" size={38} font={ff} />
                               </div>
                             </div>
                           )
