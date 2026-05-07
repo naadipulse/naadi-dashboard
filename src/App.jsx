@@ -506,7 +506,7 @@ function AlliancePage() {
                           display: 'grid',
                           gridTemplateColumns: '54px minmax(0, 1fr) 60px',
                           alignItems: 'center',
-                          gap: 8,
+                          gap: 14,
                           padding: '0 14px 0 0',
                           color: '#fff',
                           overflow: 'hidden',
