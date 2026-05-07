@@ -730,6 +730,30 @@ function DotMapPage() {
     return () => window.removeEventListener('resize', update)
   }, [])
 
+  // Parliament layout constants for 1080x1920 portrait canvas
+  const W = 1000, H = 600
+  const CX = W / 2, CY = H - 50
+  const DOT_R = 14
+
+  const ROWS = [
+    { r: 180, count: 17 },
+    { r: 230, count: 24 },
+    { r: 280, count: 31 },
+    { r: 330, count: 38 },
+    { r: 380, count: 44 },
+    { r: 430, count: 50 },
+    { r: 480, count: 30 },
+  ]
+
+  const rawDots = []
+  ROWS.forEach(({ r, count }) => {
+    for (let i = 0; i < count; i++) {
+      const angle = Math.PI - (i / (count - 1)) * Math.PI
+      rawDots.push({ x: CX + r * Math.cos(angle), y: CY - r * Math.sin(angle), angle })
+    }
+  })
+  const dots = [...rawDots].sort((a, b) => b.angle - a.angle)
+
   return (
     <div style={{
       width: '100vw', height: '100vh',
