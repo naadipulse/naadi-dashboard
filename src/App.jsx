@@ -428,7 +428,7 @@ function AlliancePage() {
           display: 'grid',
           gridTemplateRows: '140px 1fr',
           gap: 26,
-          padding: '0 54px',
+          padding: '0 40px',
           boxSizing: 'border-box',
         }}>
           <div style={{
