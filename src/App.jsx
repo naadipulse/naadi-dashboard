@@ -442,7 +442,7 @@ function AlliancePage() {
             textAlign: 'center',
             textShadow: '0 2px 8px rgba(255,255,255,0.75)',
           }}>
-            Post Election Alliance
+            Tamil Nadu Post Election Alliance
           </div>
 
           <div style={{
@@ -471,9 +471,13 @@ function AlliancePage() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: 58,
+                  fontSize: 50,
                   fontWeight: 950,
                   lineHeight: 1,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  padding: '0 8px',
                 }}>
                   {display}
                 </div>
