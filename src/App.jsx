@@ -499,70 +499,71 @@ function AlliancePage({ showWhatIf = false }) {
                 </div>
 
                 <div style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 16,
+                  display: 'grid',
+                  gridTemplateRows: 'auto 1fr',
+                  gap: 14,
                   padding: '20px 14px',
                   minHeight: 0,
                   overflow: 'hidden',
                 }}>
-                  {[...members].sort((a, b) => gW(b) - gW(a)).map((party) => {
-                    const cfg = INDIVIDUAL_PARTIES[party]
-                    if (!cfg) return null
-                    const photoUrl = settings[cfg.photoKey]
-                    const won = gW(party)
-                    const isFaded = fadedMembers.includes(party)
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    {[...members].sort((a, b) => gW(b) - gW(a)).map((party) => {
+                      const cfg = INDIVIDUAL_PARTIES[party]
+                      if (!cfg) return null
+                      const photoUrl = settings[cfg.photoKey]
+                      const won = gW(party)
+                      const isFaded = fadedMembers.includes(party)
 
-                    return (
-                      <div
-                        key={party}
-                        style={{
-                          background: cfg.color,
-                          borderRadius: 12,
-                          minHeight: 98,
-                          display: 'grid',
-                          gridTemplateColumns: '50px minmax(0, 1fr) 66px',
-                          alignItems: 'center',
-                          gap: 14,
-                          padding: '0 14px 0 0',
-                          color: '#fff',
-                          overflow: 'hidden',
-                          opacity: isFaded ? 0.5 : 1,
-                          boxShadow: '0 5px 12px rgba(15,23,42,0.12)',
-                        }}
-                      >
-                        <Photo
-                          photoUrl={photoUrl}
-                          fallback={cfg.short}
-                          color="#fff"
-                          size={98}
-                          style={{ height: '100%', width: 58, objectFit: 'cover', objectPosition: 'top' }}
-                        />
-                        <div style={{
-                          minWidth: 0,
-                          fontSize: 38,
-                          fontWeight: 950,
-                          lineHeight: 1,
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                        }}>
-                          {party}
-                        </div>
+                      return (
                         <div
-                          key={`${party}-${won}-${animationTick}`}
+                          key={party}
                           style={{
-                            textAlign: 'right',
-                            animation: 'numFlip 0.8s ease-out',
+                            background: cfg.color,
+                            borderRadius: 12,
+                            minHeight: 98,
+                            display: 'grid',
+                            gridTemplateColumns: '50px minmax(0, 1fr) 66px',
+                            alignItems: 'center',
+                            gap: 14,
+                            padding: '0 14px 0 0',
+                            color: '#fff',
+                            overflow: 'hidden',
+                            opacity: isFaded ? 0.5 : 1,
+                            boxShadow: '0 5px 12px rgba(15,23,42,0.12)',
                           }}
                         >
-                          <AnimNum val={won} color="#fff" size={42} font={ff} />
+                          <Photo
+                            photoUrl={photoUrl}
+                            fallback={cfg.short}
+                            color="#fff"
+                            size={98}
+                            style={{ height: '100%', width: 58, objectFit: 'cover', objectPosition: 'top' }}
+                          />
+                          <div style={{
+                            minWidth: 0,
+                            fontSize: 38,
+                            fontWeight: 950,
+                            lineHeight: 1,
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                          }}>
+                            {party}
+                          </div>
+                          <div
+                            key={`${party}-${won}-${animationTick}`}
+                            style={{
+                              textAlign: 'right',
+                              animation: 'numFlip 0.8s ease-out',
+                            }}
+                          >
+                            <AnimNum val={won} color="#fff" size={42} font={ff} />
+                          </div>
                         </div>
-                      </div>
-                    )
-                  })}
+                      )
+                    })}
 
-                  {whatIfMembers.length > 0 && (
+                    {whatIfMembers.length > 0 && (
                     <div style={{
                       margin: '2px 0 -2px',
                       textAlign: 'center',
@@ -574,56 +575,72 @@ function AlliancePage({ showWhatIf = false }) {
                     }}>
                       WHAT IF
                     </div>
+                    )}
+
+                    {whatIfMembers.map((party) => {
+                      const cfg = INDIVIDUAL_PARTIES[party]
+                      if (!cfg) return null
+                      const photoUrl = settings[cfg.photoKey]
+                      const won = gW(party)
+
+                      return (
+                        <div
+                          key={`what-if-${party}`}
+                          style={{
+                            background: cfg.color,
+                            borderRadius: 12,
+                            minHeight: 98,
+                            display: 'grid',
+                            gridTemplateColumns: '50px minmax(0, 1fr) 66px',
+                            alignItems: 'center',
+                            gap: 14,
+                            padding: '0 14px 0 0',
+                            color: '#fff',
+                            overflow: 'hidden',
+                            opacity: 0.5,
+                            boxShadow: '0 5px 12px rgba(15,23,42,0.12)',
+                          }}
+                        >
+                          <Photo
+                            photoUrl={photoUrl}
+                            fallback={cfg.short}
+                            color="#fff"
+                            size={98}
+                            style={{ height: '100%', width: 50, objectFit: 'cover', objectPosition: 'top' }}
+                          />
+                          <div style={{
+                            minWidth: 0,
+                            fontSize: 38,
+                            fontWeight: 950,
+                            lineHeight: 1,
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                          }}>
+                            {party}
+                          </div>
+                          <div style={{ textAlign: 'right' }}>
+                            <AnimNum val={won} color="#fff" size={42} font={ff} />
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+
+                  {showWhatIf && key === 'TVK' && (
+                    <div style={{
+                      alignSelf: 'end',
+                      color: '#0F172A',
+                      borderTop: `4px solid ${color}`,
+                      paddingTop: 18,
+                      fontSize: 28,
+                      fontWeight: 950,
+                      lineHeight: 1.18,
+                      textAlign: 'center',
+                    }}>
+                      CPI + CPI(M) + VCK gives TVK+ a majority
+                    </div>
                   )}
-
-                  {whatIfMembers.map((party) => {
-                    const cfg = INDIVIDUAL_PARTIES[party]
-                    if (!cfg) return null
-                    const photoUrl = settings[cfg.photoKey]
-                    const won = gW(party)
-
-                    return (
-                      <div
-                        key={`what-if-${party}`}
-                        style={{
-                          background: cfg.color,
-                          borderRadius: 12,
-                          minHeight: 98,
-                          display: 'grid',
-                          gridTemplateColumns: '50px minmax(0, 1fr) 66px',
-                          alignItems: 'center',
-                          gap: 14,
-                          padding: '0 14px 0 0',
-                          color: '#fff',
-                          overflow: 'hidden',
-                          opacity: 0.5,
-                          boxShadow: '0 5px 12px rgba(15,23,42,0.12)',
-                        }}
-                      >
-                        <Photo
-                          photoUrl={photoUrl}
-                          fallback={cfg.short}
-                          color="#fff"
-                          size={98}
-                          style={{ height: '100%', width: 50, objectFit: 'cover', objectPosition: 'top' }}
-                        />
-                        <div style={{
-                          minWidth: 0,
-                          fontSize: 38,
-                          fontWeight: 950,
-                          lineHeight: 1,
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                        }}>
-                          {party}
-                        </div>
-                        <div style={{ textAlign: 'right' }}>
-                          <AnimNum val={won} color="#fff" size={42} font={ff} />
-                        </div>
-                      </div>
-                    )
-                  })}
                 </div>
 
                 <div
