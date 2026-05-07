@@ -32,30 +32,6 @@ function FullDashboard({ mode = 'alliance' }) {
     return () => window.removeEventListener('resize', update)
   }, [])
 
-  // Parliament layout constants for 1080x1920 portrait canvas
-  const W = 1000, H = 600
-  const CX = W / 2, CY = H - 50
-  const DOT_R = 14
-
-  const ROWS = [
-    { r: 180, count: 17 },
-    { r: 230, count: 24 },
-    { r: 280, count: 31 },
-    { r: 330, count: 38 },
-    { r: 380, count: 44 },
-    { r: 430, count: 50 },
-    { r: 480, count: 30 },
-  ]
-
-  const rawDots = []
-  ROWS.forEach(({ r, count }) => {
-    for (let i = 0; i < count; i++) {
-      const angle = Math.PI - (i / (count - 1)) * Math.PI
-      rawDots.push({ x: CX + r * Math.cos(angle), y: CY - r * Math.sin(angle), angle })
-    }
-  })
-  const dots = [...rawDots].sort((a, b) => b.angle - a.angle)
-
   return (
     <div style={{
       width: '100vw', height: '100vh',
@@ -795,66 +771,15 @@ function DotMapPage() {
         </div>
 
         <div style={{
-          width: '100%',
-          aspectRatio: '1000 / 600',
-          background: 'rgba(255,255,255,0.6)',
+          width: '100%', height: 900,
+          background: 'rgba(255,255,255,0.85)',
           borderRadius: 40,
-          padding: '80px 20px 20px',
-          backdropFilter: 'blur(12px)',
-          boxShadow: '0 30px 60px rgba(0,0,0,0.12)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative',
+          padding: 40,
+          backdropFilter: 'blur(15px)',
+          boxShadow: '0 40px 80px rgba(0,0,0,0.15)',
+          overflow: 'hidden',
         }}>
-          <svg width="100%" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet">
-            <line x1={CX} y1={50} x2={CX} y2={H} stroke="#475569" strokeWidth={3} strokeDasharray="10,6" opacity={0.4} />
-            <rect x={CX - 50} y={5} width={100} height={46} rx={10} fill="#DC2626" />
-            <text x={CX} y={38} textAnchor="middle" fontSize={32} fill="#fff" fontWeight="900">118</text>
-
-            {dots.map((d, idx) => {
-              const cNumber = idx + 1
-              const c = constituencies.find(item => 
-                item.constituency_number === cNumber || item.id === cNumber
-              ) || {}
-              const lp = PARTY_DEFAULTS[c.leading_party] || INDIVIDUAL_PARTIES[c.leading_party] || { color: '#CBD5E1' }
-              const isWon = c.status === 'declared'
-
-              return (
-                <circle 
-                  key={idx} 
-                  cx={d.x} cy={d.y} 
-                  r={isWon ? DOT_R + 3 : DOT_R} 
-                  fill={lp.color}
-                  stroke={isWon ? '#fff' : 'rgba(255,255,255,0.5)'}
-                  strokeWidth={isWon ? 3 : 1}
-                  style={{ transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
-                />
-              )
-            })}
-          </svg>
-        </div>
-
-        <div style={{
-          marginTop: 120,
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: 30,
-          padding: '40px 60px',
-          background: 'rgba(255,255,255,0.95)',
-          borderRadius: 30,
-          boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
-        }}>
-          {Object.entries(PARTY_DEFAULTS).map(([p, cfg]) => (
-            <div key={p} style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-              <div style={{ 
-                width: 40, height: 40, borderRadius: '50%', 
-                background: cfg.color, border: '4px solid #fff', 
-                boxShadow: '0 2px 6px rgba(0,0,0,0.1)' 
-              }} />
-              <div style={{ fontSize: 38, fontWeight: 900, color: '#1E293B' }}>{cfg.short}</div>
-            </div>
-          ))}
+          <CenterViews mode="individual" />
         </div>
 
         <div style={{ marginTop: 'auto', marginBottom: 60, textAlign: 'center' }}>
