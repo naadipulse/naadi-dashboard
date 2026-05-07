@@ -523,7 +523,7 @@ function AlliancePage() {
                         />
                         <div style={{
                           minWidth: 0,
-                          fontSize: 38,
+                          fontSize: 37,
                           fontWeight: 950,
                           lineHeight: 1,
                           whiteSpace: 'nowrap',
