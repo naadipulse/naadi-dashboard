@@ -615,10 +615,7 @@ function AlliancePage({ showWhatIf = false }) {
                               }}>
                                 {party}
                               </div>
-                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
-                                <span style={{ fontSize: 34, fontWeight: 900, lineHeight: 1, color: fadedMembers.length > 0 ? '#FF4444' : '#22C55E' }}>
-                                  {fadedMembers.length > 0 ? '↓' : '↑'}
-                                </span>
+                              <div style={{ textAlign: 'right' }}>
                                 <AnimNum val={won} color="#fff" size={34} font={ff} />
                               </div>
                             </div>
