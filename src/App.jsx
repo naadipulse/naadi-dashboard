@@ -486,10 +486,11 @@ function AlliancePage() {
                   minHeight: 0,
                   overflow: 'hidden',
                 }}>
-                  {members.map((party) => {
+                  {[...members].sort((a, b) => gW(b) - gW(a)).map((party) => {
                     const cfg = INDIVIDUAL_PARTIES[party]
                     if (!cfg) return null
                     const photoUrl = settings[cfg.photoKey]
+                    const won = gW(party)
 
                     return (
                       <div
@@ -499,7 +500,7 @@ function AlliancePage() {
                           borderRadius: 12,
                           minHeight: 98,
                           display: 'grid',
-                          gridTemplateColumns: '72px 1fr',
+                          gridTemplateColumns: '72px minmax(0, 1fr) 58px',
                           alignItems: 'center',
                           gap: 10,
                           padding: '0 12px 0 0',
@@ -517,7 +518,7 @@ function AlliancePage() {
                         />
                         <div style={{
                           minWidth: 0,
-                          fontSize: 34,
+                          fontSize: 32,
                           fontWeight: 950,
                           lineHeight: 1,
                           whiteSpace: 'nowrap',
@@ -525,6 +526,15 @@ function AlliancePage() {
                           textOverflow: 'ellipsis',
                         }}>
                           {party}
+                        </div>
+                        <div
+                          key={`${party}-${won}-${animationTick}`}
+                          style={{
+                            textAlign: 'right',
+                            animation: 'numFlip 0.8s ease-out',
+                          }}
+                        >
+                          <AnimNum val={won} color="#fff" size={38} font={ff} />
                         </div>
                       </div>
                     )
