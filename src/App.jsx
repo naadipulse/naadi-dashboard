@@ -499,21 +499,21 @@ function AlliancePage({ showWhatIf = false }) {
                 </div>
 
                 <div style={{
-                  display: 'grid',
-                  gridTemplateRows: 'auto 1fr',
+                  display: 'flex',
+                  flexDirection: 'column',
                   gap: 14,
                   padding: '20px 14px',
                   minHeight: 0,
                   overflow: 'hidden',
                 }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                    {[...members].sort((a, b) => gW(b) - gW(a)).map((party) => {
+                  {[...members]
+                    .filter(m => !showWhatIf || !fadedMembers.includes(m))
+                    .sort((a, b) => gW(b) - gW(a))
+                    .map((party) => {
                       const cfg = INDIVIDUAL_PARTIES[party]
                       if (!cfg) return null
                       const photoUrl = settings[cfg.photoKey]
                       const won = gW(party)
-                      const isFaded = fadedMembers.includes(party)
-
                       return (
                         <div
                           key={party}
@@ -528,7 +528,6 @@ function AlliancePage({ showWhatIf = false }) {
                             padding: '0 14px 0 0',
                             color: '#fff',
                             overflow: 'hidden',
-                            opacity: isFaded ? 0.5 : 1,
                             boxShadow: '0 5px 12px rgba(15,23,42,0.12)',
                           }}
                         >
@@ -552,101 +551,105 @@ function AlliancePage({ showWhatIf = false }) {
                           </div>
                           <div
                             key={`${party}-${won}-${animationTick}`}
-                            style={{
-                              textAlign: 'right',
-                              animation: 'numFlip 0.8s ease-out',
-                            }}
+                            style={{ textAlign: 'right', animation: 'numFlip 0.8s ease-out' }}
                           >
                             <AnimNum val={won} color="#fff" size={42} font={ff} />
                           </div>
                         </div>
                       )
-                    })}
+                    })
+                  }
 
-                  {whatIfMembers.length > 0 && (
-                    <div style={{
-                      margin: '2px 0 -2px',
-                      textAlign: 'center',
-                      fontSize: 24,
-                      fontWeight: 950,
-                      letterSpacing: 0,
-                      color,
-                      opacity: 0.65,
-                    }}>
-                      WHAT IF
+                  {showWhatIf && (fadedMembers.length > 0 || whatIfMembers.length > 0) && (
+                    <div
+                      key={`${key}-actual-inline-${animationTick}`}
+                      style={{
+                        background: color,
+                        borderRadius: 10,
+                        padding: '8px 18px',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        color: '#fff',
+                        animation: 'numFlip 0.8s ease-out',
+                      }}
+                    >
+                      <span style={{ fontSize: 22, fontWeight: 950 }}>ACTUAL</span>
+                      <AnimNum val={members.reduce((sum, p) => sum + gW(p), 0)} color="#fff" size={40} font={ff} />
                     </div>
-                    )}
+                  )}
 
-                    {showWhatIf && key === 'DMK+' && fadedMembers.length > 0 && (
+                  {showWhatIf && (fadedMembers.length > 0 || whatIfMembers.length > 0) && (
+                    <>
                       <div style={{
-                        margin: '2px 0 -2px',
                         textAlign: 'center',
                         fontSize: 24,
                         fontWeight: 950,
-                        letterSpacing: 0,
                         color,
                         opacity: 0.65,
                       }}>
-                        SHIFT OUT
+                        WHAT IF
                       </div>
-                    )}
 
-                    {whatIfMembers.map((party) => {
-                      const cfg = INDIVIDUAL_PARTIES[party]
-                      if (!cfg) return null
-                      const photoUrl = settings[cfg.photoKey]
-                      const won = gW(party)
-
-                      return (
-                        <div
-                          key={`what-if-${party}`}
-                          style={{
-                            background: cfg.color,
-                            borderRadius: 12,
-                            minHeight: 98,
-                            display: 'grid',
-                            gridTemplateColumns: '50px minmax(0, 1fr) 66px',
-                            alignItems: 'center',
-                            gap: 14,
-                            padding: '0 14px 0 0',
-                            color: '#fff',
-                            overflow: 'hidden',
-                            opacity: 0.5,
-                            boxShadow: '0 5px 12px rgba(15,23,42,0.12)',
-                          }}
-                        >
-                          <Photo
-                            photoUrl={photoUrl}
-                            fallback={cfg.short}
-                            color="#fff"
-                            size={98}
-                            style={{ height: '100%', width: 50, objectFit: 'cover', objectPosition: 'top' }}
-                          />
-                          <div style={{
-                            minWidth: 0,
-                            fontSize: 38,
-                            fontWeight: 950,
-                            lineHeight: 1,
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                          }}>
-                            {party}
-                          </div>
-                          <div style={{ textAlign: 'right' }}>
-                            <AnimNum val={won} color="#fff" size={42} font={ff} />
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
+                      {(fadedMembers.length > 0 ? [...fadedMembers] : [...whatIfMembers])
+                        .sort((a, b) => gW(b) - gW(a))
+                        .map((party) => {
+                          const cfg = INDIVIDUAL_PARTIES[party]
+                          if (!cfg) return null
+                          const photoUrl = settings[cfg.photoKey]
+                          const won = gW(party)
+                          return (
+                            <div
+                              key={`whatif-${party}`}
+                              style={{
+                                background: cfg.color,
+                                borderRadius: 12,
+                                minHeight: 98,
+                                display: 'grid',
+                                gridTemplateColumns: '50px minmax(0, 1fr) 66px',
+                                alignItems: 'center',
+                                gap: 14,
+                                padding: '0 14px 0 0',
+                                color: '#fff',
+                                overflow: 'hidden',
+                                opacity: 0.5,
+                                boxShadow: '0 5px 12px rgba(15,23,42,0.12)',
+                              }}
+                            >
+                              <Photo
+                                photoUrl={photoUrl}
+                                fallback={cfg.short}
+                                color="#fff"
+                                size={98}
+                                style={{ height: '100%', width: 50, objectFit: 'cover', objectPosition: 'top' }}
+                              />
+                              <div style={{
+                                minWidth: 0,
+                                fontSize: 38,
+                                fontWeight: 950,
+                                lineHeight: 1,
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                              }}>
+                                {party}
+                              </div>
+                              <div style={{ textAlign: 'right' }}>
+                                <AnimNum val={won} color="#fff" size={42} font={ff} />
+                              </div>
+                            </div>
+                          )
+                        })
+                      }
+                    </>
+                  )}
 
                   {showWhatIf && key === 'TVK' && (
                     <div style={{
-                      alignSelf: 'end',
                       color: '#0F172A',
                       borderTop: `4px solid ${color}`,
-                      paddingTop: 18,
+                      paddingTop: 10,
+                      marginTop: 4,
                       fontSize: 28,
                       fontWeight: 950,
                       lineHeight: 1.18,
@@ -669,23 +672,19 @@ function AlliancePage({ showWhatIf = false }) {
                     animation: 'numFlip 0.8s ease-out',
                   }}
                 >
-                  {(whatIfTotal || fadedMembers.length > 0) && (
-                    <div style={{ opacity: 0.5, lineHeight: 0.95, textAlign: 'center' }}>
-                      <div style={{ fontSize: 17, fontWeight: 950, marginBottom: 2 }}>WHAT IF</div>
+                  {showWhatIf && (whatIfTotal || fadedMembers.length > 0) ? (
+                    <>
+                      <div style={{ fontSize: 17, fontWeight: 950, lineHeight: 1, marginBottom: 2 }}>WHAT IF</div>
                       <AnimNum
-                        val={whatIfTotal || members.reduce((sum, party) => (
-                          fadedMembers.includes(party) ? sum : sum + gW(party)
-                        ), 0)}
+                        val={whatIfTotal || members.reduce((sum, p) => fadedMembers.includes(p) ? sum : sum + gW(p), 0)}
                         color="#fff"
-                        size={48}
+                        size={72}
                         font={ff}
                       />
-                    </div>
+                    </>
+                  ) : (
+                    <AnimNum val={members.reduce((sum, p) => sum + gW(p), 0)} color="#fff" size={72} font={ff} />
                   )}
-                  {(whatIfTotal || fadedMembers.length > 0) && (
-                    <div style={{ fontSize: 17, fontWeight: 950, lineHeight: 1, marginTop: 3 }}>ACTUAL</div>
-                  )}
-                  <AnimNum val={members.reduce((sum, party) => sum + gW(party), 0)} color="#fff" size={72} font={ff} />
                 </div>
               </div>
             ))}
