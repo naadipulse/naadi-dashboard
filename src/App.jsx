@@ -500,10 +500,10 @@ function AlliancePage() {
                           borderRadius: 12,
                           minHeight: 98,
                           display: 'grid',
-                          gridTemplateColumns: '72px minmax(0, 1fr) 58px',
+                          gridTemplateColumns: '72px minmax(0, 1fr) 70px',
                           alignItems: 'center',
                           gap: 10,
-                          padding: '0 12px 0 0',
+                          padding: '0 22px 0 0',
                           color: '#fff',
                           overflow: 'hidden',
                           boxShadow: '0 5px 12px rgba(15,23,42,0.12)',
@@ -514,7 +514,7 @@ function AlliancePage() {
                           fallback={cfg.short}
                           color="#fff"
                           size={98}
-                          style={{ height: '100%', width: 72, objectFit: 'cover', objectPosition: 'top' }}
+                          style={{ height: '100%', width: 72, objectFit: 'contain', objectPosition: 'center' }}
                         />
                         <div style={{
                           minWidth: 0,
