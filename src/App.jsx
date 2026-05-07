@@ -539,7 +539,7 @@ function AlliancePage() {
                             animation: 'numFlip 0.8s ease-out',
                           }}
                         >
-                          <AnimNum val={won} color="#fff" size={42} font={ff} />
+                          <AnimNum val={won} color="#fff" size={41} font={ff} />
                         </div>
                       </div>
                     )
