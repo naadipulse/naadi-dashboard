@@ -370,15 +370,28 @@ function PartyWisePage() {
   )
 }
 
-function AlliancePage() {
+function AlliancePage({ showWhatIf = false }) {
   const settings = useSettings()
   const { gW } = useTally()
   const ff = settings.font_family || 'Segoe UI'
   const [scale, setScale] = useState(1)
   const [animationTick, setAnimationTick] = useState(0)
   const alliances = [
-    { key: 'TVK', display: 'TVK+', color: PARTY_DEFAULTS.TVK.color, members: ['TVK', 'INC'], whatIfMembers: ['CPI', 'CPI(M)', 'VCK'], whatIfTotal: 119 },
-    { key: 'DMK+', display: 'DMK+', color: PARTY_DEFAULTS['DMK+'].color, members: ['DMK', 'DMDK', 'IUML', 'CPI', 'VCK', 'CPI(M)'], fadedMembers: ['CPI', 'CPI(M)', 'VCK'] },
+    {
+      key: 'TVK',
+      display: 'TVK+',
+      color: PARTY_DEFAULTS.TVK.color,
+      members: ['TVK', 'INC'],
+      whatIfMembers: showWhatIf ? ['CPI', 'CPI(M)', 'VCK'] : [],
+      whatIfTotal: showWhatIf ? 119 : null,
+    },
+    {
+      key: 'DMK+',
+      display: 'DMK+',
+      color: PARTY_DEFAULTS['DMK+'].color,
+      members: ['DMK', 'DMDK', 'IUML', 'CPI', 'VCK', 'CPI(M)'],
+      fadedMembers: showWhatIf ? ['CPI', 'CPI(M)', 'VCK'] : [],
+    },
     { key: 'AIADMK+', display: 'ADMK+', color: PARTY_DEFAULTS['AIADMK+'].color, members: ['ADMK', 'PMK', 'BJP', 'AMMK'] },
   ]
 
@@ -443,7 +456,9 @@ function AlliancePage() {
             textShadow: '0 2px 8px rgba(255,255,255,0.75)',
           }}>
             <div style={{ fontSize: 62 }}>Tamil Nadu</div>
-            <div style={{ fontSize: 52, marginTop: 10 }}>Post Election Alliance*</div>
+            <div style={{ fontSize: 52, marginTop: 10 }}>
+              {showWhatIf ? 'What If Alliance Scenario*' : 'Post Election Alliance'}
+            </div>
           </div>
 
           <div style={{
@@ -665,5 +680,6 @@ export default function App() {
   if (path === '/winners') return <FullDashboard mode="individual" />
   if (path === '/partywise') return <PartyWisePage />
   if (path === '/alliance') return <AlliancePage />
+  if (path === '/whatif') return <AlliancePage showWhatIf />
   return <FullDashboard mode="alliance" />
 }
