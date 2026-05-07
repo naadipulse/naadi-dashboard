@@ -504,7 +504,7 @@ function AlliancePage() {
                           borderRadius: 12,
                           minHeight: 98,
                           display: 'grid',
-                          gridTemplateColumns: '58px minmax(0, 1fr) 54px',
+                          gridTemplateColumns: '54px minmax(0, 1fr) 60px',
                           alignItems: 'center',
                           gap: 8,
                           padding: '0 14px 0 0',
@@ -522,7 +522,7 @@ function AlliancePage() {
                         />
                         <div style={{
                           minWidth: 0,
-                          fontSize: 30,
+                          fontSize: 34,
                           fontWeight: 950,
                           lineHeight: 1,
                           whiteSpace: 'nowrap',
@@ -538,7 +538,7 @@ function AlliancePage() {
                             animation: 'numFlip 0.8s ease-out',
                           }}
                         >
-                          <AnimNum val={won} color="#fff" size={34} font={ff} />
+                          <AnimNum val={won} color="#fff" size={38} font={ff} />
                         </div>
                       </div>
                     )
