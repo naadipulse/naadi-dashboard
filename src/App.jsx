@@ -692,6 +692,7 @@ function AlliancePage({ showWhatIf = false }) {
 function DotMapPage() {
   const settings = useSettings()
   const constituencies = useConstituencies()
+  const { gT } = useTally()
   const ff = settings.font_family || 'Segoe UI'
   const [scale, setScale] = useState(1)
 
@@ -706,29 +707,11 @@ function DotMapPage() {
     return () => window.removeEventListener('resize', update)
   }, [])
 
-  // Parliament layout constants for 1080x1920 portrait canvas
-  const W = 1000, H = 600
-  const CX = W / 2, CY = H - 50
-  const DOT_R = 14
-
-  const ROWS = [
-    { r: 180, count: 17 },
-    { r: 230, count: 24 },
-    { r: 280, count: 31 },
-    { r: 330, count: 38 },
-    { r: 380, count: 44 },
-    { r: 430, count: 50 },
-    { r: 480, count: 30 },
+  const alliances = [
+    { key: 'TVK',     display: 'TVK+',   color: PARTY_DEFAULTS['TVK'].color, members: ['TVK', 'INC'] },
+    { key: 'DMK+',    display: 'DMK+',   color: PARTY_DEFAULTS['DMK+'].color, members: ['DMK', 'DMDK', 'IUML', 'CPI', 'VCK', 'CPI(M)'] },
+    { key: 'AIADMK+', display: 'ADMK+',  color: PARTY_DEFAULTS['AIADMK+'].color, members: ['ADMK', 'PMK', 'BJP', 'AMMK'] },
   ]
-
-  const rawDots = []
-  ROWS.forEach(({ r, count }) => {
-    for (let i = 0; i < count; i++) {
-      const angle = Math.PI - (i / (count - 1)) * Math.PI
-      rawDots.push({ x: CX + r * Math.cos(angle), y: CY - r * Math.sin(angle), angle })
-    }
-  })
-  const dots = [...rawDots].sort((a, b) => b.angle - a.angle)
 
   return (
     <div style={{
@@ -780,6 +763,48 @@ function DotMapPage() {
           overflow: 'hidden',
         }}>
           <CenterViews mode="individual" />
+        </div>
+
+        <div style={{
+          marginTop: 60,
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 20,
+        }}>
+          {alliances.map(alliance => (
+            <div key={alliance.key} style={{
+              background: 'rgba(255,255,255,0.95)',
+              borderRadius: 24,
+              padding: '16px 30px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 30,
+              boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
+              borderLeft: `12px solid ${alliance.color}`
+            }}>
+              <div style={{ minWidth: 150, fontSize: 36, fontWeight: 950, color: alliance.color }}>
+                {alliance.display}
+              </div>
+              <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+                {alliance.members.map(p => {
+                  const cfg = INDIVIDUAL_PARTIES[p]
+                  if (!cfg) return null
+                  const count = gT(p)
+                  return (
+                    <div key={p} style={{
+                      display: 'flex', alignItems: 'center', gap: 10,
+                      background: '#fff', padding: '10px 18px',
+                      borderRadius: 14, border: `1px solid ${cfg.color}22`,
+                    }}>
+                      <div style={{ fontSize: 26, fontWeight: 800, color: '#334155' }}>{cfg.short}</div>
+                      <div style={{ fontSize: 32, fontWeight: 950, color: cfg.color }}>{count}</div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
         </div>
 
         <div style={{ marginTop: 'auto', marginBottom: 60, textAlign: 'center' }}>
