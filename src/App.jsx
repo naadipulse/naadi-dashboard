@@ -378,8 +378,8 @@ function AlliancePage() {
   const [animationTick, setAnimationTick] = useState(0)
   const alliances = [
     { key: 'TVK', display: 'TVK+', color: PARTY_DEFAULTS.TVK.color, members: ['TVK', 'INC'] },
-    { key: 'DMK+', display: 'DMK+', color: PARTY_DEFAULTS['DMK+'].color, members: ['DMK', 'PMK', 'IUML', 'CPI', 'VCK', 'CPI(M)'] },
-    { key: 'AIADMK+', display: 'ADMK+', color: PARTY_DEFAULTS['AIADMK+'].color, members: ['ADMK', 'BJP', 'DMDK', 'AMMK'] },
+    { key: 'DMK+', display: 'DMK+', color: PARTY_DEFAULTS['DMK+'].color, members: ['DMK', 'DMDK', 'IUML', 'CPI', 'VCK', 'CPI(M)'] },
+    { key: 'AIADMK+', display: 'ADMK+', color: PARTY_DEFAULTS['AIADMK+'].color, members: ['ADMK', 'PMK', 'BJP', 'AMMK'] },
   ]
 
   useEffect(() => {
@@ -489,7 +489,7 @@ function AlliancePage() {
                   {members.map((party) => {
                     const cfg = INDIVIDUAL_PARTIES[party]
                     if (!cfg) return null
-                    const logoUrl = settings[cfg.logoKey] || cfg.logo
+                    const photoUrl = settings[cfg.photoKey]
 
                     return (
                       <div
@@ -502,27 +502,19 @@ function AlliancePage() {
                           gridTemplateColumns: '72px 1fr',
                           alignItems: 'center',
                           gap: 10,
-                          padding: '0 12px',
+                          padding: '0 12px 0 0',
                           color: '#fff',
+                          overflow: 'hidden',
                           boxShadow: '0 5px 12px rgba(15,23,42,0.12)',
                         }}
                       >
-                        <div style={{
-                          width: 58,
-                          height: 58,
-                          borderRadius: 10,
-                          background: 'rgba(255,255,255,0.92)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          overflow: 'hidden',
-                        }}>
-                          {logoUrl ? (
-                            <img src={logoUrl} alt="" style={{ maxWidth: '82%', maxHeight: '82%', objectFit: 'contain' }} />
-                          ) : (
-                            <span style={{ color: cfg.color, fontSize: 18, fontWeight: 950 }}>{cfg.short}</span>
-                          )}
-                        </div>
+                        <Photo
+                          photoUrl={photoUrl}
+                          fallback={cfg.short}
+                          color="#fff"
+                          size={98}
+                          style={{ height: '100%', width: 72, objectFit: 'cover', objectPosition: 'top' }}
+                        />
                         <div style={{
                           minWidth: 0,
                           fontSize: 34,
