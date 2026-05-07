@@ -377,9 +377,9 @@ function AlliancePage() {
   const [scale, setScale] = useState(1)
   const [animationTick, setAnimationTick] = useState(0)
   const alliances = [
-    { key: 'TVK', display: 'TVK+', members: ['TVK', 'INC'] },
-    { key: 'DMK+', display: 'DMK+', members: ['DMK+'] },
-    { key: 'AIADMK+', display: 'ADMK+', members: ['AIADMK+'] },
+    { key: 'TVK', display: 'TVK+', color: PARTY_DEFAULTS.TVK.color, members: ['TVK', 'INC'] },
+    { key: 'DMK+', display: 'DMK+', color: PARTY_DEFAULTS['DMK+'].color, members: ['DMK', 'PMK', 'IUML', 'CPI', 'VCK', 'CPI(M)'] },
+    { key: 'AIADMK+', display: 'ADMK+', color: PARTY_DEFAULTS['AIADMK+'].color, members: ['ADMK', 'BJP', 'DMDK', 'AMMK'] },
   ]
 
   useEffect(() => {
@@ -426,8 +426,8 @@ function AlliancePage() {
         <div style={{
           height: 1536,
           display: 'grid',
-          gridTemplateRows: '140px repeat(3, 1fr)',
-          gap: 28,
+          gridTemplateRows: '140px 1fr',
+          gap: 26,
           padding: '0 54px',
           boxSizing: 'border-box',
         }}>
@@ -442,66 +442,119 @@ function AlliancePage() {
             textAlign: 'center',
             textShadow: '0 2px 8px rgba(255,255,255,0.75)',
           }}>
-            கூட்டணி வாரி வெற்றி இடங்கள்
+            Post Election Alliance
           </div>
 
-          {alliances.map(({ key, display, members }) => {
-            const cfg = PARTY_DEFAULTS[key]
-            const won = members.reduce((sum, party) => sum + gW(party), 0)
-            const photoUrl = settings[cfg.photoKey]
-
-            return (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: 22,
+            minHeight: 0,
+          }}>
+            {alliances.map(({ key, display, color, members }) => (
               <div
                 key={key}
                 style={{
-                  background: cfg.color,
+                  background: 'rgba(255,255,255,0.94)',
                   borderRadius: 18,
                   display: 'grid',
-                  gridTemplateColumns: '260px minmax(0, 1fr) 250px',
-                  alignItems: 'center',
-                  gap: 30,
-                  padding: '0 42px 0 0',
-                  color: '#fff',
-                  position: 'relative',
+                  gridTemplateRows: '112px 1fr 112px',
+                  minHeight: 0,
                   overflow: 'hidden',
-                  boxShadow: '0 10px 26px rgba(15,23,42,0.2)',
+                  boxShadow: '0 10px 26px rgba(15,23,42,0.16)',
+                  border: `5px solid ${color}`,
                 }}
               >
-                <Photo
-                  photoUrl={photoUrl}
-                  fallback={cfg.short}
-                  color="#fff"
-                  size={280}
-                  style={{ height: '100%', width: 260, zIndex: 1, objectFit: 'cover' }}
-                />
                 <div style={{
-                  zIndex: 1,
-                  minWidth: 0,
-                  fontSize: 92,
+                  background: color,
+                  color: '#fff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 58,
                   fontWeight: 950,
                   lineHeight: 1,
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
                 }}>
                   {display}
                 </div>
+
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 16,
+                  padding: '20px 14px',
+                  minHeight: 0,
+                  overflow: 'hidden',
+                }}>
+                  {members.map((party) => {
+                    const cfg = INDIVIDUAL_PARTIES[party]
+                    if (!cfg) return null
+                    const logoUrl = settings[cfg.logoKey] || cfg.logo
+
+                    return (
+                      <div
+                        key={party}
+                        style={{
+                          background: cfg.color,
+                          borderRadius: 12,
+                          minHeight: 98,
+                          display: 'grid',
+                          gridTemplateColumns: '72px 1fr',
+                          alignItems: 'center',
+                          gap: 10,
+                          padding: '0 12px',
+                          color: '#fff',
+                          boxShadow: '0 5px 12px rgba(15,23,42,0.12)',
+                        }}
+                      >
+                        <div style={{
+                          width: 58,
+                          height: 58,
+                          borderRadius: 10,
+                          background: 'rgba(255,255,255,0.92)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          overflow: 'hidden',
+                        }}>
+                          {logoUrl ? (
+                            <img src={logoUrl} alt="" style={{ maxWidth: '82%', maxHeight: '82%', objectFit: 'contain' }} />
+                          ) : (
+                            <span style={{ color: cfg.color, fontSize: 18, fontWeight: 950 }}>{cfg.short}</span>
+                          )}
+                        </div>
+                        <div style={{
+                          minWidth: 0,
+                          fontSize: 34,
+                          fontWeight: 950,
+                          lineHeight: 1,
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}>
+                          {party}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+
                 <div
-                  key={`${key}-${won}-${animationTick}`}
+                  key={`${key}-${members.map(gW).join('-')}-${animationTick}`}
                   style={{
-                    zIndex: 1,
-                    textAlign: 'right',
+                    background: color,
+                    color: '#fff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     animation: 'numFlip 0.8s ease-out',
-                    display: 'inline-block',
-                    backfaceVisibility: 'hidden',
-                    transformStyle: 'preserve-3d',
                   }}
                 >
-                  <AnimNum val={won} color="#fff" size={118} font={ff} />
+                  <AnimNum val={members.reduce((sum, party) => sum + gW(party), 0)} color="#fff" size={72} font={ff} />
                 </div>
               </div>
-            )
-          })}
+            ))}
+          </div>
         </div>
         <div style={{ height: 192 }} />
         <style>{`
