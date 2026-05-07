@@ -540,7 +540,7 @@ function AlliancePage({ showWhatIf = false }) {
                           />
                           <div style={{
                             minWidth: 0,
-                            fontSize: 34,
+                            fontSize: 30,
                             fontWeight: 950,
                             lineHeight: 1,
                             whiteSpace: 'nowrap',
@@ -593,7 +593,7 @@ function AlliancePage({ showWhatIf = false }) {
                                 padding: '0 14px 0 0',
                                 color: '#fff',
                                 overflow: 'hidden',
-                                opacity: 0,
+                                opacity: 1,
                                 boxShadow: '0 5px 12px rgba(15,23,42,0.12)',
                               }}
                             >
@@ -606,7 +606,7 @@ function AlliancePage({ showWhatIf = false }) {
                               />
                               <div style={{
                                 minWidth: 0,
-                                fontSize: 34,
+                                fontSize: 30,
                                 fontWeight: 950,
                                 lineHeight: 1,
                                 whiteSpace: 'nowrap',
