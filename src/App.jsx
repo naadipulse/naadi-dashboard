@@ -464,7 +464,7 @@ function AlliancePage({ showWhatIf = false }) {
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: 22,
+            gap: 12,
             minHeight: 0,
           }}>
             {alliances.map(({ key, display, color, members, whatIfMembers = [], whatIfTotal, fadedMembers = [] }) => (
