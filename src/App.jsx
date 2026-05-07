@@ -563,7 +563,7 @@ function AlliancePage({ showWhatIf = false }) {
                       )
                     })}
 
-                    {whatIfMembers.length > 0 && (
+                  {whatIfMembers.length > 0 && (
                     <div style={{
                       margin: '2px 0 -2px',
                       textAlign: 'center',
@@ -575,6 +575,20 @@ function AlliancePage({ showWhatIf = false }) {
                     }}>
                       WHAT IF
                     </div>
+                    )}
+
+                    {showWhatIf && key === 'DMK+' && fadedMembers.length > 0 && (
+                      <div style={{
+                        margin: '2px 0 -2px',
+                        textAlign: 'center',
+                        fontSize: 24,
+                        fontWeight: 950,
+                        letterSpacing: 0,
+                        color,
+                        opacity: 0.65,
+                      }}>
+                        SHIFT OUT
+                      </div>
                     )}
 
                     {whatIfMembers.map((party) => {
@@ -638,7 +652,7 @@ function AlliancePage({ showWhatIf = false }) {
                       lineHeight: 1.18,
                       textAlign: 'center',
                     }}>
-                      CPI + CPI(M) + VCK gives TVK+ a majority
+                      Left parties shift - TVK+ majority
                     </div>
                   )}
                 </div>
@@ -656,7 +670,8 @@ function AlliancePage({ showWhatIf = false }) {
                   }}
                 >
                   {(whatIfTotal || fadedMembers.length > 0) && (
-                    <div style={{ opacity: 0.5, lineHeight: 0.9 }}>
+                    <div style={{ opacity: 0.5, lineHeight: 0.95, textAlign: 'center' }}>
+                      <div style={{ fontSize: 17, fontWeight: 950, marginBottom: 2 }}>WHAT IF</div>
                       <AnimNum
                         val={whatIfTotal || members.reduce((sum, party) => (
                           fadedMembers.includes(party) ? sum : sum + gW(party)
@@ -666,6 +681,9 @@ function AlliancePage({ showWhatIf = false }) {
                         font={ff}
                       />
                     </div>
+                  )}
+                  {(whatIfTotal || fadedMembers.length > 0) && (
+                    <div style={{ fontSize: 17, fontWeight: 950, lineHeight: 1, marginTop: 3 }}>ACTUAL</div>
                   )}
                   <AnimNum val={members.reduce((sum, party) => sum + gW(party), 0)} color="#fff" size={72} font={ff} />
                 </div>
