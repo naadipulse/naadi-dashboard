@@ -487,14 +487,21 @@ function AlliancePage({ showWhatIf = false }) {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  gap: 14,
                   fontSize: 50,
                   fontWeight: 950,
                   lineHeight: 1,
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
-                  textOverflow: 'ellipsis',
                   padding: '0 8px',
                 }}>
+                  {(() => {
+                    const mainCfg = PARTY_DEFAULTS[key]
+                    const logoSrc = mainCfg ? (settings[mainCfg.logoKey] || mainCfg.logo) : null
+                    return logoSrc ? (
+                      <img src={logoSrc} alt="" style={{ height: 72, width: 'auto', objectFit: 'contain' }} />
+                    ) : null
+                  })()}
                   {display}
                 </div>
 
@@ -682,6 +689,127 @@ function AlliancePage({ showWhatIf = false }) {
   )
 }
 
+function DotMapPage() {
+  const settings = useSettings()
+  const constituencies = useConstituencies()
+  const ff = settings.font_family || 'Segoe UI'
+  const [scale, setScale] = useState(1)
+
+  useEffect(() => {
+    const update = () => {
+      const sw = window.innerWidth / 1080
+      const sh = window.innerHeight / 1920
+      setScale(Math.min(sw, sh))
+    }
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
+  return (
+    <div style={{
+      width: '100vw', height: '100vh',
+      overflow: 'hidden', position: 'relative',
+      background: '#000',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }}>
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 0,
+        backgroundImage: `url('https://i.ibb.co/LDQsbQRN/thalamai.jpg')`,
+        backgroundSize: 'cover', backgroundPosition: 'center',
+      }} />
+      <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'rgba(241,245,249,0.87)' }} />
+
+      <div style={{
+        position: 'relative', zIndex: 2,
+        width: 1080, height: 1920,
+        transform: `scale(${scale})`,
+        transformOrigin: 'center center',
+        fontFamily: ff,
+        overflow: 'hidden',
+        flexShrink: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '120px 60px',
+        boxSizing: 'border-box',
+      }}>
+        <div style={{
+          fontSize: 72,
+          fontWeight: 950,
+          color: '#0F172A',
+          marginBottom: 60,
+          textAlign: 'center',
+          textShadow: '0 2px 8px rgba(255,255,255,0.75)',
+        }}>
+          தமிழக தேர்தல் களம்: 234 தொகுதிகள்
+        </div>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(13, 1fr)',
+          gap: 15,
+          padding: 40,
+          background: 'rgba(255,255,255,0.5)',
+          borderRadius: 30,
+          backdropFilter: 'blur(10px)',
+          boxShadow: '0 20px 50px rgba(0,0,0,0.1)',
+        }}>
+          {Array.from({ length: 234 }).map((_, idx) => {
+            const cNumber = idx + 1
+            const c = constituencies.find(item => 
+              item.constituency_number === cNumber || item.id === cNumber
+            ) || {}
+            const lp = PARTY_DEFAULTS[c.leading_party] || INDIVIDUAL_PARTIES[c.leading_party] || { color: '#CBD5E1' }
+            const isWon = c.status === 'declared'
+
+            return (
+              <div
+                key={idx}
+                style={{
+                  width: 54,
+                  height: 54,
+                  borderRadius: '50%',
+                  background: lp.color,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: lp.color === '#CBD5E1' ? '#64748B' : '#fff',
+                  fontSize: 14,
+                  fontWeight: 900,
+                  boxShadow: isWon ? `0 0 15px ${lp.color}` : 'none',
+                  border: isWon ? '3px solid #fff' : '2px solid rgba(255,255,255,0.4)',
+                  transition: 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  transform: isWon ? 'scale(1.15)' : 'scale(1)',
+                }}
+              >
+                {cNumber}
+              </div>
+            )
+          })}
+        </div>
+
+        <div style={{
+          marginTop: 80,
+          display: 'flex',
+          gap: 40,
+          padding: '30px 60px',
+          background: 'rgba(255,255,255,0.9)',
+          borderRadius: 24,
+          boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+        }}>
+          {Object.entries(PARTY_DEFAULTS).map(([p, cfg]) => (
+            <div key={p} style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
+              <div style={{ width: 32, height: 32, borderRadius: '50%', background: cfg.color }} />
+              <div style={{ fontSize: 32, fontWeight: 900, color: '#1E293B' }}>{cfg.short}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function App() {
   // Normalize path by removing trailing slash for robust matching
   const path = window.location.pathname.replace(/\/$/, '') || '/'
@@ -695,5 +823,6 @@ export default function App() {
   if (path === '/partywise') return <PartyWisePage />
   if (path === '/alliance') return <AlliancePage />
   if (path === '/whatif') return <AlliancePage showWhatIf />
+  if (path === '/dot') return <DotMapPage />
   return <FullDashboard mode="alliance" />
 }
