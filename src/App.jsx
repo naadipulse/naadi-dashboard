@@ -587,10 +587,10 @@ function AlliancePage({ showWhatIf = false }) {
                                 borderRadius: 12,
                                 minHeight: 98,
                                 display: 'grid',
-                                gridTemplateColumns: '50px minmax(0, 1fr) 66px',
+                                gridTemplateColumns: '50px minmax(0, 1fr)',
                                 alignItems: 'center',
                                 gap: 14,
-                                padding: '0 14px 0 0',
+                                padding: '0 18px 0 0',
                                 color: '#fff',
                                 overflow: 'hidden',
                                 opacity: 1,
@@ -606,7 +606,7 @@ function AlliancePage({ showWhatIf = false }) {
                               />
                               <div style={{
                                 minWidth: 0,
-                                fontSize: 30,
+                                fontSize: 44,
                                 fontWeight: 950,
                                 lineHeight: 1,
                                 whiteSpace: 'nowrap',
@@ -614,9 +614,6 @@ function AlliancePage({ showWhatIf = false }) {
                                 textOverflow: 'ellipsis',
                               }}>
                                 {party}
-                              </div>
-                              <div style={{ textAlign: 'right' }}>
-                                <AnimNum val={won} color="#fff" size={34} font={ff} />
                               </div>
                             </div>
                           )
