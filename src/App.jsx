@@ -5,7 +5,7 @@ import CenterViews from './CenterViews.jsx'
 import BottomBar from './BottomBar.jsx'
 import Admin from './Admin.jsx'
 import RightPanel from './RightPanel.jsx'
-import { useSettings, useTally, AnimNum, Photo, PARTY_DEFAULTS, INDIVIDUAL_PARTIES, MAJORITY } from './shared.jsx'
+import { useSettings, useTally, useConstituencies, AnimNum, Photo, PARTY_DEFAULTS, INDIVIDUAL_PARTIES, MAJORITY } from './shared.jsx'
 
 function FullDashboard({ mode = 'alliance' }) {
   const settings = useSettings()
@@ -31,6 +31,30 @@ function FullDashboard({ mode = 'alliance' }) {
     window.addEventListener('resize', update)
     return () => window.removeEventListener('resize', update)
   }, [])
+
+  // Parliament layout constants for 1080x1920 portrait canvas
+  const W = 1000, H = 600
+  const CX = W / 2, CY = H - 50
+  const DOT_R = 14
+
+  const ROWS = [
+    { r: 180, count: 17 },
+    { r: 230, count: 24 },
+    { r: 280, count: 31 },
+    { r: 330, count: 38 },
+    { r: 380, count: 44 },
+    { r: 430, count: 50 },
+    { r: 480, count: 30 },
+  ]
+
+  const rawDots = []
+  ROWS.forEach(({ r, count }) => {
+    for (let i = 0; i < count; i++) {
+      const angle = Math.PI - (i / (count - 1)) * Math.PI
+      rawDots.push({ x: CX + r * Math.cos(angle), y: CY - r * Math.sin(angle), angle })
+    }
+  })
+  const dots = [...rawDots].sort((a, b) => b.angle - a.angle)
 
   return (
     <div style={{
@@ -731,79 +755,86 @@ function DotMapPage() {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: '120px 60px',
+        padding: '160px 40px',
         boxSizing: 'border-box',
       }}>
         <div style={{
-          fontSize: 72,
+          fontSize: 76,
           fontWeight: 950,
           color: '#0F172A',
-          marginBottom: 60,
+          marginBottom: 100,
           textAlign: 'center',
           textShadow: '0 2px 8px rgba(255,255,255,0.75)',
         }}>
-          தமிழக தேர்தல் களம்: 234 தொகுதிகள்
+          சட்டமன்றத் தேர்தல் 2026<br/>
+          <span style={{ fontSize: 52, color: '#64748B' }}>234 தொகுதிகள் நிலவரம்</span>
         </div>
 
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(13, 1fr)',
-          gap: 15,
-          padding: 40,
-          background: 'rgba(255,255,255,0.5)',
-          borderRadius: 30,
-          backdropFilter: 'blur(10px)',
-          boxShadow: '0 20px 50px rgba(0,0,0,0.1)',
-        }}>
-          {Array.from({ length: 234 }).map((_, idx) => {
-            const cNumber = idx + 1
-            const c = constituencies.find(item => 
-              item.constituency_number === cNumber || item.id === cNumber
-            ) || {}
-            const lp = PARTY_DEFAULTS[c.leading_party] || INDIVIDUAL_PARTIES[c.leading_party] || { color: '#CBD5E1' }
-            const isWon = c.status === 'declared'
-
-            return (
-              <div
-                key={idx}
-                style={{
-                  width: 54,
-                  height: 54,
-                  borderRadius: '50%',
-                  background: lp.color,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: lp.color === '#CBD5E1' ? '#64748B' : '#fff',
-                  fontSize: 14,
-                  fontWeight: 900,
-                  boxShadow: isWon ? `0 0 15px ${lp.color}` : 'none',
-                  border: isWon ? '3px solid #fff' : '2px solid rgba(255,255,255,0.4)',
-                  transition: 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                  transform: isWon ? 'scale(1.15)' : 'scale(1)',
-                }}
-              >
-                {cNumber}
-              </div>
-            )
-          })}
-        </div>
-
-        <div style={{
-          marginTop: 80,
+          width: '100%',
+          aspectRatio: '1000 / 600',
+          background: 'rgba(255,255,255,0.6)',
+          borderRadius: 40,
+          padding: '80px 20px 20px',
+          backdropFilter: 'blur(12px)',
+          boxShadow: '0 30px 60px rgba(0,0,0,0.12)',
           display: 'flex',
-          gap: 40,
-          padding: '30px 60px',
-          background: 'rgba(255,255,255,0.9)',
-          borderRadius: 24,
-          boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+        }}>
+          <svg width="100%" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet">
+            <line x1={CX} y1={50} x2={CX} y2={H} stroke="#475569" strokeWidth={3} strokeDasharray="10,6" opacity={0.4} />
+            <rect x={CX - 50} y={5} width={100} height={46} rx={10} fill="#DC2626" />
+            <text x={CX} y={38} textAnchor="middle" fontSize={32} fill="#fff" fontWeight="900">118</text>
+
+            {dots.map((d, idx) => {
+              const cNumber = idx + 1
+              const c = constituencies.find(item => 
+                item.constituency_number === cNumber || item.id === cNumber
+              ) || {}
+              const lp = PARTY_DEFAULTS[c.leading_party] || INDIVIDUAL_PARTIES[c.leading_party] || { color: '#CBD5E1' }
+              const isWon = c.status === 'declared'
+
+              return (
+                <circle 
+                  key={idx} 
+                  cx={d.x} cy={d.y} 
+                  r={isWon ? DOT_R + 3 : DOT_R} 
+                  fill={lp.color}
+                  stroke={isWon ? '#fff' : 'rgba(255,255,255,0.5)'}
+                  strokeWidth={isWon ? 3 : 1}
+                  style={{ transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+                />
+              )
+            })}
+          </svg>
+        </div>
+
+        <div style={{
+          marginTop: 120,
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: 30,
+          padding: '40px 60px',
+          background: 'rgba(255,255,255,0.95)',
+          borderRadius: 30,
+          boxShadow: '0 8px 30px rgba(0,0,0,0.08)',
         }}>
           {Object.entries(PARTY_DEFAULTS).map(([p, cfg]) => (
-            <div key={p} style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
-              <div style={{ width: 32, height: 32, borderRadius: '50%', background: cfg.color }} />
-              <div style={{ fontSize: 32, fontWeight: 900, color: '#1E293B' }}>{cfg.short}</div>
+            <div key={p} style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+              <div style={{ 
+                width: 40, height: 40, borderRadius: '50%', 
+                background: cfg.color, border: '4px solid #fff', 
+                boxShadow: '0 2px 6px rgba(0,0,0,0.1)' 
+              }} />
+              <div style={{ fontSize: 38, fontWeight: 900, color: '#1E293B' }}>{cfg.short}</div>
             </div>
           ))}
+        </div>
+
+        <div style={{ marginTop: 'auto', marginBottom: 60, textAlign: 'center' }}>
+          <div style={{ fontSize: 30, color: '#94A3B8', fontWeight: 600 }}>@naadipulse • LIVE UPDATES</div>
         </div>
       </div>
     </div>
