@@ -742,31 +742,6 @@ function DotMapPage() {
         boxSizing: 'border-box',
       }}>
         <div style={{
-          fontSize: 76,
-          fontWeight: 950,
-          color: '#0F172A',
-          marginBottom: 100,
-          textAlign: 'center',
-          textShadow: '0 2px 8px rgba(255,255,255,0.75)',
-        }}>
-          சட்டமன்றத் தேர்தல் 2026<br/>
-          <span style={{ fontSize: 52, color: '#64748B' }}>234 தொகுதிகள் நிலவரம்</span>
-        </div>
-
-        <div style={{
-          width: '100%', height: 900,
-          background: 'rgba(255,255,255,0.85)',
-          borderRadius: 40,
-          padding: 40,
-          backdropFilter: 'blur(15px)',
-          boxShadow: '0 40px 80px rgba(0,0,0,0.15)',
-          overflow: 'hidden',
-        }}>
-          <CenterViews mode="individual" />
-        </div>
-
-        <div style={{
-          marginTop: 60,
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
