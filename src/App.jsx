@@ -787,6 +787,144 @@ function DotMapPage() {
   )
 }
 
+function DotMapPage() {
+  const settings = useSettings()
+  const { tally } = useTally()
+  const ff = settings.font_family || 'Segoe UI'
+  const [scale, setScale] = useState(1)
+
+  useEffect(() => {
+    const update = () => {
+      const sw = window.innerWidth / 1080
+      const sh = window.innerHeight / 1920
+      setScale(Math.min(sw, sh))
+    }
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
+  const partiesCfg = PARTY_DEFAULTS
+  const get = p => { const d = tally.find(t => t.party === p); return d ? d.won + (d.leadingg || 0) : 0 }
+  const sortedParties = Object.keys(partiesCfg).filter(p => p !== 'Others').sort((a, b) => get(b) - get(a))
+
+  const COLORS = { pending: '#D1D5DB' }
+  Object.entries(partiesCfg).forEach(([p, cfg]) => { COLORS[p] = cfg.color })
+  COLORS['Others'] = '#4B5563'
+
+  const seatColors = []
+  sortedParties.forEach(p => { for (let i = 0; i < get(p); i++) seatColors.push(COLORS[p]) })
+  while (seatColors.length < 234) seatColors.push(COLORS['pending'])
+
+  const W = 1000, H = 500
+  const CX = W / 2, CY = H - 15
+  const DOT_R = 11
+
+  const ROWS = [
+    { r: 120, count: 17 },
+    { r: 160, count: 24 },
+    { r: 200, count: 31 },
+    { r: 240, count: 38 },
+    { r: 285, count: 44 },
+    { r: 330, count: 50 },
+    { r: 375, count: 30 },
+  ]
+
+  const rawDots = []
+  ROWS.forEach(({ r, count }) => {
+    for (let i = 0; i < count; i++) {
+      const angle = Math.PI - (i / (count - 1)) * Math.PI
+      rawDots.push({ x: CX + r * Math.cos(angle), y: CY - r * Math.sin(angle), angle })
+    }
+  })
+  const dots = [...rawDots].sort((a, b) => b.angle - a.angle).map((d, i) => ({
+    ...d, color: seatColors[i] || COLORS['pending'],
+  }))
+
+  return (
+    <div style={{
+      width: '100vw', height: '100vh',
+      overflow: 'hidden', position: 'relative',
+      background: '#000',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }}>
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 0,
+        backgroundImage: `url('https://i.ibb.co/LDQsbQRN/thalamai.jpg')`,
+        backgroundSize: 'cover', backgroundPosition: 'center',
+      }} />
+      <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'rgba(241,245,249,0.87)' }} />
+
+      <div style={{
+        position: 'relative', zIndex: 2,
+        width: 1080, height: 1920,
+        transform: `scale(${scale})`,
+        transformOrigin: 'center center',
+        fontFamily: ff,
+        overflow: 'hidden',
+        flexShrink: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 40,
+        padding: '80px 60px',
+        boxSizing: 'border-box',
+      }}>
+
+        {/* Title */}
+        <div style={{ textAlign: 'center', flexShrink: 0 }}>
+          <div style={{ fontSize: 64, fontWeight: 950, color: '#0F172A', lineHeight: 1.1 }}>
+            🏛️ சட்டமன்றம் — 234 இடங்கள்
+          </div>
+          <div style={{ fontSize: 52, fontWeight: 800, color: '#6B7280', marginTop: 10 }}>
+            கட்சி வாரியாக
+          </div>
+        </div>
+
+        {/* SVG Parliament */}
+        <div style={{ width: '100%', flexShrink: 0 }}>
+          <svg width="100%" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet">
+            <line x1={CX} y1={46} x2={CX} y2={H}
+              stroke="#374151" strokeWidth={3} strokeDasharray="8,4" opacity={0.5} />
+            {dots.map((d, i) => (
+              <circle key={i} cx={d.x} cy={d.y} r={DOT_R} fill={d.color}
+                style={{ transition: `fill 0.4s ease ${i * 0.001}s` }} />
+            ))}
+            <rect x={CX - 52} y={5} width={104} height={42} rx={10} fill="#F59E0B" />
+            <text x={CX} y={36} textAnchor="middle" fontSize={28} fill="#fff" fontWeight="bold">118</text>
+          </svg>
+        </div>
+
+        {/* Party count boxes */}
+        <div style={{
+          display: 'flex', gap: '16px 20px', justifyContent: 'center',
+          flexWrap: 'wrap', flexShrink: 0,
+        }}>
+          {sortedParties.map(p => {
+            const cfg = partiesCfg[p]
+            const tot = get(p)
+            const hasMaj = tot >= 118
+            return (
+              <div key={p} style={{
+                textAlign: 'center',
+                background: hasMaj ? COLORS[p] : cfg.light,
+                border: `3px solid ${COLORS[p]}`,
+                borderRadius: 16, padding: '12px 26px', minWidth: 120,
+                boxShadow: hasMaj ? `0 0 24px ${COLORS[p]}66` : 'none',
+              }}>
+                <div style={{ fontSize: 30, color: hasMaj ? '#fff' : COLORS[p], fontWeight: 700 }}>{cfg.label}</div>
+                <div style={{ fontSize: 64, fontWeight: 950, color: hasMaj ? '#fff' : COLORS[p], lineHeight: 1 }}>{tot}</div>
+              </div>
+            )
+          })}
+        </div>
+
+      </div>
+    </div>
+  )
+}
+
 export default function App() {
   // Normalize path by removing trailing slash for robust matching
   const path = window.location.pathname.replace(/\/$/, '') || '/'
