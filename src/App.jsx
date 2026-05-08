@@ -703,18 +703,17 @@ function DotMapPage() {
   const get = p => { const d = tally.find(t => t.party === p); return d ? d.won + (d.leadingg || 0) : 0 }
 
   const DOT_ALLIANCES = [
-    { key: 'TVK+',   color: PARTY_DEFAULTS['TVK'].color,      members: ['TVK', 'INC', 'CPI', 'CPI(M)', 'VCK'] },
-    { key: 'DMK+',   color: PARTY_DEFAULTS['DMK+'].color,     members: ['DMK', 'IUML', 'DMDK'] },
+    { key: 'TVK+',   color: PARTY_DEFAULTS['TVK'].color,      members: ['TVK', 'INC', 'CPI', 'CPI(M)', 'VCK', 'IUML'] },
+    { key: 'DMK+',   color: PARTY_DEFAULTS['DMK+'].color,     members: ['DMK', 'DMDK'] },
     { key: 'ADMK+',  color: PARTY_DEFAULTS['AIADMK+'].color,  members: ['ADMK', 'PMK', 'BJP', 'AMMK'] },
   ]
 
   const COLORS = { pending: '#D1D5DB' }
-  Object.entries(INDIVIDUAL_PARTIES).forEach(([p, cfg]) => { COLORS[p] = cfg.color })
 
   const seatColors = []
-  DOT_ALLIANCES.forEach(({ members }) => {
+  DOT_ALLIANCES.forEach(({ color, members }) => {
     const sorted = [...members].sort((a, b) => get(b) - get(a))
-    sorted.forEach(p => { for (let i = 0; i < get(p); i++) seatColors.push(COLORS[p] || '#9CA3AF') })
+    sorted.forEach(p => { for (let i = 0; i < get(p); i++) seatColors.push(color) })
   })
   while (seatColors.length < 234) seatColors.push(COLORS['pending'])
 
@@ -815,12 +814,12 @@ function DotMapPage() {
                 boxShadow: hasMaj ? `0 0 28px ${color}55` : '0 4px 14px rgba(0,0,0,0.08)',
               }}>
                 {/* Alliance name + total */}
-                <div style={{ minWidth: 140, flexShrink: 0, textAlign: 'center' }}>
-                  <div style={{ fontSize: 38, fontWeight: 950, color, lineHeight: 1 }}>{key}</div>
-                  <div style={{ fontSize: 64, fontWeight: 950, color, lineHeight: 1.1 }}>{allianceTotal}</div>
+                <div style={{ minWidth: 110, flexShrink: 0, textAlign: 'center' }}>
+                  <div style={{ fontSize: 30, fontWeight: 950, color, lineHeight: 1 }}>{key}</div>
+                  <div style={{ fontSize: 52, fontWeight: 950, color, lineHeight: 1.1 }}>{allianceTotal}</div>
                 </div>
                 {/* Member party boxes */}
-                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', flex: 1 }}>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', flex: 1 }}>
                   {[...members].sort((a, b) => get(b) - get(a)).map(p => {
                     const cfg = INDIVIDUAL_PARTIES[p]
                     if (!cfg) return null
@@ -829,11 +828,11 @@ function DotMapPage() {
                       <div key={p} style={{
                         textAlign: 'center',
                         background: cfg.light,
-                        border: `3px solid ${cfg.color}`,
-                        borderRadius: 14, padding: '10px 20px', minWidth: 100,
+                        border: `2px solid ${cfg.color}`,
+                        borderRadius: 10, padding: '6px 14px', minWidth: 76,
                       }}>
-                        <div style={{ fontSize: 26, color: cfg.color, fontWeight: 700 }}>{cfg.label}</div>
-                        <div style={{ fontSize: 52, fontWeight: 950, color: cfg.color, lineHeight: 1 }}>{tot}</div>
+                        <div style={{ fontSize: 20, color: cfg.color, fontWeight: 700 }}>{cfg.label}</div>
+                        <div style={{ fontSize: 38, fontWeight: 950, color: cfg.color, lineHeight: 1 }}>{tot}</div>
                       </div>
                     )
                   })}
