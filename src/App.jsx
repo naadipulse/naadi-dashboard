@@ -717,18 +717,18 @@ function DotMapPage() {
   })
   while (seatColors.length < 234) seatColors.push(COLORS['pending'])
 
-  const W = 1000, H = 500
+  const W = 1200, H = 620
   const CX = W / 2, CY = H - 15
-  const DOT_R = 11
+  const DOT_R = 13
 
   const ROWS = [
-    { r: 120, count: 17 },
-    { r: 160, count: 24 },
-    { r: 200, count: 31 },
-    { r: 240, count: 38 },
-    { r: 285, count: 44 },
-    { r: 330, count: 50 },
-    { r: 375, count: 30 },
+    { r: 144, count: 17 },
+    { r: 192, count: 24 },
+    { r: 240, count: 31 },
+    { r: 288, count: 38 },
+    { r: 342, count: 44 },
+    { r: 396, count: 50 },
+    { r: 450, count: 30 },
   ]
 
   const rawDots = []
@@ -793,8 +793,8 @@ function DotMapPage() {
               <circle key={i} cx={d.x} cy={d.y} r={DOT_R} fill={d.color}
                 style={{ transition: `fill 0.4s ease ${i * 0.001}s` }} />
             ))}
-            <rect x={CX - 52} y={5} width={104} height={42} rx={10} fill="#F59E0B" />
-            <text x={CX} y={36} textAnchor="middle" fontSize={28} fill="#fff" fontWeight="bold">118</text>
+            <rect x={CX - 62} y={5} width={124} height={50} rx={12} fill="#F59E0B" />
+            <text x={CX} y={42} textAnchor="middle" fontSize={34} fill="#fff" fontWeight="bold">118</text>
           </svg>
         </div>
 
