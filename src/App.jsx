@@ -709,11 +709,22 @@ function DotMapPage() {
   ]
 
   const COLORS = { pending: '#D1D5DB' }
+  const RESIGN_COLOR = '#9CA3AF'
 
   const seatColors = []
-  DOT_ALLIANCES.forEach(({ color, members }) => {
-    const sorted = [...members].sort((a, b) => get(b) - get(a))
-    sorted.forEach(p => { for (let i = 0; i < get(p); i++) seatColors.push(color) })
+  let resignDotIndex = -1
+  DOT_ALLIANCES.forEach(({ color, members, adjust = {} }) => {
+    const getA = p => get(p) + (adjust[p] || 0)
+    const sorted = [...members].sort((a, b) => getA(b) - getA(a))
+    sorted.forEach(p => {
+      const adjusted = getA(p)
+      const raw = get(p)
+      for (let i = 0; i < adjusted; i++) seatColors.push(color)
+      for (let i = 0; i < (raw - adjusted); i++) {
+        resignDotIndex = seatColors.length
+        seatColors.push(RESIGN_COLOR)
+      }
+    })
   })
   while (seatColors.length < 234) seatColors.push(COLORS['pending'])
 
@@ -793,6 +804,19 @@ function DotMapPage() {
               <circle key={i} cx={d.x} cy={d.y} r={DOT_R} fill={d.color}
                 style={{ transition: `fill 0.4s ease ${i * 0.001}s` }} />
             ))}
+            {resignDotIndex >= 0 && dots[resignDotIndex] && (() => {
+              const rd = dots[resignDotIndex]
+              const lx = rd.x + 22, ly = rd.y - 10
+              return (
+                <g>
+                  <circle cx={rd.x} cy={rd.y} r={DOT_R + 3} fill="none" stroke="#6B7280" strokeWidth={2} strokeDasharray="4,3" />
+                  <line x1={rd.x} y1={rd.y - DOT_R - 3} x2={lx} y2={ly - 28} stroke="#6B7280" strokeWidth={1.5} />
+                  <rect x={lx - 2} y={ly - 52} width={280} height={46} rx={8} fill="rgba(255,255,255,0.92)" stroke="#9CA3AF" strokeWidth={1} />
+                  <text x={lx + 8} y={ly - 32} fontSize={18} fill="#374151" fontWeight="700">Vijay to resign</text>
+                  <text x={lx + 8} y={ly - 12} fontSize={16} fill="#6B7280">from 1 constituency</text>
+                </g>
+              )
+            })()}
             <rect x={CX - 62} y={5} width={124} height={50} rx={12} fill="#F59E0B" />
             <text x={CX} y={42} textAnchor="middle" fontSize={34} fill="#fff" fontWeight="bold">118</text>
           </svg>
