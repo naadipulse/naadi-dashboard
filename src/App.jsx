@@ -703,7 +703,7 @@ function DotMapPage() {
   const get = p => { const d = tally.find(t => t.party === p); return d ? d.won + (d.leadingg || 0) : 0 }
 
   const DOT_ALLIANCES = [
-    { key: 'TVK+',   color: PARTY_DEFAULTS['TVK'].color,      members: ['TVK', 'INC', 'CPI', 'CPI(M)', 'VCK', 'IUML'] },
+    { key: 'TVK+',   color: PARTY_DEFAULTS['TVK'].color,      members: ['TVK', 'INC', 'CPI', 'CPI(M)', 'VCK', 'IUML'], adjust: { TVK: -1 } },
     { key: 'DMK+',   color: PARTY_DEFAULTS['DMK+'].color,     members: ['DMK', 'DMDK'] },
     { key: 'ADMK+',  color: PARTY_DEFAULTS['AIADMK+'].color,  members: ['ADMK', 'PMK', 'BJP', 'AMMK'] },
   ]
@@ -800,8 +800,9 @@ function DotMapPage() {
 
         {/* Alliance rows */}
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 24, flexShrink: 0 }}>
-          {DOT_ALLIANCES.map(({ key, color, members }) => {
-            const allianceTotal = members.reduce((s, p) => s + get(p), 0)
+          {DOT_ALLIANCES.map(({ key, color, members, adjust = {} }) => {
+            const getA = p => get(p) + (adjust[p] || 0)
+            const allianceTotal = members.reduce((s, p) => s + getA(p), 0)
             const hasMaj = allianceTotal >= 118
             return (
               <div key={key} style={{
@@ -821,10 +822,10 @@ function DotMapPage() {
                 </div>
                 {/* Member party boxes */}
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', flex: 1 }}>
-                  {[...members].sort((a, b) => get(b) - get(a)).map(p => {
+                  {[...members].sort((a, b) => getA(b) - getA(a)).map(p => {
                     const cfg = INDIVIDUAL_PARTIES[p]
                     if (!cfg) return null
-                    const tot = get(p)
+                    const tot = getA(p)
                     return (
                       <div key={p} style={{
                         textAlign: 'center',
