@@ -718,12 +718,7 @@ function DotMapPage() {
     const sorted = [...members].sort((a, b) => getA(b) - getA(a))
     sorted.forEach(p => {
       const adjusted = getA(p)
-      const raw = get(p)
       for (let i = 0; i < adjusted; i++) seatColors.push(color)
-      for (let i = 0; i < (raw - adjusted); i++) {
-        resignDotIndex = seatColors.length
-        seatColors.push(RESIGN_COLOR)
-      }
     })
   })
   while (seatColors.length < 234) seatColors.push(COLORS['pending'])
@@ -811,14 +806,14 @@ function DotMapPage() {
             ))}
             {resignDotIndex >= 0 && dots[resignDotIndex] && (() => {
               const rd = dots[resignDotIndex]
-              const lx = rd.x + 20, ly = rd.y - 20
+              // Label sits in the empty upper-left space, clear of all dots
+              const bx = 8, by = 490
               return (
                 <g>
                   <circle cx={rd.x} cy={rd.y} r={DOT_R + 3} fill="none" stroke="#6B7280" strokeWidth={2} strokeDasharray="4,3" />
-                  <line x1={rd.x + DOT_R + 3} y1={rd.y} x2={lx + 8} y2={ly + 10} stroke="#6B7280" strokeWidth={1.5} />
-                  <rect x={lx} y={ly - 40} width={290} height={50} rx={8} fill="rgba(255,255,255,0.92)" stroke="#9CA3AF" strokeWidth={1} />
-                  <text x={lx + 10} y={ly - 18} fontSize={18} fill="#374151" fontWeight="700">Vijay to resign</text>
-                  <text x={lx + 10} y={ly + 2} fontSize={16} fill="#6B7280">from 1 constituency</text>
+                  <line x1={bx + 210} y1={by + 20} x2={rd.x - DOT_R - 3} y2={rd.y} stroke="#6B7280" strokeWidth={1.5} strokeDasharray="5,3" />
+                  <rect x={bx} y={by} width={210} height={38} rx={8} fill="rgba(255,255,255,0.92)" stroke="#9CA3AF" strokeWidth={1} />
+                  <text x={bx + 10} y={by + 24} fontSize={18} fill="#374151" fontWeight="700">* Vijay to resign</text>
                 </g>
               )
             })()}
