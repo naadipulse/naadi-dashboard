@@ -723,8 +723,8 @@ function DotMapPage() {
   })
   while (seatColors.length < 234) seatColors.push(COLORS['pending'])
 
-  const W = 1200, H = 620
-  const CX = W / 2, CY = H - 15
+  const W = 1200, H = 700
+  const CX = W / 2, CY = 605
   const DOT_R = 13
 
   const ROWS = [
@@ -806,14 +806,13 @@ function DotMapPage() {
             ))}
             {resignDotIndex >= 0 && dots[resignDotIndex] && (() => {
               const rd = dots[resignDotIndex]
-              // Label sits in the empty upper-left space, clear of all dots
-              const bx = 8, by = 490
+              const bx = rd.x - 80, by = rd.y + DOT_R + 10
               return (
                 <g>
                   <circle cx={rd.x} cy={rd.y} r={DOT_R + 3} fill="none" stroke="#6B7280" strokeWidth={2} strokeDasharray="4,3" />
-                  <line x1={bx + 210} y1={by + 20} x2={rd.x - DOT_R - 3} y2={rd.y} stroke="#6B7280" strokeWidth={1.5} strokeDasharray="5,3" />
-                  <rect x={bx} y={by} width={210} height={38} rx={8} fill="rgba(255,255,255,0.92)" stroke="#9CA3AF" strokeWidth={1} />
-                  <text x={bx + 10} y={by + 24} fontSize={18} fill="#374151" fontWeight="700">* Vijay to resign</text>
+                  <line x1={rd.x} y1={rd.y + DOT_R + 3} x2={rd.x} y2={by} stroke="#6B7280" strokeWidth={1.5} />
+                  <rect x={bx} y={by} width={230} height={38} rx={8} fill="rgba(255,255,255,0.92)" stroke="#9CA3AF" strokeWidth={1} />
+                  <text x={bx + 12} y={by + 24} fontSize={18} fill="#374151" fontWeight="700">* Vijay to resign</text>
                 </g>
               )
             })()}
