@@ -703,9 +703,9 @@ function DotMapPage() {
   const get = p => { const d = tally.find(t => t.party === p); return d ? d.won + (d.leadingg || 0) : 0 }
 
   const DOT_ALLIANCES = [
-    { key: 'TVK+',   color: PARTY_DEFAULTS['TVK'].color,      members: ['TVK', 'INC', 'CPI', 'CPI(M)', 'VCK', 'IUML'], adjust: { TVK: -1 } },
-    { key: 'DMK+',   color: PARTY_DEFAULTS['DMK+'].color,     members: ['DMK', 'DMDK'] },
-    { key: 'ADMK+',  color: PARTY_DEFAULTS['AIADMK+'].color,  members: ['ADMK', 'PMK', 'BJP', 'AMMK'] },
+    { key: 'TVK+',  color: PARTY_DEFAULTS['TVK'].color,      members: ['TVK', 'INC', 'CPI', 'CPI(M)', 'VCK', 'IUML'], adjust: { TVK: -1 }, partyKey: 'TVK' },
+    { key: 'DMK+',  color: PARTY_DEFAULTS['DMK+'].color,     members: ['DMK', 'DMDK'],                                partyKey: 'DMK+' },
+    { key: 'ADMK+', color: PARTY_DEFAULTS['AIADMK+'].color,  members: ['ADMK', 'PMK', 'BJP', 'AMMK'],                partyKey: 'AIADMK+' },
   ]
 
   const COLORS = { pending: '#D1D5DB' }
@@ -826,28 +826,31 @@ function DotMapPage() {
 
         {/* Alliance rows */}
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 24, flexShrink: 0 }}>
-          {DOT_ALLIANCES.map(({ key, color, members, adjust = {} }) => {
+          {DOT_ALLIANCES.map(({ key, color, members, adjust = {}, partyKey }) => {
             const getA = p => get(p) + (adjust[p] || 0)
             const allianceTotal = members.reduce((s, p) => s + getA(p), 0)
             const hasMaj = allianceTotal >= 118
+            const leaderCfg = PARTY_DEFAULTS[partyKey]
+            const leaderPhoto = leaderCfg ? (settings[leaderCfg.photoKey] || null) : null
             return (
               <div key={key} style={{
                 background: 'rgba(255,255,255,0.95)',
                 borderRadius: 18,
                 borderLeft: `14px solid ${color}`,
-                padding: '18px 24px',
+                padding: '0 0 0 24px',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 20,
+                overflow: 'hidden',
                 boxShadow: hasMaj ? `0 0 28px ${color}55` : '0 4px 14px rgba(0,0,0,0.08)',
               }}>
                 {/* Alliance name + total */}
-                <div style={{ minWidth: 110, flexShrink: 0, textAlign: 'center' }}>
+                <div style={{ minWidth: 110, flexShrink: 0, textAlign: 'center', padding: '18px 0' }}>
                   <div style={{ fontSize: 30, fontWeight: 950, color, lineHeight: 1 }}>{key}</div>
                   <div style={{ fontSize: 52, fontWeight: 950, color, lineHeight: 1.1 }}>{allianceTotal}</div>
                 </div>
                 {/* Member party boxes */}
-                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', flex: 1 }}>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', flex: 1, padding: '18px 0' }}>
                   {[...members].sort((a, b) => getA(b) - getA(a)).map(p => {
                     const cfg = INDIVIDUAL_PARTIES[p]
                     if (!cfg) return null
@@ -865,6 +868,14 @@ function DotMapPage() {
                     )
                   })}
                 </div>
+                {/* Leader photo */}
+                <Photo
+                  photoUrl={leaderPhoto}
+                  fallback={key}
+                  color={color}
+                  size={120}
+                  style={{ height: '100%', width: 100, objectFit: 'cover', objectPosition: 'top', flexShrink: 0, alignSelf: 'stretch' }}
+                />
               </div>
             )
           })}
