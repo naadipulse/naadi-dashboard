@@ -830,10 +830,10 @@ function DotMapPage() {
                         textAlign: 'center',
                         background: cfg.light,
                         border: `2px solid ${cfg.color}`,
-                        borderRadius: 10, padding: '6px 14px', minWidth: 76,
+                        borderRadius: 10, padding: '8px 18px', minWidth: 90,
                       }}>
-                        <div style={{ fontSize: 20, color: cfg.color, fontWeight: 700 }}>{cfg.short}</div>
-                        <div style={{ fontSize: 38, fontWeight: 950, color: cfg.color, lineHeight: 1 }}>{tot}</div>
+                        <div style={{ fontSize: 26, color: cfg.color, fontWeight: 700 }}>{cfg.short}</div>
+                        <div style={{ fontSize: 52, fontWeight: 950, color: cfg.color, lineHeight: 1 }}>{tot}</div>
                       </div>
                     )
                   })}
