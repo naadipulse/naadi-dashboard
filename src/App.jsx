@@ -771,6 +771,7 @@ function DotMapPage() {
         gap: 40,
         padding: '80px 60px',
         boxSizing: 'border-box',
+        border: '1px solid rgba(0,0,0,0.18)',
       }}>
 
         {/* Title */}
