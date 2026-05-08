@@ -831,7 +831,7 @@ function DotMapPage() {
                         border: `2px solid ${cfg.color}`,
                         borderRadius: 10, padding: '6px 14px', minWidth: 76,
                       }}>
-                        <div style={{ fontSize: 20, color: cfg.color, fontWeight: 700 }}>{cfg.label}</div>
+                        <div style={{ fontSize: 20, color: cfg.color, fontWeight: 700 }}>{cfg.short}</div>
                         <div style={{ fontSize: 38, fontWeight: 950, color: cfg.color, lineHeight: 1 }}>{tot}</div>
                       </div>
                     )
