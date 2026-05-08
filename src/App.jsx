@@ -57,53 +57,6 @@ function FullDashboard({ mode = 'alliance' }) {
         fontFamily: ff, overflow: 'hidden', flexShrink: 0,
       }}>
 
-        {/* Top Bar */}
-        {mode === 'alliance' && (
-          <div style={{ flexShrink: 0 }}>
-          <TopBar />
-        </div>
-        )}
-
-        {/* Naadi Header */}
-        {mode === 'alliance' && (
-          <div style={{
-            background: 'rgba(255,255,255,0.95)',
-            padding: '8px 60px',
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
-            borderBottom: '2px solid #E5E7EB', flexShrink: 0,
-          }}>
-            <div>
-              <div style={{ fontSize: 26, fontWeight: 900, background: 'linear-gradient(90deg,#F59E0B,#DC2626)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                நாடி | NAADI
-              </div>
-              <div style={{ fontSize: 13, color: '#9CA3AF' }}>@naadipulse • தரவு மட்டுமே பேசுகிறது</div>
-            </div>
-            <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
-              {Object.entries(partiesCfg).filter(([p]) => mode === 'individual' || p !== 'Others').sort((a, b) => gT(b[0]) - gT(a[0])).slice(0, mode === 'individual' ? 6 : 3).map(([p, cfg]) => (
-                <div key={p} style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  {(settings[cfg.logoKey] || cfg.logo) && (
-                    <img src={settings[cfg.logoKey] || cfg.logo} alt="" style={{ height: 48, width: 'auto', marginBottom: 2 }} />
-                  )}
-                  <div style={{ fontSize: 13, color: cfg.color, fontWeight: 700 }}>{cfg.short}</div>
-                  <AnimNum val={gT(p)} color={cfg.color} size={30} font={ff} />
-                </div>
-              ))}
-              <div style={{ width: 1, height: 36, background: '#E5E7EB' }} />
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 13, color: '#6B7280' }}>முடிவு</div>
-                <div style={{ fontSize: 26, fontWeight: 900, color: '#F59E0B' }}>
-                  {totalInMode}<span style={{ fontSize: 14, color: '#9CA3AF' }}>/234</span>
-                </div>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: 13, color: '#6B7280' }}>பெரும்பான்மை</div>
-                <div style={{ fontSize: 26, fontWeight: 900, color: '#DC2626' }}>118</div>
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Main 3-col content */}
         <div style={{
           flex: 1,
@@ -117,6 +70,40 @@ function FullDashboard({ mode = 'alliance' }) {
           <CenterViews mode={mode} />
           <RightPanel mode={mode} />
         </div>
+
+        {/* Alliance Breakdown Summary Row */}
+        {mode === 'alliance' && (
+          <div style={{ 
+            display: 'flex', gap: 15, padding: '0 50px 10px 20px', 
+            flexShrink: 0, justifyContent: 'space-between' 
+          }}>
+            {[
+              { key: 'TVK', display: 'TVK+', color: PARTY_DEFAULTS['TVK'].color, members: ['TVK', 'INC'] },
+              { key: 'DMK+', display: 'DMK+', color: PARTY_DEFAULTS['DMK+'].color, members: ['DMK', 'DMDK', 'IUML', 'CPI', 'VCK', 'CPI(M)'] },
+              { key: 'AIADMK+', display: 'ADMK+', color: PARTY_DEFAULTS['AIADMK+'].color, members: ['ADMK', 'PMK', 'BJP', 'AMMK'] },
+            ].map(alliance => (
+              <div key={alliance.key} style={{
+                flex: 1, background: 'rgba(255,255,255,0.92)', borderRadius: 10,
+                padding: '8px 12px', display: 'flex', alignItems: 'center', gap: 12,
+                borderLeft: `10px solid ${alliance.color}`, boxShadow: '0 2px 6px rgba(0,0,0,0.06)'
+              }}>
+                <div style={{ fontSize: 20, fontWeight: 950, color: alliance.color, minWidth: 70 }}>{alliance.display}</div>
+                <div style={{ flex: 1, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {alliance.members.map(p => {
+                    const cfg = INDIVIDUAL_PARTIES[p]; if (!cfg) return null;
+                    const count = gT(p)
+                    return (
+                      <div key={p} style={{ background: cfg.color, padding: '3px 8px', borderRadius: 6, color: '#fff', display: 'flex', alignItems: 'center', gap: 5 }}>
+                        <span style={{ fontSize: 12, fontWeight: 800 }}>{cfg.short}</span>
+                        <span style={{ fontSize: 16, fontWeight: 950 }}><AnimNum val={count} color="#fff" size={16} font={ff} /></span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Bottom Bar */}
         {mode === 'alliance' && (
@@ -738,9 +725,30 @@ function DotMapPage() {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: '160px 40px',
+        padding: '120px 40px',
         boxSizing: 'border-box',
       }}>
+        <div style={{
+          fontSize: 80, fontWeight: 950, color: '#0F172A',
+          marginBottom: 60, textAlign: 'center',
+          textShadow: '0 2px 10px rgba(255,255,255,0.8)',
+        }}>
+          தமிழக தேர்தல் களம் 2026<br/>
+          <span style={{ fontSize: 50, color: '#475569' }}>234 தொகுதிகள் நிலவரம்</span>
+        </div>
+
+        <div style={{
+          width: '100%', height: 850,
+          background: 'rgba(255,255,255,0.85)',
+          borderRadius: 40, padding: 40,
+          backdropFilter: 'blur(15px)',
+          boxShadow: '0 40px 80px rgba(0,0,0,0.15)',
+          overflow: 'hidden',
+          marginBottom: 60,
+        }}>
+          <CenterViews mode="individual" />
+        </div>
+
         <div style={{
           width: '100%',
           display: 'flex',
