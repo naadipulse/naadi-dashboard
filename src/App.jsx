@@ -748,10 +748,13 @@ function DotMapPage() {
     ...d, color: seatColors[i] || COLORS['pending'],
   }))
 
-  // Bottom-left corner = outermost row, leftmost dot (min x among max r)
   const maxR = Math.max(...dots.map(d => d.r))
+  // Bottom-left corner → grey (resign)
   resignDotIndex = dots.reduce((best, d, i) => d.r === maxR && d.x < dots[best].x ? i : best, dots.findIndex(d => d.r === maxR))
   dots[resignDotIndex] = { ...dots[resignDotIndex], color: RESIGN_COLOR }
+  // Bottom-right corner → green
+  const greenDotIndex = dots.reduce((best, d, i) => d.r === maxR && d.x > dots[best].x ? i : best, dots.findIndex(d => d.r === maxR))
+  dots[greenDotIndex] = { ...dots[greenDotIndex], color: '#22C55E' }
 
   return (
     <div style={{
@@ -810,7 +813,7 @@ function DotMapPage() {
               return (
                 <g>
                   <circle cx={rd.x} cy={rd.y} r={DOT_R + 3} fill="none" stroke="#6B7280" strokeWidth={2} strokeDasharray="4,3" />
-                  <line x1={rd.x} y1={rd.y + DOT_R + 3} x2={rd.x} y2={by} stroke="#6B7280" strokeWidth={1.5} />
+                  <line x1={rd.x} y1={rd.y + DOT_R + 3} x2={rd.x} y2={by + 2} stroke="#6B7280" strokeWidth={1.5} />
                   <rect x={bx} y={by} width={230} height={38} rx={8} fill="rgba(255,255,255,0.92)" stroke="#9CA3AF" strokeWidth={1} />
                   <text x={bx + 12} y={by + 24} fontSize={18} fill="#374151" fontWeight="700">* Vijay to resign</text>
                 </g>
