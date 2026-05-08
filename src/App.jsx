@@ -83,19 +83,25 @@ function FullDashboard({ mode = 'alliance' }) {
               { key: 'AIADMK+', display: 'ADMK+', color: PARTY_DEFAULTS['AIADMK+'].color, members: ['ADMK', 'PMK', 'BJP', 'AMMK'] },
             ].map(alliance => (
               <div key={alliance.key} style={{
-                flex: 1, background: 'rgba(255,255,255,0.92)', borderRadius: 10,
-                padding: '8px 12px', display: 'flex', alignItems: 'center', gap: 12,
-                borderLeft: `10px solid ${alliance.color}`, boxShadow: '0 2px 6px rgba(0,0,0,0.06)'
+                flex: 1, background: 'rgba(255,255,255,0.95)', borderRadius: 12,
+                padding: '10px 15px', display: 'flex', alignItems: 'center', gap: 15,
+                borderLeft: `12px solid ${alliance.color}`, boxShadow: '0 4px 10px rgba(0,0,0,0.08)'
               }}>
-                <div style={{ fontSize: 20, fontWeight: 950, color: alliance.color, minWidth: 70 }}>{alliance.display}</div>
-                <div style={{ flex: 1, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                <div style={{ fontSize: 24, fontWeight: 950, color: alliance.color, minWidth: 80 }}>{alliance.display}</div>
+                <div style={{ flex: 1, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                   {alliance.members.map(p => {
                     const cfg = INDIVIDUAL_PARTIES[p]; if (!cfg) return null;
                     const count = gT(p)
                     return (
-                      <div key={p} style={{ background: cfg.color, padding: '3px 8px', borderRadius: 6, color: '#fff', display: 'flex', alignItems: 'center', gap: 5 }}>
-                        <span style={{ fontSize: 12, fontWeight: 800 }}>{cfg.short}</span>
-                        <span style={{ fontSize: 16, fontWeight: 950 }}><AnimNum val={count} color="#fff" size={16} font={ff} /></span>
+                      <div key={p} style={{ 
+                        background: cfg.color, padding: '4px 10px', borderRadius: 8, 
+                        color: '#fff', display: 'flex', alignItems: 'center', gap: 8,
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)', border: '1px solid rgba(255,255,255,0.2)'
+                      }}>
+                        <span style={{ fontSize: 14, fontWeight: 800, opacity: 0.9 }}>{cfg.short}</span>
+                        <span style={{ fontSize: 20, fontWeight: 950 }}>
+                          <AnimNum val={count} color="#fff" size={20} font={ff} />
+                        </span>
                       </div>
                     )
                   })}
@@ -728,33 +734,11 @@ function DotMapPage() {
         padding: '120px 40px',
         boxSizing: 'border-box',
       }}>
-        <div style={{
-          fontSize: 80, fontWeight: 950, color: '#0F172A',
-          marginBottom: 60, textAlign: 'center',
-          textShadow: '0 2px 10px rgba(255,255,255,0.8)',
-        }}>
-          தமிழக தேர்தல் களம் 2026<br/>
-          <span style={{ fontSize: 50, color: '#475569' }}>234 தொகுதிகள் நிலவரம்</span>
-        </div>
-
-        <div style={{
-          width: '100%', height: 850,
-          background: 'rgba(255,255,255,0.85)',
-          borderRadius: 40, padding: 40,
-          backdropFilter: 'blur(15px)',
-          boxShadow: '0 40px 80px rgba(0,0,0,0.15)',
-          overflow: 'hidden',
-          marginBottom: 60,
-        }}>
+        <div style={{ width: '100%', height: 900, marginBottom: 40 }}>
           <CenterViews mode="individual" />
         </div>
 
-        <div style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 20,
-        }}>
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 20 }}>
           {alliances.map(alliance => (
             <div key={alliance.key} style={{
               background: 'rgba(255,255,255,0.95)',
