@@ -843,6 +843,20 @@ function DotMapPage() {
           })}
         </div>
 
+        {/* Footnote */}
+        <div style={{
+          width: '100%',
+          fontSize: 24,
+          color: '#6B7280',
+          fontWeight: 600,
+          lineHeight: 1.5,
+          paddingTop: 8,
+          borderTop: '1px solid rgba(0,0,0,0.1)',
+          flexShrink: 0,
+        }}>
+          * TVK total is 107 — Vijay won 2 seats, expected to resign from one constituency
+        </div>
+
       </div>
     </div>
   )
