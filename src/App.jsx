@@ -804,16 +804,22 @@ function DotMapPage() {
     return () => window.removeEventListener('resize', update)
   }, [])
 
-  const partiesCfg = PARTY_DEFAULTS
   const get = p => { const d = tally.find(t => t.party === p); return d ? d.won + (d.leadingg || 0) : 0 }
-  const sortedParties = Object.keys(partiesCfg).filter(p => p !== 'Others').sort((a, b) => get(b) - get(a))
+
+  const DOT_ALLIANCES = [
+    { key: 'TVK+',   color: PARTY_DEFAULTS['TVK'].color,      members: ['TVK', 'INC', 'CPI', 'CPI(M)', 'VCK'] },
+    { key: 'DMK+',   color: PARTY_DEFAULTS['DMK+'].color,     members: ['DMK', 'IUML', 'DMDK'] },
+    { key: 'ADMK+',  color: PARTY_DEFAULTS['AIADMK+'].color,  members: ['ADMK', 'PMK', 'BJP', 'AMMK'] },
+  ]
 
   const COLORS = { pending: '#D1D5DB' }
-  Object.entries(partiesCfg).forEach(([p, cfg]) => { COLORS[p] = cfg.color })
-  COLORS['Others'] = '#4B5563'
+  Object.entries(INDIVIDUAL_PARTIES).forEach(([p, cfg]) => { COLORS[p] = cfg.color })
 
   const seatColors = []
-  sortedParties.forEach(p => { for (let i = 0; i < get(p); i++) seatColors.push(COLORS[p]) })
+  DOT_ALLIANCES.forEach(({ members }) => {
+    const sorted = [...members].sort((a, b) => get(b) - get(a))
+    sorted.forEach(p => { for (let i = 0; i < get(p); i++) seatColors.push(COLORS[p] || '#9CA3AF') })
+  })
   while (seatColors.length < 234) seatColors.push(COLORS['pending'])
 
   const W = 1000, H = 500
@@ -878,7 +884,7 @@ function DotMapPage() {
             🏛️ சட்டமன்றம் — 234 இடங்கள்
           </div>
           <div style={{ fontSize: 52, fontWeight: 800, color: '#6B7280', marginTop: 10 }}>
-            கட்சி வாரியாக
+            கூட்டணி வாரியாக
           </div>
         </div>
 
@@ -896,25 +902,46 @@ function DotMapPage() {
           </svg>
         </div>
 
-        {/* Party count boxes */}
-        <div style={{
-          display: 'flex', gap: '16px 20px', justifyContent: 'center',
-          flexWrap: 'wrap', flexShrink: 0,
-        }}>
-          {sortedParties.map(p => {
-            const cfg = partiesCfg[p]
-            const tot = get(p)
-            const hasMaj = tot >= 118
+        {/* Alliance rows */}
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 24, flexShrink: 0 }}>
+          {DOT_ALLIANCES.map(({ key, color, members }) => {
+            const allianceTotal = members.reduce((s, p) => s + get(p), 0)
+            const hasMaj = allianceTotal >= 118
             return (
-              <div key={p} style={{
-                textAlign: 'center',
-                background: hasMaj ? COLORS[p] : cfg.light,
-                border: `3px solid ${COLORS[p]}`,
-                borderRadius: 16, padding: '12px 26px', minWidth: 120,
-                boxShadow: hasMaj ? `0 0 24px ${COLORS[p]}66` : 'none',
+              <div key={key} style={{
+                background: 'rgba(255,255,255,0.95)',
+                borderRadius: 18,
+                borderLeft: `14px solid ${color}`,
+                padding: '18px 24px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 20,
+                boxShadow: hasMaj ? `0 0 28px ${color}55` : '0 4px 14px rgba(0,0,0,0.08)',
               }}>
-                <div style={{ fontSize: 30, color: hasMaj ? '#fff' : COLORS[p], fontWeight: 700 }}>{cfg.label}</div>
-                <div style={{ fontSize: 64, fontWeight: 950, color: hasMaj ? '#fff' : COLORS[p], lineHeight: 1 }}>{tot}</div>
+                {/* Alliance name + total */}
+                <div style={{ minWidth: 140, flexShrink: 0, textAlign: 'center' }}>
+                  <div style={{ fontSize: 38, fontWeight: 950, color, lineHeight: 1 }}>{key}</div>
+                  <div style={{ fontSize: 64, fontWeight: 950, color, lineHeight: 1.1 }}>{allianceTotal}</div>
+                </div>
+                {/* Member party boxes */}
+                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', flex: 1 }}>
+                  {[...members].sort((a, b) => get(b) - get(a)).map(p => {
+                    const cfg = INDIVIDUAL_PARTIES[p]
+                    if (!cfg) return null
+                    const tot = get(p)
+                    return (
+                      <div key={p} style={{
+                        textAlign: 'center',
+                        background: cfg.light,
+                        border: `3px solid ${cfg.color}`,
+                        borderRadius: 14, padding: '10px 20px', minWidth: 100,
+                      }}>
+                        <div style={{ fontSize: 26, color: cfg.color, fontWeight: 700 }}>{cfg.label}</div>
+                        <div style={{ fontSize: 52, fontWeight: 950, color: cfg.color, lineHeight: 1 }}>{tot}</div>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
             )
           })}
