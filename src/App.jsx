@@ -836,14 +836,22 @@ function DotMapPage() {
               <div key={key} style={{
                 background: 'rgba(255,255,255,0.95)',
                 borderRadius: 18,
-                borderLeft: `14px solid ${color}`,
-                padding: '0 0 0 24px',
+                borderRight: `14px solid ${color}`,
+                padding: '0 24px 0 0',
                 display: 'flex',
                 alignItems: 'center',
                 gap: 20,
                 overflow: 'hidden',
                 boxShadow: hasMaj ? `0 0 28px ${color}55` : '0 4px 14px rgba(0,0,0,0.08)',
               }}>
+                {/* Leader photo */}
+                <Photo
+                  photoUrl={leaderPhoto}
+                  fallback={key}
+                  color={color}
+                  size={120}
+                  style={{ height: '100%', width: 100, objectFit: 'cover', objectPosition: 'top', flexShrink: 0, alignSelf: 'stretch' }}
+                />
                 {/* Alliance name + total */}
                 <div style={{ minWidth: 110, flexShrink: 0, textAlign: 'center', padding: '18px 0' }}>
                   <div style={{ fontSize: 30, fontWeight: 950, color, lineHeight: 1 }}>{key}</div>
@@ -868,14 +876,6 @@ function DotMapPage() {
                     )
                   })}
                 </div>
-                {/* Leader photo */}
-                <Photo
-                  photoUrl={leaderPhoto}
-                  fallback={key}
-                  color={color}
-                  size={120}
-                  style={{ height: '100%', width: 100, objectFit: 'cover', objectPosition: 'top', flexShrink: 0, alignSelf: 'stretch' }}
-                />
               </div>
             )
           })}
