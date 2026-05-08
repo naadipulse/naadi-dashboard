@@ -703,8 +703,8 @@ function DotMapPage() {
   const get = p => { const d = tally.find(t => t.party === p); return d ? d.won + (d.leadingg || 0) : 0 }
 
   const DOT_ALLIANCES = [
-    { key: 'TVK+',  color: PARTY_DEFAULTS['TVK'].color,      members: ['TVK', 'INC', 'CPI', 'CPI(M)', 'VCK', 'IUML'], adjust: { TVK: -1 }, partyKey: 'TVK' },
-    { key: 'DMK+',  color: PARTY_DEFAULTS['DMK+'].color,     members: ['DMK', 'DMDK'],                                partyKey: 'DMK+' },
+    { key: 'TVK+',  color: PARTY_DEFAULTS['TVK'].color,      members: ['TVK', 'INC', 'CPI', 'CPI(M)', 'VCK'], adjust: { TVK: -1 }, partyKey: 'TVK' },
+    { key: 'DMK+',  color: PARTY_DEFAULTS['DMK+'].color,     members: ['DMK', 'DMDK', 'IUML'],                        partyKey: 'DMK+' },
     { key: 'ADMK+', color: PARTY_DEFAULTS['AIADMK+'].color,  members: ['ADMK', 'PMK', 'BJP', 'AMMK'],                partyKey: 'AIADMK+' },
   ]
 
