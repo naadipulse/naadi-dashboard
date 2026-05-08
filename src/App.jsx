@@ -781,24 +781,29 @@ function DotMapPage() {
               alignItems: 'center',
               gap: 30,
               boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
-              borderLeft: `12px solid ${alliance.color}`
+              borderLeft: `16px solid ${alliance.color}`,
+              minHeight: 140,
             }}>
-              <div style={{ minWidth: 150, fontSize: 36, fontWeight: 950, color: alliance.color }}>
+              <div style={{ minWidth: 180, fontSize: 42, fontWeight: 950, color: alliance.color }}>
                 {alliance.display}
               </div>
-              <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+              <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', gap: 16 }}>
                 {alliance.members.map(p => {
                   const cfg = INDIVIDUAL_PARTIES[p]
                   if (!cfg) return null
                   const count = gT(p)
                   return (
                     <div key={p} style={{
-                      display: 'flex', alignItems: 'center', gap: 10,
-                      background: '#fff', padding: '10px 18px',
-                      borderRadius: 14, border: `1px solid ${cfg.color}22`,
+                      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                      background: cfg.color, padding: '10px 24px',
+                      borderRadius: 18, boxShadow: '0 6px 15px rgba(0,0,0,0.1)',
+                      color: '#fff', border: '2px solid rgba(255,255,255,0.3)',
+                      minWidth: 140,
                     }}>
-                      <div style={{ fontSize: 26, fontWeight: 800, color: '#334155' }}>{cfg.short}</div>
-                      <div style={{ fontSize: 32, fontWeight: 950, color: cfg.color }}>{count}</div>
+                      <div style={{ fontSize: 28, fontWeight: 900, opacity: 0.9 }}>{cfg.short}</div>
+                      <div style={{ fontSize: 44, fontWeight: 950 }}>
+                        <AnimNum val={count} color="#fff" size={44} font={ff} />
+                      </div>
                     </div>
                   )
                 })}
