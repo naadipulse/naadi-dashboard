@@ -746,12 +746,17 @@ function DotMapPage() {
   ROWS.forEach(({ r, count }) => {
     for (let i = 0; i < count; i++) {
       const angle = Math.PI - (i / (count - 1)) * Math.PI
-      rawDots.push({ x: CX + r * Math.cos(angle), y: CY - r * Math.sin(angle), angle })
+      rawDots.push({ x: CX + r * Math.cos(angle), y: CY - r * Math.sin(angle), angle, r })
     }
   })
   const dots = [...rawDots].sort((a, b) => b.angle - a.angle).map((d, i) => ({
     ...d, color: seatColors[i] || COLORS['pending'],
   }))
+
+  // Bottom-left corner = outermost row, leftmost dot (min x among max r)
+  const maxR = Math.max(...dots.map(d => d.r))
+  resignDotIndex = dots.reduce((best, d, i) => d.r === maxR && d.x < dots[best].x ? i : best, dots.findIndex(d => d.r === maxR))
+  dots[resignDotIndex] = { ...dots[resignDotIndex], color: RESIGN_COLOR }
 
   return (
     <div style={{
@@ -806,14 +811,14 @@ function DotMapPage() {
             ))}
             {resignDotIndex >= 0 && dots[resignDotIndex] && (() => {
               const rd = dots[resignDotIndex]
-              const lx = rd.x + 22, ly = rd.y - 10
+              const lx = rd.x + 20, ly = rd.y - 20
               return (
                 <g>
                   <circle cx={rd.x} cy={rd.y} r={DOT_R + 3} fill="none" stroke="#6B7280" strokeWidth={2} strokeDasharray="4,3" />
-                  <line x1={rd.x} y1={rd.y - DOT_R - 3} x2={lx} y2={ly - 28} stroke="#6B7280" strokeWidth={1.5} />
-                  <rect x={lx - 2} y={ly - 52} width={280} height={46} rx={8} fill="rgba(255,255,255,0.92)" stroke="#9CA3AF" strokeWidth={1} />
-                  <text x={lx + 8} y={ly - 32} fontSize={18} fill="#374151" fontWeight="700">Vijay to resign</text>
-                  <text x={lx + 8} y={ly - 12} fontSize={16} fill="#6B7280">from 1 constituency</text>
+                  <line x1={rd.x + DOT_R + 3} y1={rd.y} x2={lx + 8} y2={ly + 10} stroke="#6B7280" strokeWidth={1.5} />
+                  <rect x={lx} y={ly - 40} width={290} height={50} rx={8} fill="rgba(255,255,255,0.92)" stroke="#9CA3AF" strokeWidth={1} />
+                  <text x={lx + 10} y={ly - 18} fontSize={18} fill="#374151" fontWeight="700">Vijay to resign</text>
+                  <text x={lx + 10} y={ly + 2} fontSize={16} fill="#6B7280">from 1 constituency</text>
                 </g>
               )
             })()}
