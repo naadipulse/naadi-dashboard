@@ -900,6 +900,176 @@ function DotMapPage() {
   )
 }
 
+const TN_DEPARTMENTS = [
+  'Adi Dravidar and Tribal Welfare',
+  'Agriculture & Farmers Welfare',
+  'Animal Husbandry, Dairying, Fisheries & Fishermen Welfare',
+  'BC, MBC & Minorities Welfare',
+  'Commercial Taxes and Registration',
+  'Co-operation, Food and Consumer Protection',
+  'Energy',
+  'Environment, Climate Change and Forests',
+  'Finance',
+  'Handlooms, Handicrafts, Textiles and Khadi',
+  'Health and Family Welfare',
+  'Higher Education',
+  'Highways and Minor Ports',
+  'Home, Prohibition and Excise',
+  'Housing and Urban Development',
+  'Human Resources Management',
+  'Industries, Investment Promotion & Commerce',
+  'Information Technology and Digital Services',
+  'Labour Welfare and Skill Development',
+  'Law',
+  'Legislative Assembly',
+  'Micro, Small and Medium Enterprises',
+  'Mudalvarin Mugavari',
+  'Municipal Administration and Water Supply',
+  'Natural Resources',
+  'Planning, Development and Special Initiatives',
+  'Public Department',
+  'Public (Elections)',
+  'Public Works',
+  'Revenue and Disaster Management',
+  'Rural Development and Panchayat Raj',
+  'School Education',
+  'Social Reforms',
+  'Social Welfare and Women Empowerment',
+  'Special Programme Implementation',
+  'Tamil Development and Information',
+  'Tourism, Culture and Religious Endowments',
+  'Transport',
+  'Water Resources',
+  'Welfare of Differently Abled Persons',
+  'Youth Welfare and Sports Development',
+]
+
+function MinisterPage() {
+  const settings = useSettings()
+  const ff = settings.font_family || 'Segoe UI'
+  const [scale, setScale] = useState(1)
+
+  useEffect(() => {
+    const update = () => {
+      const sw = window.innerWidth / 1080
+      const sh = window.innerHeight / 1920
+      setScale(Math.min(sw, sh))
+    }
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
+  return (
+    <div style={{
+      width: '100vw', height: '100vh',
+      overflow: 'hidden', position: 'relative',
+      background: '#000',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }}>
+      <div style={{
+        position: 'absolute', inset: 0, zIndex: 0,
+        backgroundImage: `url('https://i.ibb.co/LDQsbQRN/thalamai.jpg')`,
+        backgroundSize: 'cover', backgroundPosition: 'center',
+      }} />
+      <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'rgba(241,245,249,0.9)' }} />
+
+      <div style={{
+        position: 'relative', zIndex: 2,
+        width: 1080, height: 1920,
+        transform: `scale(${scale})`,
+        transformOrigin: 'center center',
+        fontFamily: ff,
+        overflow: 'hidden',
+        flexShrink: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        boxSizing: 'border-box',
+        border: '1px solid rgba(0,0,0,0.18)',
+      }}>
+
+        {/* Header */}
+        <div style={{
+          background: 'linear-gradient(135deg, #DC2626, #D97706)',
+          padding: '36px 48px 28px',
+          flexShrink: 0,
+          textAlign: 'center',
+        }}>
+          <div style={{ fontSize: 58, fontWeight: 950, color: '#fff', lineHeight: 1.1 }}>
+            தமிழ்நாடு அமைச்சரவை
+          </div>
+          <div style={{ fontSize: 32, fontWeight: 700, color: 'rgba(255,255,255,0.85)', marginTop: 8 }}>
+            Tamil Nadu Cabinet 2026
+          </div>
+          <div style={{ fontSize: 22, color: 'rgba(255,255,255,0.7)', marginTop: 6 }}>
+            {TN_DEPARTMENTS.length} துறைகள் — Departments
+          </div>
+        </div>
+
+        {/* Department grid */}
+        <div style={{
+          flex: 1,
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 10,
+          padding: '16px 20px',
+          overflowY: 'hidden',
+          boxSizing: 'border-box',
+        }}>
+          {TN_DEPARTMENTS.map((dept, i) => {
+            const ministerName = settings[`minister_${i}_name`] || ''
+            const ministerParty = settings[`minister_${i}_party`] || ''
+            const partyCfg = ministerParty ? (INDIVIDUAL_PARTIES[ministerParty] || PARTY_DEFAULTS[ministerParty]) : null
+            const photoUrl = settings[`minister_${i}_photo`] || ''
+
+            return (
+              <div key={i} style={{
+                background: 'rgba(255,255,255,0.95)',
+                borderRadius: 12,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                overflow: 'hidden',
+                borderLeft: `8px solid ${partyCfg ? partyCfg.color : '#E5E7EB'}`,
+                boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
+              }}>
+                <Photo
+                  photoUrl={photoUrl}
+                  fallback={String(i + 1)}
+                  color={partyCfg ? partyCfg.color : '#9CA3AF'}
+                  size={72}
+                  style={{ width: 62, height: '100%', minHeight: 72, objectFit: 'cover', objectPosition: 'top', flexShrink: 0 }}
+                />
+                <div style={{ minWidth: 0, padding: '8px 8px 8px 0' }}>
+                  <div style={{ fontSize: 17, fontWeight: 800, color: '#0F172A', lineHeight: 1.2 }}>{dept}</div>
+                  {ministerName ? (
+                    <div style={{ fontSize: 15, fontWeight: 600, color: partyCfg ? partyCfg.color : '#6B7280', marginTop: 3 }}>
+                      {ministerName}{ministerParty ? ` · ${ministerParty}` : ''}
+                    </div>
+                  ) : (
+                    <div style={{ fontSize: 13, color: '#D1D5DB', marginTop: 2 }}>Minister TBA</div>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Footer */}
+        <div style={{
+          padding: '10px 0 14px',
+          textAlign: 'center',
+          flexShrink: 0,
+          borderTop: '1px solid rgba(0,0,0,0.08)',
+        }}>
+          <div style={{ fontSize: 22, color: '#94A3B8', fontWeight: 600 }}>@naadipulse • LIVE UPDATES</div>
+        </div>
+
+      </div>
+    </div>
+  )
+}
+
 export default function App() {
   // Normalize path by removing trailing slash for robust matching
   const path = window.location.pathname.replace(/\/$/, '') || '/'
@@ -914,5 +1084,6 @@ export default function App() {
   if (path === '/alliance') return <AlliancePage />
   if (path === '/whatif') return <AlliancePage showWhatIf />
   if (path === '/dot') return <DotMapPage />
+  if (path === '/minister') return <MinisterPage />
   return <FullDashboard mode="alliance" />
 }
