@@ -951,8 +951,8 @@ function MinisterPage() {
 
   useEffect(() => {
     const update = () => {
-      const sw = window.innerWidth / 1080
-      const sh = window.innerHeight / 1920
+      const sw = window.innerWidth / 1920
+      const sh = window.innerHeight / 1080
       setScale(Math.min(sw, sh))
     }
     update()
@@ -976,7 +976,7 @@ function MinisterPage() {
 
       <div style={{
         position: 'relative', zIndex: 2,
-        width: 1080, height: 1920,
+        width: 1920, height: 1080,
         transform: `scale(${scale})`,
         transformOrigin: 'center center',
         fontFamily: ff,
@@ -991,17 +991,17 @@ function MinisterPage() {
         {/* Header */}
         <div style={{
           background: 'linear-gradient(135deg, #DC2626, #D97706)',
-          padding: '36px 48px 28px',
+          padding: '18px 60px',
           flexShrink: 0,
-          textAlign: 'center',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
         }}>
-          <div style={{ fontSize: 58, fontWeight: 950, color: '#fff', lineHeight: 1.1 }}>
-            தமிழ்நாடு அமைச்சரவை
+          <div>
+            <div style={{ fontSize: 42, fontWeight: 950, color: '#fff', lineHeight: 1.1 }}>தமிழ்நாடு அமைச்சரவை</div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: 'rgba(255,255,255,0.85)', marginTop: 4 }}>Tamil Nadu Cabinet 2026</div>
           </div>
-          <div style={{ fontSize: 32, fontWeight: 700, color: 'rgba(255,255,255,0.85)', marginTop: 8 }}>
-            Tamil Nadu Cabinet 2026
-          </div>
-          <div style={{ fontSize: 22, color: 'rgba(255,255,255,0.7)', marginTop: 6 }}>
+          <div style={{ fontSize: 20, color: 'rgba(255,255,255,0.75)', fontWeight: 600 }}>
             {TN_DEPARTMENTS.length} துறைகள் — Departments
           </div>
         </div>
@@ -1010,9 +1010,9 @@ function MinisterPage() {
         <div style={{
           flex: 1,
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: 10,
-          padding: '16px 20px',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: 8,
+          padding: '10px 16px 10px',
           overflowY: 'hidden',
           boxSizing: 'border-box',
         }}>
@@ -1038,17 +1038,17 @@ function MinisterPage() {
                   fallback={String(i + 1)}
                   color={partyCfg ? partyCfg.color : '#9CA3AF'}
                   size={72}
-                  style={{ width: 62, height: '100%', minHeight: 72, objectFit: 'cover', objectPosition: 'top', flexShrink: 0 }}
+                  style={{ width: 52, height: '100%', minHeight: 62, objectFit: 'cover', objectPosition: 'top', flexShrink: 0 }}
                 />
-                <div style={{ minWidth: 0, padding: '8px 8px 8px 0' }}>
-                  <div style={{ fontSize: 16, fontWeight: 800, color: '#0F172A', lineHeight: 1.2 }}>{dept.ta}</div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#6B7280', lineHeight: 1.2, marginTop: 2 }}>{dept.en}</div>
+                <div style={{ minWidth: 0, padding: '6px 6px 6px 0' }}>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: '#0F172A', lineHeight: 1.2 }}>{dept.ta}</div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', lineHeight: 1.2, marginTop: 1 }}>{dept.en}</div>
                   {ministerName ? (
-                    <div style={{ fontSize: 14, fontWeight: 700, color: partyCfg ? partyCfg.color : '#374151', marginTop: 4 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: partyCfg ? partyCfg.color : '#374151', marginTop: 3 }}>
                       {ministerName}{ministerParty ? ` · ${ministerParty}` : ''}
                     </div>
                   ) : (
-                    <div style={{ fontSize: 12, color: '#D1D5DB', marginTop: 2 }}>Minister TBA</div>
+                    <div style={{ fontSize: 11, color: '#D1D5DB', marginTop: 1 }}>Minister TBA</div>
                   )}
                 </div>
               </div>
