@@ -1019,8 +1019,8 @@ function MinisterPage({ page = 1 }) {
           flex: 1,
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 8,
-          padding: '10px 16px 10px',
+          gap: 12,
+          padding: '12px 20px 12px',
           overflowY: 'hidden',
           boxSizing: 'border-box',
           opacity: 1,
@@ -1040,25 +1040,25 @@ function MinisterPage({ page = 1 }) {
                 alignItems: 'center',
                 gap: 10,
                 overflow: 'hidden',
-                borderLeft: `8px solid ${partyCfg ? partyCfg.color : '#E5E7EB'}`,
+                borderLeft: `10px solid ${partyCfg ? partyCfg.color : '#E5E7EB'}`,
                 boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
               }}>
                 <Photo
                   photoUrl={photoUrl}
                   fallback={String(i + 1)}
                   color={partyCfg ? partyCfg.color : '#9CA3AF'}
-                  size={72}
-                  style={{ width: 52, height: '100%', minHeight: 62, objectFit: 'cover', objectPosition: 'top', flexShrink: 0 }}
+                  size={90}
+                  style={{ width: 68, height: '100%', minHeight: 78, objectFit: 'cover', objectPosition: 'top', flexShrink: 0 }}
                 />
-                <div style={{ minWidth: 0, padding: '6px 6px 6px 0' }}>
-                  <div style={{ fontSize: 13, fontWeight: 800, color: '#0F172A', lineHeight: 1.2 }}>{dept.ta}</div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: '#6B7280', lineHeight: 1.2, marginTop: 1 }}>{dept.en}</div>
+                <div style={{ minWidth: 0, padding: '8px 8px 8px 0' }}>
+                  <div style={{ fontSize: 17, fontWeight: 800, color: '#0F172A', lineHeight: 1.2 }}>{dept.ta}</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#6B7280', lineHeight: 1.2, marginTop: 2 }}>{dept.en}</div>
                   {ministerName ? (
-                    <div style={{ fontSize: 12, fontWeight: 700, color: partyCfg ? partyCfg.color : '#374151', marginTop: 3 }}>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: partyCfg ? partyCfg.color : '#374151', marginTop: 4 }}>
                       {ministerName}{ministerParty ? ` · ${ministerParty}` : ''}
                     </div>
                   ) : (
-                    <div style={{ fontSize: 11, color: '#D1D5DB', marginTop: 1 }}>Minister TBA</div>
+                    <div style={{ fontSize: 13, color: '#D1D5DB', marginTop: 2 }}>Minister TBA</div>
                   )}
                 </div>
               </div>
