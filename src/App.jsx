@@ -901,47 +901,47 @@ function DotMapPage() {
 }
 
 const TN_DEPARTMENTS = [
-  'Adi Dravidar and Tribal Welfare',
-  'Agriculture & Farmers Welfare',
-  'Animal Husbandry, Dairying, Fisheries & Fishermen Welfare',
-  'BC, MBC & Minorities Welfare',
-  'Commercial Taxes and Registration',
-  'Co-operation, Food and Consumer Protection',
-  'Energy',
-  'Environment, Climate Change and Forests',
-  'Finance',
-  'Handlooms, Handicrafts, Textiles and Khadi',
-  'Health and Family Welfare',
-  'Higher Education',
-  'Highways and Minor Ports',
-  'Home, Prohibition and Excise',
-  'Housing and Urban Development',
-  'Human Resources Management',
-  'Industries, Investment Promotion & Commerce',
-  'Information Technology and Digital Services',
-  'Labour Welfare and Skill Development',
-  'Law',
-  'Legislative Assembly',
-  'Micro, Small and Medium Enterprises',
-  'Mudalvarin Mugavari',
-  'Municipal Administration and Water Supply',
-  'Natural Resources',
-  'Planning, Development and Special Initiatives',
-  'Public Department',
-  'Public (Elections)',
-  'Public Works',
-  'Revenue and Disaster Management',
-  'Rural Development and Panchayat Raj',
-  'School Education',
-  'Social Reforms',
-  'Social Welfare and Women Empowerment',
-  'Special Programme Implementation',
-  'Tamil Development and Information',
-  'Tourism, Culture and Religious Endowments',
-  'Transport',
-  'Water Resources',
-  'Welfare of Differently Abled Persons',
-  'Youth Welfare and Sports Development',
+  { ta: 'ஆதி திராவிடர் (ம) பழங்குடியினர் நலத் துறை',                        en: 'Adi Dravidar & Tribal Welfare' },
+  { ta: 'வேளாண்மை - உழவர் நலத் துறை',                                        en: 'Agriculture & Farmers Welfare' },
+  { ta: 'கால்நடை பராமரிப்பு, பால்வளம், மீன்வளம் மற்றும் மீனவர் நலத்துறை',  en: 'Animal Husbandry, Dairy, Fisheries & Fishermen Welfare' },
+  { ta: 'பிற்படுத்தப்பட்டோர், மிகப்பிற்படுத்தப்பட்டோர் மற்றும் சிறுபான்மையினர் நலத்துறை', en: 'BC, MBC & Minorities Welfare' },
+  { ta: 'வணிகவரி மற்றும் பதிவுத்துறை',                                       en: 'Commercial Taxes and Registration' },
+  { ta: 'கூட்டுறவு, உணவு (ம) நுகர்வோர் பாதுகாப்பு துறை',                    en: 'Co-operation, Food & Consumer Protection' },
+  { ta: 'எரிசக்தி',                                                           en: 'Energy' },
+  { ta: 'சுற்றுச்சூழல், காலநிலை மாற்றம் மற்றும் வனத்துறை',                  en: 'Environment, Climate Change and Forests' },
+  { ta: 'நிதித் துறை',                                                        en: 'Finance' },
+  { ta: 'கைத்தறி, கைத்திறன், துணிநூல் (ம) கதர்த்துறை',                      en: 'Handlooms, Handicrafts, Textiles and Khadi' },
+  { ta: 'மருத்துவம் - மக்கள் நல்வாழ்வுத் துறை',                              en: 'Health and Family Welfare' },
+  { ta: 'உயர்கல்வி துறை',                                                    en: 'Higher Education' },
+  { ta: 'நெடுஞ்சாலைகள் மற்றும் சிறு துறைமுகங்கள் துறை',                     en: 'Highways and Minor Ports' },
+  { ta: 'உள், மதுவிலக்கு (ம) ஆயத்தீர்வை துறை',                              en: 'Home, Prohibition and Excise' },
+  { ta: 'வீட்டு வசதி மற்றும் நகர்ப்புற வளர்ச்சித் துறை',                    en: 'Housing and Urban Development' },
+  { ta: 'மனித வள மேலாண்மைத் துறை',                                           en: 'Human Resources Management' },
+  { ta: 'தொழில், முதலீட்டு ஊக்குவிப்பு மற்றும் வர்த்தகத் துறை',             en: 'Industries, Investment Promotion & Commerce' },
+  { ta: 'தகவல் தொழில்நுட்பவியல் மற்றும் டிஜிட்டல் சேவைகள் துறை',            en: 'Information Technology and Digital Services' },
+  { ta: 'தொழிலாளர் நலன் மற்றும் திறன் மேம்பாட்டுத் துறை',                   en: 'Labour Welfare and Skill Development' },
+  { ta: 'சட்டத்துறை',                                                         en: 'Law' },
+  { ta: 'சட்டமன்ற பேரவைச் செயலகம் துறை',                                    en: 'Legislative Assembly Secretariat' },
+  { ta: 'குறு, சிறு மற்றும் நடுத்தரத் தொழில் நிறுவனங்கள் துறை',             en: 'Micro, Small and Medium Enterprises' },
+  { ta: 'முதல்வரின் முகவரி துறை',                                             en: "Chief Minister's Office" },
+  { ta: 'நகராட்சி நிர்வாகம் (ம) குடிநீர் வழங்கல் துறை',                     en: 'Municipal Administration and Water Supply' },
+  { ta: 'இயற்கை வளங்கள் துறை',                                               en: 'Natural Resources' },
+  { ta: 'திட்டம், வளர்ச்சி மற்றும் சிறப்பு முயற்சிகள் துறை',                en: 'Planning, Development & Special Initiatives' },
+  { ta: 'பொதுத் துறை',                                                        en: 'General (Services) Department' },
+  { ta: 'பொது (தேர்தல்கள்) துறை',                                             en: 'General (Elections) Department' },
+  { ta: 'பொதுப்பணி துறை',                                                     en: 'Public Works' },
+  { ta: 'வருவாய் மற்றும் பேரிடர் மேலாண்மைத் துறை',                           en: 'Revenue and Disaster Management' },
+  { ta: 'ஊரக வளர்ச்சி மற்றும் ஊராட்சித் துறை',                               en: 'Rural Development and Panchayat Raj' },
+  { ta: 'பள்ளிக் கல்வி துறை',                                                 en: 'School Education' },
+  { ta: 'சமூக சீர்திருத்த துறை',                                              en: 'Social Reformation' },
+  { ta: 'சமூகநலம் மற்றும் மகளிர் உரிமைத்துறை',                               en: 'Social Welfare and Women\'s Rights' },
+  { ta: 'சிறப்புத் திட்டச் செயலாக்கத் துறை',                                  en: 'Special Schemes Implementation' },
+  { ta: 'தமிழ் வளர்ச்சி மற்றும் செய்தித்துறை',                               en: 'Tamil Development and Information' },
+  { ta: 'சுற்றுலா, பண்பாடு மற்றும் சமய அறநிலையத் துறை',                     en: 'Tourism, Culture and Religious Endowments' },
+  { ta: 'போக்குவரத்து துறை',                                                  en: 'Transport' },
+  { ta: 'நீர்வளத்துறை',                                                       en: 'Water Resources' },
+  { ta: 'மாற்றுத் திறனாளிகள் நலத் துறை',                                     en: 'Welfare of Differently Abled Persons' },
+  { ta: 'இளைஞர் நலன் (ம) விளையாட்டு மேம்பாட்டுத்துறை',                      en: 'Youth Welfare and Sports Development' },
 ]
 
 function MinisterPage() {
@@ -1041,13 +1041,14 @@ function MinisterPage() {
                   style={{ width: 62, height: '100%', minHeight: 72, objectFit: 'cover', objectPosition: 'top', flexShrink: 0 }}
                 />
                 <div style={{ minWidth: 0, padding: '8px 8px 8px 0' }}>
-                  <div style={{ fontSize: 17, fontWeight: 800, color: '#0F172A', lineHeight: 1.2 }}>{dept}</div>
+                  <div style={{ fontSize: 16, fontWeight: 800, color: '#0F172A', lineHeight: 1.2 }}>{dept.ta}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#6B7280', lineHeight: 1.2, marginTop: 2 }}>{dept.en}</div>
                   {ministerName ? (
-                    <div style={{ fontSize: 15, fontWeight: 600, color: partyCfg ? partyCfg.color : '#6B7280', marginTop: 3 }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: partyCfg ? partyCfg.color : '#374151', marginTop: 4 }}>
                       {ministerName}{ministerParty ? ` · ${ministerParty}` : ''}
                     </div>
                   ) : (
-                    <div style={{ fontSize: 13, color: '#D1D5DB', marginTop: 2 }}>Minister TBA</div>
+                    <div style={{ fontSize: 12, color: '#D1D5DB', marginTop: 2 }}>Minister TBA</div>
                   )}
                 </div>
               </div>
