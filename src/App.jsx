@@ -944,7 +944,7 @@ const TN_DEPARTMENTS = [
   { ta: 'இளைஞர் நலன் (ம) விளையாட்டு மேம்பாட்டுத்துறை',                      en: 'Youth Welfare and Sports Development' },
 ]
 
-function MinisterPage() {
+function MinisterPage({ page = 1 }) {
   const settings = useSettings()
   const ff = settings.font_family || 'Segoe UI'
   const [scale, setScale] = useState(1)
@@ -959,6 +959,9 @@ function MinisterPage() {
     window.addEventListener('resize', update)
     return () => window.removeEventListener('resize', update)
   }, [])
+
+  const depts = page === 1 ? TN_DEPARTMENTS.slice(0, 20) : TN_DEPARTMENTS.slice(20)
+  const startIdx = page === 1 ? 0 : 20
 
   return (
     <div style={{
@@ -1001,8 +1004,13 @@ function MinisterPage() {
             <div style={{ fontSize: 42, fontWeight: 950, color: '#fff', lineHeight: 1.1 }}>தமிழ்நாடு அமைச்சரவை</div>
             <div style={{ fontSize: 22, fontWeight: 700, color: 'rgba(255,255,255,0.85)', marginTop: 4 }}>Tamil Nadu Cabinet 2026</div>
           </div>
-          <div style={{ fontSize: 20, color: 'rgba(255,255,255,0.75)', fontWeight: 600 }}>
-            {TN_DEPARTMENTS.length} துறைகள் — Departments
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontSize: 20, color: 'rgba(255,255,255,0.75)', fontWeight: 600 }}>
+              {page === 1 ? '1 – 20' : '21 – 41'} of {TN_DEPARTMENTS.length} துறைகள்
+            </div>
+            <div style={{ fontSize: 16, color: 'rgba(255,255,255,0.55)', marginTop: 2 }}>
+              Part {page} of 2
+            </div>
           </div>
         </div>
 
@@ -1015,12 +1023,15 @@ function MinisterPage() {
           padding: '10px 16px 10px',
           overflowY: 'hidden',
           boxSizing: 'border-box',
+          opacity: visible ? 1 : 0,
+          transition: 'opacity 0.5s ease',
         }}>
-          {TN_DEPARTMENTS.map((dept, i) => {
-            const ministerName = settings[`minister_${i}_name`] || ''
-            const ministerParty = settings[`minister_${i}_party`] || ''
+          {depts.map((dept, i) => {
+            const idx = startIdx + i
+            const ministerName = settings[`minister_${idx}_name`] || ''
+            const ministerParty = settings[`minister_${idx}_party`] || ''
             const partyCfg = ministerParty ? (INDIVIDUAL_PARTIES[ministerParty] || PARTY_DEFAULTS[ministerParty]) : null
-            const photoUrl = settings[`minister_${i}_photo`] || ''
+            const photoUrl = settings[`minister_${idx}_photo`] || ''
 
             return (
               <div key={i} style={{
@@ -1085,6 +1096,7 @@ export default function App() {
   if (path === '/alliance') return <AlliancePage />
   if (path === '/whatif') return <AlliancePage showWhatIf />
   if (path === '/dot') return <DotMapPage />
-  if (path === '/minister') return <MinisterPage />
+  if (path === '/minister') return <MinisterPage page={1} />
+  if (path === '/minister2') return <MinisterPage page={2} />
   return <FullDashboard mode="alliance" />
 }
