@@ -1023,8 +1023,7 @@ function MinisterPage({ page = 1 }) {
           padding: '10px 16px 10px',
           overflowY: 'hidden',
           boxSizing: 'border-box',
-          opacity: visible ? 1 : 0,
-          transition: 'opacity 0.5s ease',
+          opacity: 1,
         }}>
           {depts.map((dept, i) => {
             const idx = startIdx + i
