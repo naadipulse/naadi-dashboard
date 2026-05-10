@@ -1060,7 +1060,8 @@ function MinisterPage({ page = 1 }) {
                   style={{ width: 68, height: '100%', minHeight: 78, objectFit: 'cover', objectPosition: 'top', flexShrink: 0 }}
                 />
                 <div style={{ minWidth: 0, padding: '8px 12px 8px 0', flex: 1 }}>
-                  <div style={{ fontSize: 15, fontWeight: 800, color: '#64748B', lineHeight: 1.1 }}>{dept.ta}</div>
+                  <div style={{ fontSize: 14, fontWeight: 800, color: '#64748B', lineHeight: 1.1 }}>{dept.ta}</div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: '#94A3B8', lineHeight: 1, marginTop: 1 }}>{dept.en}</div>
                   {ministerName ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
                       {partyCfg && (settings[partyCfg.logoKey] || partyCfg.logo) && (
