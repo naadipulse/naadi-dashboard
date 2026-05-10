@@ -960,6 +960,14 @@ function MinisterPage({ page = 1 }) {
     return () => window.removeEventListener('resize', update)
   }, [])
 
+  // Auto-cycle between page 1 and page 2 for broadcast
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      window.location.pathname = page === 1 ? '/minister2' : '/minister'
+    }, 12000) // 12 seconds per page
+    return () => clearTimeout(timer)
+  }, [page])
+
   const depts = page === 1 ? TN_DEPARTMENTS.slice(0, 20) : TN_DEPARTMENTS.slice(20)
   const startIdx = page === 1 ? 0 : 20
 
@@ -1042,6 +1050,7 @@ function MinisterPage({ page = 1 }) {
                 overflow: 'hidden',
                 borderLeft: `10px solid ${partyCfg ? partyCfg.color : '#E5E7EB'}`,
                 boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
+                animation: `slideUp 0.5s ease ${i * 0.05}s both`,
               }}>
                 <Photo
                   photoUrl={photoUrl}
@@ -1050,12 +1059,16 @@ function MinisterPage({ page = 1 }) {
                   size={90}
                   style={{ width: 68, height: '100%', minHeight: 78, objectFit: 'cover', objectPosition: 'top', flexShrink: 0 }}
                 />
-                <div style={{ minWidth: 0, padding: '8px 8px 8px 0' }}>
-                  <div style={{ fontSize: 17, fontWeight: 800, color: '#0F172A', lineHeight: 1.2 }}>{dept.ta}</div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: '#6B7280', lineHeight: 1.2, marginTop: 2 }}>{dept.en}</div>
+                <div style={{ minWidth: 0, padding: '8px 12px 8px 0', flex: 1 }}>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: '#64748B', lineHeight: 1.1 }}>{dept.ta}</div>
                   {ministerName ? (
-                    <div style={{ fontSize: 15, fontWeight: 700, color: partyCfg ? partyCfg.color : '#374151', marginTop: 4 }}>
-                      {ministerName}{ministerParty ? ` · ${ministerParty}` : ''}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
+                      {partyCfg && (settings[partyCfg.logoKey] || partyCfg.logo) && (
+                        <img src={settings[partyCfg.logoKey] || partyCfg.logo} alt="" style={{ height: 24, width: 'auto' }} />
+                      )}
+                      <div style={{ fontSize: 20, fontWeight: 900, color: partyCfg ? partyCfg.color : '#0F172A' }}>
+                        {ministerName}
+                      </div>
                     </div>
                   ) : (
                     <div style={{ fontSize: 13, color: '#D1D5DB', marginTop: 2 }}>Minister TBA</div>
@@ -1077,6 +1090,12 @@ function MinisterPage({ page = 1 }) {
         </div>
 
       </div>
+      <style>{`
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   )
 }
