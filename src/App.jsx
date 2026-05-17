@@ -900,6 +900,19 @@ function DotMapPage() {
   )
 }
 
+const MINISTERS = [
+  { name: 'C. Joseph Vijay',     role: 'Chief Minister',                                    party: 'TVK', constituency: 'Perambur' },
+  { name: 'N. Anand',            role: 'Rural Development & Water Resources',               party: 'TVK', constituency: 'Thiyagarayanagar' },
+  { name: 'Aadhav Arjuna',       role: 'Public Works & Sports Development',                 party: 'TVK', constituency: 'Villivakkam' },
+  { name: 'K.G. Arunraj',        role: 'Health, Medical Education & Family Welfare',        party: 'TVK', constituency: 'Tiruchengode' },
+  { name: 'K.A. Sengottaiyan',   role: 'Finance',                                           party: 'TVK', constituency: 'Gobichettipalayam' },
+  { name: 'P. Venkataramanan',   role: 'Food & Civil Supplies',                             party: 'TVK', constituency: 'Mylapore' },
+  { name: 'C.T.R. Nirmal Kumar', role: 'Energy Resources & Law',                            party: 'TVK', constituency: 'Thiruparankundram' },
+  { name: 'Rajmohan',            role: 'School Education, Tamil Development & Publicity',   party: 'TVK', constituency: 'Egmore' },
+  { name: 'T.K. Prabhu',         role: 'Natural Resources',                                 party: 'TVK', constituency: 'Karaikudi' },
+  { name: 'S. Keerthana',        role: 'Industries',                                        party: 'TVK', constituency: 'Sivakasi' },
+]
+
 const TN_DEPARTMENTS = [
   { ta: 'ஆதி திராவிடர் (ம) பழங்குடியினர் நலத் துறை',                        en: 'Adi Dravidar & Tribal Welfare' },
   { ta: 'வேளாண்மை - உழவர் நலத் துறை',                                        en: 'Agriculture & Farmers Welfare' },
@@ -944,7 +957,7 @@ const TN_DEPARTMENTS = [
   { ta: 'இளைஞர் நலன் (ம) விளையாட்டு மேம்பாட்டுத்துறை',                      en: 'Youth Welfare and Sports Development',           minister: 'Aadhav Arjuna', party: 'TVK' },
 ]
 
-function MinisterPage({ page = 1 }) {
+function MinisterPage() {
   const settings = useSettings()
   const ff = settings.font_family || 'Segoe UI'
   const [scale, setScale] = useState(1)
@@ -959,11 +972,6 @@ function MinisterPage({ page = 1 }) {
     window.addEventListener('resize', update)
     return () => window.removeEventListener('resize', update)
   }, [])
-
-  // 10 items per page → 5 pages for 41 departments
-  const startIdx = (page - 1) * 10
-  const depts = TN_DEPARTMENTS.slice(startIdx, startIdx + 10)
-  const totalPages = Math.ceil(TN_DEPARTMENTS.length / 10)
 
   return (
     <div style={{
@@ -983,68 +991,73 @@ function MinisterPage({ page = 1 }) {
         display: 'flex',
         flexDirection: 'column',
         boxSizing: 'border-box',
-        background: '#F1F5F9',
+        background: '#0F172A',
       }}>
 
         {/* Header */}
         <div style={{
           background: 'linear-gradient(135deg, #DC2626 0%, #D97706 100%)',
-          padding: '40px 48px 30px',
+          padding: '48px 48px 36px',
           flexShrink: 0,
+          textAlign: 'center',
         }}>
-          <div style={{ fontSize: 56, fontWeight: 950, color: '#fff', lineHeight: 1.1 }}>தமிழ்நாடு அமைச்சரவை</div>
-          <div style={{ fontSize: 30, fontWeight: 700, color: 'rgba(255,255,255,0.85)', marginTop: 8 }}>Tamil Nadu Cabinet 2026</div>
-          <div style={{ marginTop: 10, fontSize: 24, color: 'rgba(255,255,255,0.65)', fontWeight: 600 }}>
-            Part {page} of {totalPages} &nbsp;·&nbsp; {startIdx + 1}–{Math.min(startIdx + 10, TN_DEPARTMENTS.length)} of {TN_DEPARTMENTS.length} துறைகள்
+          <div style={{ fontSize: 60, fontWeight: 950, color: '#fff', lineHeight: 1.1 }}>தமிழ்நாடு அமைச்சரவை</div>
+          <div style={{ fontSize: 32, fontWeight: 700, color: 'rgba(255,255,255,0.85)', marginTop: 10 }}>Tamil Nadu Cabinet 2026</div>
+          <div style={{ marginTop: 8, fontSize: 22, color: 'rgba(255,255,255,0.6)', fontWeight: 600 }}>
+            {MINISTERS.length} Ministers • Sworn in 10 May 2026
           </div>
         </div>
 
-        {/* Department grid — 2 columns × 5 rows */}
-        <div style={{
-          flex: 1,
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: 16,
-          padding: '20px 20px',
-          overflowY: 'hidden',
-          boxSizing: 'border-box',
-        }}>
-          {depts.map((dept, i) => {
-            const idx = startIdx + i
-            const ministerName = settings[`minister_${idx}_name`] || dept.minister || ''
-            const ministerParty = settings[`minister_${idx}_party`] || dept.party || ''
-            const partyCfg = ministerParty ? (INDIVIDUAL_PARTIES[ministerParty] || PARTY_DEFAULTS[ministerParty]) : null
-            const photoUrl = settings[`minister_${idx}_photo`] || ''
-
+        {/* Table */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '20px 24px', gap: 10, overflowY: 'hidden' }}>
+          {MINISTERS.map((m, i) => {
+            const partyCfg = PARTY_DEFAULTS[m.party] || INDIVIDUAL_PARTIES[m.party]
+            const photoUrl = settings[`minister_${i}_photo`] || ''
+            const isFirst = i === 0
             return (
               <div key={i} style={{
-                background: '#fff',
-                borderRadius: 18,
                 display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden',
-                borderTop: `10px solid ${partyCfg ? partyCfg.color : '#E5E7EB'}`,
-                boxShadow: '0 4px 20px rgba(0,0,0,0.10)',
+                alignItems: 'center',
+                gap: 20,
+                background: isFirst ? 'rgba(220,38,38,0.18)' : 'rgba(255,255,255,0.06)',
+                borderRadius: 16,
+                padding: '14px 20px',
+                borderLeft: `6px solid ${partyCfg ? partyCfg.color : '#4B5563'}`,
+                flex: 1,
               }}>
-                <div style={{ display: 'flex', alignItems: 'stretch', flex: 1 }}>
-                  <Photo
-                    photoUrl={photoUrl}
-                    fallback={String(startIdx + i + 1)}
-                    color={partyCfg ? partyCfg.color : '#9CA3AF'}
-                    size={120}
-                    style={{ width: 96, minHeight: 96, objectFit: 'cover', objectPosition: 'top', flexShrink: 0 }}
-                  />
-                  <div style={{ minWidth: 0, padding: '14px 16px 14px 14px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <div style={{ fontSize: 20, fontWeight: 800, color: '#0F172A', lineHeight: 1.25 }}>{dept.ta}</div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: '#94A3B8', lineHeight: 1.2, marginTop: 4 }}>{dept.en}</div>
-                    {ministerName ? (
-                      <div style={{ fontSize: 24, fontWeight: 900, color: partyCfg ? partyCfg.color : '#374151', marginTop: 8, lineHeight: 1 }}>
-                        {ministerName}
-                      </div>
-                    ) : (
-                      <div style={{ fontSize: 16, color: '#CBD5E1', marginTop: 8 }}>Minister TBA</div>
-                    )}
-                  </div>
+                {/* Number */}
+                <div style={{
+                  width: 48, height: 48, borderRadius: '50%',
+                  background: partyCfg ? partyCfg.color : '#4B5563',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 22, fontWeight: 900, color: '#fff', flexShrink: 0,
+                }}>
+                  {i + 1}
+                </div>
+
+                {/* Photo */}
+                <Photo
+                  photoUrl={photoUrl}
+                  fallback={m.name.split(' ').map(w => w[0]).join('').slice(0, 2)}
+                  color={partyCfg ? partyCfg.color : '#4B5563'}
+                  size={72}
+                  style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', objectPosition: 'top', flexShrink: 0 }}
+                />
+
+                {/* Text */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 30, fontWeight: 900, color: '#fff', lineHeight: 1.1 }}>{m.name}</div>
+                  <div style={{ fontSize: 18, fontWeight: 600, color: '#94A3B8', marginTop: 4, lineHeight: 1.2 }}>{m.role}</div>
+                  <div style={{ fontSize: 15, color: '#64748B', marginTop: 3 }}>{m.constituency}</div>
+                </div>
+
+                {/* Party badge */}
+                <div style={{
+                  background: partyCfg ? partyCfg.color : '#4B5563',
+                  borderRadius: 10, padding: '6px 16px', flexShrink: 0,
+                  fontSize: 18, fontWeight: 800, color: '#fff',
+                }}>
+                  {m.party}
                 </div>
               </div>
             )
@@ -1053,13 +1066,12 @@ function MinisterPage({ page = 1 }) {
 
         {/* Footer */}
         <div style={{
-          padding: '18px 0 26px',
+          padding: '16px 0 22px',
           textAlign: 'center',
           flexShrink: 0,
-          borderTop: '1px solid rgba(0,0,0,0.08)',
-          background: '#fff',
+          borderTop: '1px solid rgba(255,255,255,0.08)',
         }}>
-          <div style={{ fontSize: 28, color: '#94A3B8', fontWeight: 700 }}>@naadipulse • LIVE UPDATES</div>
+          <div style={{ fontSize: 26, color: '#475569', fontWeight: 700 }}>@naadipulse • LIVE UPDATES</div>
         </div>
 
       </div>
@@ -1081,10 +1093,6 @@ export default function App() {
   if (path === '/alliance') return <AlliancePage />
   if (path === '/whatif') return <AlliancePage showWhatIf />
   if (path === '/dot') return <DotMapPage />
-  if (path === '/minister') return <MinisterPage page={1} />
-  if (path === '/minister2') return <MinisterPage page={2} />
-  if (path === '/minister3') return <MinisterPage page={3} />
-  if (path === '/minister4') return <MinisterPage page={4} />
-  if (path === '/minister5') return <MinisterPage page={5} />
+  if (path === '/minister') return <MinisterPage />
   return <FullDashboard mode="alliance" />
 }
