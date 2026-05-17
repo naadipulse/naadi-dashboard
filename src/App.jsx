@@ -906,42 +906,42 @@ const TN_DEPARTMENTS = [
   { ta: 'கால்நடை பராமரிப்பு, பால்வளம், மீன்வளம் மற்றும் மீனவர் நலத்துறை',  en: 'Animal Husbandry, Dairy, Fisheries & Fishermen Welfare' },
   { ta: 'பிற்படுத்தப்பட்டோர், மிகப்பிற்படுத்தப்பட்டோர் மற்றும் சிறுபான்மையினர் நலத்துறை', en: 'BC, MBC & Minorities Welfare' },
   { ta: 'வணிகவரி மற்றும் பதிவுத்துறை',                                       en: 'Commercial Taxes and Registration' },
-  { ta: 'கூட்டுறவு, உணவு (ம) நுகர்வோர் பாதுகாப்பு துறை',                    en: 'Co-operation, Food & Consumer Protection' },
-  { ta: 'எரிசக்தி',                                                           en: 'Energy' },
+  { ta: 'கூட்டுறவு, உணவு (ம) நுகர்வோர் பாதுகாப்பு துறை',                    en: 'Co-operation, Food & Consumer Protection',       minister: 'P. Venkataramanan', party: 'TVK' },
+  { ta: 'எரிசக்தி',                                                           en: 'Energy',                                         minister: 'C.T.R. Nirmal Kumar', party: 'TVK' },
   { ta: 'சுற்றுச்சூழல், காலநிலை மாற்றம் மற்றும் வனத்துறை',                  en: 'Environment, Climate Change and Forests' },
-  { ta: 'நிதித் துறை',                                                        en: 'Finance' },
+  { ta: 'நிதித் துறை',                                                        en: 'Finance',                                        minister: 'K.A. Sengottaiyan', party: 'TVK' },
   { ta: 'கைத்தறி, கைத்திறன், துணிநூல் (ம) கதர்த்துறை',                      en: 'Handlooms, Handicrafts, Textiles and Khadi' },
-  { ta: 'மருத்துவம் - மக்கள் நல்வாழ்வுத் துறை',                              en: 'Health and Family Welfare' },
+  { ta: 'மருத்துவம் - மக்கள் நல்வாழ்வுத் துறை',                              en: 'Health and Family Welfare',                      minister: 'K.G. Arunraj', party: 'TVK' },
   { ta: 'உயர்கல்வி துறை',                                                    en: 'Higher Education' },
   { ta: 'நெடுஞ்சாலைகள் மற்றும் சிறு துறைமுகங்கள் துறை',                     en: 'Highways and Minor Ports' },
   { ta: 'உள், மதுவிலக்கு (ம) ஆயத்தீர்வை துறை',                              en: 'Home, Prohibition and Excise' },
   { ta: 'வீட்டு வசதி மற்றும் நகர்ப்புற வளர்ச்சித் துறை',                    en: 'Housing and Urban Development' },
   { ta: 'மனித வள மேலாண்மைத் துறை',                                           en: 'Human Resources Management' },
-  { ta: 'தொழில், முதலீட்டு ஊக்குவிப்பு மற்றும் வர்த்தகத் துறை',             en: 'Industries, Investment Promotion & Commerce' },
+  { ta: 'தொழில், முதலீட்டு ஊக்குவிப்பு மற்றும் வர்த்தகத் துறை',             en: 'Industries, Investment Promotion & Commerce',    minister: 'S. Keerthana', party: 'TVK' },
   { ta: 'தகவல் தொழில்நுட்பவியல் மற்றும் டிஜிட்டல் சேவைகள் துறை',            en: 'Information Technology and Digital Services' },
   { ta: 'தொழிலாளர் நலன் மற்றும் திறன் மேம்பாட்டுத் துறை',                   en: 'Labour Welfare and Skill Development' },
-  { ta: 'சட்டத்துறை',                                                         en: 'Law' },
+  { ta: 'சட்டத்துறை',                                                         en: 'Law',                                            minister: 'C.T.R. Nirmal Kumar', party: 'TVK' },
   { ta: 'சட்டமன்ற பேரவைச் செயலகம் துறை',                                    en: 'Legislative Assembly Secretariat' },
   { ta: 'குறு, சிறு மற்றும் நடுத்தரத் தொழில் நிறுவனங்கள் துறை',             en: 'Micro, Small and Medium Enterprises' },
-  { ta: 'முதல்வரின் முகவரி துறை',                                             en: "Chief Minister's Office" },
+  { ta: 'முதல்வரின் முகவரி துறை',                                             en: "Chief Minister's Office",                        minister: 'C. Joseph Vijay', party: 'TVK' },
   { ta: 'நகராட்சி நிர்வாகம் (ம) குடிநீர் வழங்கல் துறை',                     en: 'Municipal Administration and Water Supply' },
-  { ta: 'இயற்கை வளங்கள் துறை',                                               en: 'Natural Resources' },
+  { ta: 'இயற்கை வளங்கள் துறை',                                               en: 'Natural Resources',                              minister: 'T.K. Prabhu', party: 'TVK' },
   { ta: 'திட்டம், வளர்ச்சி மற்றும் சிறப்பு முயற்சிகள் துறை',                en: 'Planning, Development & Special Initiatives' },
   { ta: 'பொதுத் துறை',                                                        en: 'General (Services) Department' },
   { ta: 'பொது (தேர்தல்கள்) துறை',                                             en: 'General (Elections) Department' },
-  { ta: 'பொதுப்பணி துறை',                                                     en: 'Public Works' },
+  { ta: 'பொதுப்பணி துறை',                                                     en: 'Public Works',                                   minister: 'Aadhav Arjuna', party: 'TVK' },
   { ta: 'வருவாய் மற்றும் பேரிடர் மேலாண்மைத் துறை',                           en: 'Revenue and Disaster Management' },
-  { ta: 'ஊரக வளர்ச்சி மற்றும் ஊராட்சித் துறை',                               en: 'Rural Development and Panchayat Raj' },
-  { ta: 'பள்ளிக் கல்வி துறை',                                                 en: 'School Education' },
+  { ta: 'ஊரக வளர்ச்சி மற்றும் ஊராட்சித் துறை',                               en: 'Rural Development and Panchayat Raj',            minister: 'N. Anand', party: 'TVK' },
+  { ta: 'பள்ளிக் கல்வி துறை',                                                 en: 'School Education',                               minister: 'Rajmohan', party: 'TVK' },
   { ta: 'சமூக சீர்திருத்த துறை',                                              en: 'Social Reformation' },
   { ta: 'சமூகநலம் மற்றும் மகளிர் உரிமைத்துறை',                               en: 'Social Welfare and Women\'s Rights' },
   { ta: 'சிறப்புத் திட்டச் செயலாக்கத் துறை',                                  en: 'Special Schemes Implementation' },
-  { ta: 'தமிழ் வளர்ச்சி மற்றும் செய்தித்துறை',                               en: 'Tamil Development and Information' },
+  { ta: 'தமிழ் வளர்ச்சி மற்றும் செய்தித்துறை',                               en: 'Tamil Development and Information',              minister: 'Rajmohan', party: 'TVK' },
   { ta: 'சுற்றுலா, பண்பாடு மற்றும் சமய அறநிலையத் துறை',                     en: 'Tourism, Culture and Religious Endowments' },
   { ta: 'போக்குவரத்து துறை',                                                  en: 'Transport' },
-  { ta: 'நீர்வளத்துறை',                                                       en: 'Water Resources' },
+  { ta: 'நீர்வளத்துறை',                                                       en: 'Water Resources',                                minister: 'N. Anand', party: 'TVK' },
   { ta: 'மாற்றுத் திறனாளிகள் நலத் துறை',                                     en: 'Welfare of Differently Abled Persons' },
-  { ta: 'இளைஞர் நலன் (ம) விளையாட்டு மேம்பாட்டுத்துறை',                      en: 'Youth Welfare and Sports Development' },
+  { ta: 'இளைஞர் நலன் (ம) விளையாட்டு மேம்பாட்டுத்துறை',                      en: 'Youth Welfare and Sports Development',           minister: 'Aadhav Arjuna', party: 'TVK' },
 ]
 
 function MinisterPage({ page = 1 }) {
@@ -951,8 +951,8 @@ function MinisterPage({ page = 1 }) {
 
   useEffect(() => {
     const update = () => {
-      const sw = window.innerWidth / 1920
-      const sh = window.innerHeight / 1080
+      const sw = window.innerWidth / 1080
+      const sh = window.innerHeight / 1920
       setScale(Math.min(sw, sh))
     }
     update()
@@ -960,34 +960,21 @@ function MinisterPage({ page = 1 }) {
     return () => window.removeEventListener('resize', update)
   }, [])
 
-  // Auto-cycle between page 1 and page 2 for broadcast
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      window.location.pathname = page === 1 ? '/minister2' : '/minister'
-    }, 12000) // 12 seconds per page
-    return () => clearTimeout(timer)
-  }, [page])
-
-  const depts = page === 1 ? TN_DEPARTMENTS.slice(0, 20) : TN_DEPARTMENTS.slice(20)
-  const startIdx = page === 1 ? 0 : 20
+  // 10 items per page → 5 pages for 41 departments
+  const startIdx = (page - 1) * 10
+  const depts = TN_DEPARTMENTS.slice(startIdx, startIdx + 10)
+  const totalPages = Math.ceil(TN_DEPARTMENTS.length / 10)
 
   return (
     <div style={{
       width: '100vw', height: '100vh',
       overflow: 'hidden', position: 'relative',
-      background: '#000',
+      background: '#0F172A',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
     }}>
       <div style={{
-        position: 'absolute', inset: 0, zIndex: 0,
-        backgroundImage: `url('https://i.ibb.co/LDQsbQRN/thalamai.jpg')`,
-        backgroundSize: 'cover', backgroundPosition: 'center',
-      }} />
-      <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'rgba(241,245,249,0.9)' }} />
-
-      <div style={{
         position: 'relative', zIndex: 2,
-        width: 1920, height: 1080,
+        width: 1080, height: 1920,
         transform: `scale(${scale})`,
         transformOrigin: 'center center',
         fontFamily: ff,
@@ -996,84 +983,68 @@ function MinisterPage({ page = 1 }) {
         display: 'flex',
         flexDirection: 'column',
         boxSizing: 'border-box',
-        border: '1px solid rgba(0,0,0,0.18)',
+        background: '#F1F5F9',
       }}>
 
         {/* Header */}
         <div style={{
-          background: 'linear-gradient(135deg, #DC2626, #D97706)',
-          padding: '18px 60px',
+          background: 'linear-gradient(135deg, #DC2626 0%, #D97706 100%)',
+          padding: '40px 48px 30px',
           flexShrink: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
         }}>
-          <div>
-            <div style={{ fontSize: 42, fontWeight: 950, color: '#fff', lineHeight: 1.1 }}>தமிழ்நாடு அமைச்சரவை</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: 'rgba(255,255,255,0.85)', marginTop: 4 }}>Tamil Nadu Cabinet 2026</div>
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 20, color: 'rgba(255,255,255,0.75)', fontWeight: 600 }}>
-              {page === 1 ? '1 – 20' : '21 – 41'} of {TN_DEPARTMENTS.length} துறைகள்
-            </div>
-            <div style={{ fontSize: 16, color: 'rgba(255,255,255,0.55)', marginTop: 2 }}>
-              Part {page} of 2
-            </div>
+          <div style={{ fontSize: 56, fontWeight: 950, color: '#fff', lineHeight: 1.1 }}>தமிழ்நாடு அமைச்சரவை</div>
+          <div style={{ fontSize: 30, fontWeight: 700, color: 'rgba(255,255,255,0.85)', marginTop: 8 }}>Tamil Nadu Cabinet 2026</div>
+          <div style={{ marginTop: 10, fontSize: 24, color: 'rgba(255,255,255,0.65)', fontWeight: 600 }}>
+            Part {page} of {totalPages} &nbsp;·&nbsp; {startIdx + 1}–{Math.min(startIdx + 10, TN_DEPARTMENTS.length)} of {TN_DEPARTMENTS.length} துறைகள்
           </div>
         </div>
 
-        {/* Department grid */}
+        {/* Department grid — 2 columns × 5 rows */}
         <div style={{
           flex: 1,
           display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 12,
-          padding: '12px 20px 12px',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: 16,
+          padding: '20px 20px',
           overflowY: 'hidden',
           boxSizing: 'border-box',
-          opacity: 1,
         }}>
           {depts.map((dept, i) => {
             const idx = startIdx + i
-            const ministerName = settings[`minister_${idx}_name`] || ''
-            const ministerParty = settings[`minister_${idx}_party`] || ''
+            const ministerName = settings[`minister_${idx}_name`] || dept.minister || ''
+            const ministerParty = settings[`minister_${idx}_party`] || dept.party || ''
             const partyCfg = ministerParty ? (INDIVIDUAL_PARTIES[ministerParty] || PARTY_DEFAULTS[ministerParty]) : null
             const photoUrl = settings[`minister_${idx}_photo`] || ''
 
             return (
               <div key={i} style={{
-                background: 'rgba(255,255,255,0.95)',
-                borderRadius: 12,
+                background: '#fff',
+                borderRadius: 18,
                 display: 'flex',
-                alignItems: 'center',
-                gap: 10,
+                flexDirection: 'column',
                 overflow: 'hidden',
-                borderLeft: `10px solid ${partyCfg ? partyCfg.color : '#E5E7EB'}`,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
-                animation: `slideUp 0.5s ease ${i * 0.05}s both`,
+                borderTop: `10px solid ${partyCfg ? partyCfg.color : '#E5E7EB'}`,
+                boxShadow: '0 4px 20px rgba(0,0,0,0.10)',
               }}>
-                <Photo
-                  photoUrl={photoUrl}
-                  fallback={String(i + 1)}
-                  color={partyCfg ? partyCfg.color : '#9CA3AF'}
-                  size={90}
-                  style={{ width: 68, height: '100%', minHeight: 78, objectFit: 'cover', objectPosition: 'top', flexShrink: 0 }}
-                />
-                <div style={{ minWidth: 0, padding: '8px 12px 8px 0', flex: 1 }}>
-                  <div style={{ fontSize: 14, fontWeight: 800, color: '#64748B', lineHeight: 1.1 }}>{dept.ta}</div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: '#94A3B8', lineHeight: 1, marginTop: 1 }}>{dept.en}</div>
-                  {ministerName ? (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
-                      {partyCfg && (settings[partyCfg.logoKey] || partyCfg.logo) && (
-                        <img src={settings[partyCfg.logoKey] || partyCfg.logo} alt="" style={{ height: 24, width: 'auto' }} />
-                      )}
-                      <div style={{ fontSize: 20, fontWeight: 900, color: partyCfg ? partyCfg.color : '#0F172A' }}>
+                <div style={{ display: 'flex', alignItems: 'stretch', flex: 1 }}>
+                  <Photo
+                    photoUrl={photoUrl}
+                    fallback={String(startIdx + i + 1)}
+                    color={partyCfg ? partyCfg.color : '#9CA3AF'}
+                    size={120}
+                    style={{ width: 96, minHeight: 96, objectFit: 'cover', objectPosition: 'top', flexShrink: 0 }}
+                  />
+                  <div style={{ minWidth: 0, padding: '14px 16px 14px 14px', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                    <div style={{ fontSize: 20, fontWeight: 800, color: '#0F172A', lineHeight: 1.25 }}>{dept.ta}</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: '#94A3B8', lineHeight: 1.2, marginTop: 4 }}>{dept.en}</div>
+                    {ministerName ? (
+                      <div style={{ fontSize: 24, fontWeight: 900, color: partyCfg ? partyCfg.color : '#374151', marginTop: 8, lineHeight: 1 }}>
                         {ministerName}
                       </div>
-                    </div>
-                  ) : (
-                    <div style={{ fontSize: 13, color: '#D1D5DB', marginTop: 2 }}>Minister TBA</div>
-                  )}
+                    ) : (
+                      <div style={{ fontSize: 16, color: '#CBD5E1', marginTop: 8 }}>Minister TBA</div>
+                    )}
+                  </div>
                 </div>
               </div>
             )
@@ -1082,21 +1053,16 @@ function MinisterPage({ page = 1 }) {
 
         {/* Footer */}
         <div style={{
-          padding: '10px 0 14px',
+          padding: '18px 0 26px',
           textAlign: 'center',
           flexShrink: 0,
           borderTop: '1px solid rgba(0,0,0,0.08)',
+          background: '#fff',
         }}>
-          <div style={{ fontSize: 22, color: '#94A3B8', fontWeight: 600 }}>@naadipulse • LIVE UPDATES</div>
+          <div style={{ fontSize: 28, color: '#94A3B8', fontWeight: 700 }}>@naadipulse • LIVE UPDATES</div>
         </div>
 
       </div>
-      <style>{`
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </div>
   )
 }
@@ -1117,5 +1083,8 @@ export default function App() {
   if (path === '/dot') return <DotMapPage />
   if (path === '/minister') return <MinisterPage page={1} />
   if (path === '/minister2') return <MinisterPage page={2} />
+  if (path === '/minister3') return <MinisterPage page={3} />
+  if (path === '/minister4') return <MinisterPage page={4} />
+  if (path === '/minister5') return <MinisterPage page={5} />
   return <FullDashboard mode="alliance" />
 }
